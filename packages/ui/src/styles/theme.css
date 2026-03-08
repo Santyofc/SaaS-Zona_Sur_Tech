@@ -1,0 +1,18 @@
+@theme {
+  /* Zona Sur Tech - Brand Tokens */
+  --color-zs-bg-primary: #0b0f17;
+  --color-zs-bg-secondary: #161b22;
+  --color-zs-bg-tertiary: #21262d;
+  
+  --color-zs-text-primary: #f0f6fc;
+  --color-zs-text-secondary: #8b949e;
+  --color-zs-text-muted: #484f58;
+  
+  --color-zs-accent-primary: #58a6ff;
+  --color-zs-accent-secondary: #1f6feb;
+  
+  --color-zs-border: #30363d;
+  
+  --shadow-zs-glow-blue: 0 0 15px rgba(88, 166, 255, 0.4);
+  --shadow-zs-glow-green: 0 0 15px rgba(35, 134, 54, 0.4);
+}

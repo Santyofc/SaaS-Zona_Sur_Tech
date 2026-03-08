@@ -1,0 +1,44 @@
+.container {
+  height: 100vh;
+  width: 100vw;
+  overflow-x: hidden;
+  font-family: "Tilt Neon", sans-serif;
+  background: #000;
+  touch-action: pan-y;
+}
+
+.heroSection {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background: #111;
+  text-shadow: 0 0 10px #00b3ff, 0 0 20px #00b3ff;
+  overflow: hidden;
+}
+
+.heroTitle {
+  font: 40px "Tilt Neon", sans-serif; 
+  color: #fff;
+}
+
+.container :global(.trail-img) {
+  position: absolute;
+  object-fit: cover;
+  transform-origin: center;
+  pointer-events: none;
+  will-change: transform;
+  z-index: 12;
+}
+
+.container :global(.trail-image) {
+  position: absolute;
+  overflow: hidden;
+  will-change: transform;
+  transform-origin: center;
+  backface-visibility: hidden;
+  z-index: 12;
+}

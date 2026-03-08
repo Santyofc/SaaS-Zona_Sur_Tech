@@ -1,0 +1,24 @@
+{
+    "root": true,
+    "rules": {
+        "no-restricted-imports": [
+            "error",
+            {
+                "paths": [
+                    {
+                        "name": "@repo/db",
+                        "message": "[ARCHITECTURE VIOLATION] Frontend apps must NOT import @repo/db directly. All database access must go through apps/api. See Architecture Decision: only apps/api and apps/worker may access the database."
+                    }
+                ],
+                "patterns": [
+                    {
+                        "group": [
+                            "@repo/db/*"
+                        ],
+                        "message": "[ARCHITECTURE VIOLATION] Frontend apps must NOT import @repo/db directly. All database access must go through apps/api."
+                    }
+                ]
+            }
+        ]
+    }
+}

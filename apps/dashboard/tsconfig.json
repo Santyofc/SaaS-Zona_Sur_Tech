@@ -1,0 +1,49 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ],
+      "@repo/db": [
+        "../../packages/db/src"
+      ],
+      "@repo/db/*": [
+        "../../packages/db/*"
+      ],
+      "@repo/auth": [
+        "../../packages/auth/src"
+      ],
+      "@repo/auth/*": [
+        "../../packages/auth/*"
+      ],
+      "@repo/ui": [
+        "../../packages/ui/src"
+      ],
+      "@repo/ui/*": [
+        "../../packages/ui/*"
+      ],
+      "@repo/ui-experiments": [
+        "../../packages/ui-experiments/src"
+      ],
+      "@repo/ui-experiments/*": [
+        "../../packages/ui-experiments/*"
+      ]
+    }
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

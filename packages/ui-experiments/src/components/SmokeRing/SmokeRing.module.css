@@ -1,0 +1,21 @@
+.baseWrap {
+  width: 100%;
+  height: 100vh;
+  background: #000;
+  overflow: hidden;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 85px;
+  position: relative;
+}
+
+.baseWrap :global(.app) {
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+}
+
+.baseWrap :global(canvas),
+.baseWrap :global(svg) {
+  position: absolute;
+  user-select: none;
+}

@@ -1,0 +1,3 @@
+[submodule "packages/monitoring/supabase-grafana"]
+	path = packages/monitoring/supabase-grafana
+	url = https://github.com/supabase/supabase-grafana.git

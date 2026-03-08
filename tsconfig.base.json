@@ -1,0 +1,52 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "lib": [
+      "DOM",
+      "DOM.Iterable",
+      "ESNext"
+    ],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true,
+    "baseUrl": ".",
+    "paths": {
+      "@repo/db": [
+        "./packages/db/src"
+      ],
+      "@repo/db/*": [
+        "./packages/db/*"
+      ],
+      "@repo/auth": [
+        "./packages/auth/src"
+      ],
+      "@repo/auth/*": [
+        "./packages/auth/*"
+      ],
+      "@repo/ui": [
+        "./packages/ui/src"
+      ],
+      "@repo/ui/*": [
+        "./packages/ui/*"
+      ],
+      "@repo/ui-experiments": [
+        "./packages/ui-experiments/src"
+      ],
+      "@repo/ui-experiments/*": [
+        "./packages/ui-experiments/*"
+      ]
+    }
+  },
+  "exclude": [
+    "node_modules"
+  ]
+}

@@ -17,6 +17,7 @@ COPY package.json .
 COPY pnpm-lock.yaml .
 COPY pnpm-workspace.yaml .
 COPY turbo.json .
+COPY tsconfig.base.json .
 COPY apps ./apps
 COPY packages ./packages
 
@@ -41,7 +42,7 @@ RUN corepack prepare pnpm@latest --activate
 RUN pnpm install --frozen-lockfile
 
 COPY --from=pruner /app/out/full/ .
-
+COPY --from=pruner /app/tsconfig.base.json ./tsconfig.base.json
 RUN pnpm turbo run build --filter=@repo/web
 
 # ==========================================

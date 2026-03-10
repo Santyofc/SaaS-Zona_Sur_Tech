@@ -9,24 +9,39 @@ RUN npm install -g turbo
 # ==========================================
 # Stage 2 – pruner: isolate @repo/web deps for Docker layer caching
 # ==========================================
-FROM base AS pruner
+FROM node:20-alpine AS pruner
+
 WORKDIR /app
-COPY . .
-RUN turbo prune --scope=@repo/web --docker
+
+COPY package.json .
+COPY pnpm-lock.yaml .
+COPY pnpm-workspace.yaml .
+COPY turbo.json .
+COPY apps ./apps
+COPY packages ./packages
+
+RUN corepack enable
+RUN corepack prepare pnpm@latest --activate
+
+RUN pnpm dlx turbo prune --scope=@repo/web --docker
 
 # ==========================================
 # Stage 3 – builder: install deps and build
 # ==========================================
-FROM base AS builder
+FROM node:20-alpine AS builder
+
 WORKDIR /app
 
-# Install dependencies from the pruned lockfile
 COPY --from=pruner /app/out/json/ .
 COPY --from=pruner /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
+
+RUN corepack enable
+RUN corepack prepare pnpm@latest --activate
+
 RUN pnpm install --frozen-lockfile
 
-# Copy the full pruned source and build
 COPY --from=pruner /app/out/full/ .
+
 RUN pnpm turbo run build --filter=@repo/web
 
 # ==========================================

@@ -17,6 +17,11 @@ if [ ! -f ".env" ]; then
     exit 1
 fi
 
+echo "Exporting environment variables..."
+set -a
+source .env
+set +a
+
 echo "[2/6] Saving current state for potential rollback..."
 PREVIOUS_COMMIT=$(git rev-parse HEAD 2>/dev/null || echo "")
 mkdir -p /opt/vm-platform/infra/.releases

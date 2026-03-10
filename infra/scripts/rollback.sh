@@ -13,6 +13,16 @@ echo "========================================"
 
 RELEASE_FILE="/opt/vm-platform/infra/.releases/last_stable.txt"
 
+if [ ! -f ".env" ]; then
+    echo "ERROR: .env file not found in /opt/vm-platform!"
+    exit 1
+fi
+
+echo "Exporting environment variables..."
+set -a
+source .env
+set +a
+
 if [ ! -f "$RELEASE_FILE" ]; then
     echo "ERROR: Rollback state not found at $RELEASE_FILE. Cannot rollback."
     exit 1

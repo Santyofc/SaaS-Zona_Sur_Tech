@@ -105,11 +105,15 @@ export function DashboardHeader() {
               </div>
             ) : (
               <>
-                <p className="text-sm font-bold text-white truncate max-w-[120px]">
+                <p className="text-sm font-bold text-white truncate max-w-[120px] capitalize">
                   {user?.name || "Usuario"}
                 </p>
-                <p className="text-[10px] text-zs-blue font-black uppercase tracking-widest">
-                  {user?.role || "MEMBER"}
+                <p className={`text-[10px] font-black uppercase tracking-widest ${
+                  user?.email === "admin@zonasurtech.online" || user?.role === "owner" 
+                    ? "text-zs-violet shadow-zs-glow-violet" 
+                    : "text-zs-blue"
+                }`}>
+                  {user?.email === "admin@zonasurtech.online" ? "ROOT ACCESS" : user?.role || "MEMBER"}
                 </p>
               </>
             )}
@@ -117,15 +121,17 @@ export function DashboardHeader() {
           <motion.button
             whileHover={{ scale: 1.05, borderColor: "rgba(0, 247, 255, 0.5)" }}
             whileTap={{ scale: 0.98 }}
-            className="flex items-center gap-2 bg-zs-bg-secondary/80 p-1 pr-3 rounded-2xl border border-zs-border hover:border-zs-blue/50 transition-all"
+            className="flex items-center gap-2.5 bg-zs-bg-secondary/80 p-1 pr-3.5 rounded-2xl border border-zs-border hover:border-zs-blue/50 transition-all"
           >
             <motion.div
               whileHover={{ rotate: 10 }}
-              className="w-8 h-8 rounded-xl bg-zs-blue flex items-center justify-center text-xs font-bold text-white shadow-zs-glow-blue"
+              className={`w-8 h-8 rounded-xl flex items-center justify-center text-sm font-black text-white shadow-zs-glow-blue transition-colors ${
+                user?.email === "admin@zonasurtech.online" ? "bg-zs-violet shadow-zs-glow-violet" : "bg-zs-blue"
+              }`}
             >
-              {user?.name?.charAt(0) || "U"}
+              {(user?.name?.charAt(0) || "U").toUpperCase()}
             </motion.div>
-            <ChevronDown className="w-4 h-4 text-zs-text-secondary" />
+            <ChevronDown className="w-4 h-4 text-zs-text-secondary group-hover:text-white transition-colors" />
           </motion.button>
         </div>
       </div>

@@ -89,4 +89,5 @@ Para activarlo en Github:
 mkdir -p .github/workflows/
 cp infra/ci/github-actions-deploy.yml .github/workflows/deploy.yml
 ```
+
 Luego configura los secretos `VPS_HOST`, `VPS_USER`, `VPS_PORT` y `VPS_SSH_KEY` en tu repo.

@@ -6,6 +6,18 @@ services:
     build:
       context: /opt/vm-platform
       dockerfile: /opt/vm-platform/apps/web/Dockerfile
+      args:
+        DATABASE_URL: ${DATABASE_URL}
+        NEXT_PUBLIC_SUPABASE_URL: ${NEXT_PUBLIC_SUPABASE_URL}
+        NEXT_PUBLIC_SUPABASE_ANON_KEY: ${NEXT_PUBLIC_SUPABASE_ANON_KEY}
+        SUPABASE_URL: ${SUPABASE_URL}
+        SUPABASE_SERVICE_ROLE_KEY: ${SUPABASE_SERVICE_ROLE_KEY}
+        NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL}
+        NEXT_PUBLIC_DASHBOARD_URL: ${NEXT_PUBLIC_DASHBOARD_URL}
+        UPSTASH_REDIS_REST_URL: ${UPSTASH_REDIS_REST_URL}
+        UPSTASH_REDIS_REST_TOKEN: ${UPSTASH_REDIS_REST_TOKEN}
+        JWT_SECRET: ${JWT_SECRET}
+        GOOGLE_GEMINI_API_KEY: ${GOOGLE_GEMINI_API_KEY}
     env_file: /opt/vm-platform/.env
     environment:
       - NODE_ENV=production

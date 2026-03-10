@@ -33,10 +33,10 @@ git checkout main
 git reset --hard origin/main
 
 echo "[4/6] Validating Docker Compose..."
-docker compose -f infra/docker/docker-compose.prod.yml config > /dev/null
+docker compose --env-file .env -f infra/docker/docker-compose.prod.yml config > /dev/null
 
 echo "[5/6] Building and starting the stack..."
-docker compose -p vm-platform -f infra/docker/docker-compose.prod.yml up -d --build
+docker compose --env-file .env -p vm-platform -f infra/docker/docker-compose.prod.yml up -d --build
 
 echo "[6/6] Checking health..."
 echo "Waiting for container to be ready..."

@@ -25,7 +25,7 @@ git checkout main
 git reset --hard "$LAST_COMMIT"
 
 echo "[2/3] Rebuilding stack..."
-docker compose -p vm-platform -f infra/docker/docker-compose.prod.yml up -d --build
+docker compose --env-file .env -p vm-platform -f infra/docker/docker-compose.prod.yml up -d --build
 
 echo "[3/3] Checking health..."
 sleep 5

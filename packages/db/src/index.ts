@@ -2,29 +2,42 @@ import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import * as schema from "./schema";
 
-// Fail-fast: refuse to start if DATABASE_URL is not explicitly set.
-const connectionString = process.env.DATABASE_URL;
-if (!connectionString) {
-  throw new Error(
-    "[FATAL] DATABASE_URL environment variable is not set. " +
-      "Set it in your .env file or deployment secrets. " +
-      "Refusing to start to prevent silent data loss.",
-  );
+type Database = ReturnType<typeof drizzle<typeof schema>>;
+
+let databaseInstance: Database | null = null;
+
+function createDatabase(): Database {
+  const connectionString = process.env.DATABASE_URL;
+  if (!connectionString) {
+    throw new Error(
+      "[FATAL] DATABASE_URL environment variable is not set. " +
+        "Set it in your .env file or deployment secrets. " +
+        "Refusing to start to prevent silent data loss.",
+    );
+  }
+
+  const client = postgres(connectionString, {
+    max: 10,
+    idle_timeout: 20,
+    connect_timeout: 10,
+  });
+
+  return drizzle(client, { schema });
 }
 
-/**
- * Lazy singleton: the Postgres client is created once per Node.js process.
- * Using a module-level variable ensures connection pooling works correctly
- * in long-running server processes, while still being safe for Next.js
- * which creates fresh module instances per compilation.
- */
-const client = postgres(connectionString, {
-  max: 10, // connection pool size
-  idle_timeout: 20, // close idle connections after 20s
-  connect_timeout: 10, // fail fast on bad config
-});
+export function getDb(): Database {
+  if (!databaseInstance) {
+    databaseInstance = createDatabase();
+  }
 
-export const db = drizzle(client, { schema });
+  return databaseInstance;
+}
+
+export const db = new Proxy({} as Database, {
+  get(_target, prop, receiver) {
+    return Reflect.get(getDb(), prop, receiver);
+  },
+});
 
 export * from "./schema";
 export * from "drizzle-orm";

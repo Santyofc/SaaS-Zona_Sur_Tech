@@ -18,6 +18,8 @@ import { apiGetMe, apiSwitchOrganization, ApiFetchError } from "@/lib/api";
 import type { MembershipBasic } from "@/lib/api";
 import { cn } from "./ui-primitives";
 
+const ACTIVE_ORG_CACHE_KEY = "zs.activeOrganizationId";
+
 export function WorkspaceSwitcher() {
   const router = useRouter();
   const [open, setOpen] = useState(false);
@@ -34,6 +36,9 @@ export function WorkspaceSwitcher() {
       .then((data) => {
         setCurrentOrgId(data.organization?.id ?? null);
         setCurrentOrgName(data.organization?.name ?? null);
+        if (typeof window !== "undefined" && data.organization?.id) {
+          window.sessionStorage.setItem(ACTIVE_ORG_CACHE_KEY, data.organization.id);
+        }
         setMemberships(
           (data.memberships ?? []).filter((m) => m.status === "active")
         );
@@ -64,6 +69,9 @@ export function WorkspaceSwitcher() {
       const result = await apiSwitchOrganization(orgId);
       setCurrentOrgId(result.organizationId);
       setCurrentOrgName(result.organizationName);
+      if (typeof window !== "undefined") {
+        window.sessionStorage.setItem(ACTIVE_ORG_CACHE_KEY, result.organizationId);
+      }
       setOpen(false);
       router.refresh();
       router.push("/dashboard");

@@ -38,6 +38,18 @@
       "@repo/ui/*": [
         "./packages/ui/*"
       ],
+      "@repo/platform": [
+        "./packages/platform/src"
+      ],
+      "@repo/platform/*": [
+        "./packages/platform/*"
+      ],
+      "@repo/email": [
+        "./packages/email/src"
+      ],
+      "@repo/email/*": [
+        "./packages/email/*"
+      ],
       "@repo/ui-experiments": [
         "./packages/ui-experiments/src"
       ],

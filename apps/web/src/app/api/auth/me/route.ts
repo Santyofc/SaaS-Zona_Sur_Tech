@@ -17,7 +17,9 @@ import {
   getPermissions,
   handleAuthError,
 } from "@repo/auth";
-import { createAdminClient } from "@repo/auth/src/supabaseAdmin";
+import { createAdminClient } from "@/lib/supabase";
+
+export const dynamic = "force-dynamic";
 
 export async function GET() {
   try {

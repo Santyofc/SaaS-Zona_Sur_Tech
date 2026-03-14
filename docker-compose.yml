@@ -1,56 +1,53 @@
-version: "3.8"
-
 services:
   web:
     build:
       context: .
       dockerfile: apps/web/Dockerfile
+      args:
+        NEXT_PUBLIC_SUPABASE_URL: ${NEXT_PUBLIC_SUPABASE_URL:-}
+        NEXT_PUBLIC_SUPABASE_ANON_KEY: ${NEXT_PUBLIC_SUPABASE_ANON_KEY:-}
+        NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-http://localhost:3000}
+        NEXT_PUBLIC_DASHBOARD_URL: ${NEXT_PUBLIC_DASHBOARD_URL:-http://localhost:3000/dashboard}
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:4000}
     ports:
       - "3000:3000"
     env_file: .env
     environment:
-      - NODE_ENV=production
+      NODE_ENV: production
+      PORT: 3000
     depends_on:
+      api:
+        condition: service_started
       db:
         condition: service_healthy
     restart: always
-    networks:
-      - internal
-      - public
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:3000 >/dev/null 2>&1 || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+    networks: [internal, public]
 
-  dashboard:
+  api:
     build:
       context: .
-      dockerfile: apps/dashboard/Dockerfile
+      dockerfile: apps/api/Dockerfile
     ports:
-      - "3001:3001"
+      - "4000:4000"
     env_file: .env
     environment:
-      - NODE_ENV=production
+      NODE_ENV: production
+      PORT: 4000
     depends_on:
       db:
         condition: service_healthy
     restart: always
-    networks:
-      - internal
-      - public
-
-  client:
-    build:
-      context: .
-      dockerfile: apps/client/Dockerfile
-    ports:
-      - "3002:3002"
-    env_file: .env
-    environment:
-      - NODE_ENV=production
-    depends_on:
-      db:
-        condition: service_healthy
-    restart: always
-    networks:
-      - internal
-      - public
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:4000/health >/dev/null 2>&1 || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+    networks: [internal, public]
 
   db:
     image: postgres:16-alpine
@@ -75,8 +72,7 @@ services:
     volumes:
       - redis_data:/data
     restart: always
-    networks:
-      - internal
+    networks: [internal]
 
 networks:
   internal:

@@ -44,6 +44,8 @@ export interface AuthUserInput {
 export interface PublicUserProfile {
   id: string;
   email: string;
+  name: string | null;
+  image: string | null;
   createdAt: Date;
 }
 
@@ -75,12 +77,15 @@ export async function ensurePublicUserProfile(
       authUser.user_metadata?.display_name ||
       authUser.user_metadata?.full_name ||
       (email ? email.split("@")[0] : "user");
+    const avatarUrl = authUser.user_metadata?.avatar_url ?? null;
 
     const result = await db
       .insert(users)
       .values({
         id: authUser.id,
         email,
+        name: displayName,
+        image: avatarUrl,
         // Sentinel value — Supabase owns authentication, not this column.
         // The column is kept for schema backward-compat only.
         passwordHash: "SUPABASE_MANAGED",
@@ -89,6 +94,8 @@ export async function ensurePublicUserProfile(
         target: users.id,
         set: {
           email,
+          name: displayName,
+          image: avatarUrl,
           // Intentionally not updating passwordHash to avoid overwriting
           // any future real value.
         },
@@ -96,6 +103,8 @@ export async function ensurePublicUserProfile(
       .returning({
         id: users.id,
         email: users.email,
+        name: users.name,
+        image: users.image,
         createdAt: users.createdAt,
       });
 

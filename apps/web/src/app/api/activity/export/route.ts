@@ -6,8 +6,10 @@
  */
 
 import { requirePermission, handleAuthError } from "@repo/auth";
-import { createAdminClient } from "@repo/auth/src/supabaseAdmin";
 import { rateLimit } from "@repo/platform";
+import { createAdminClient } from "@/lib/supabase";
+
+export const dynamic = "force-dynamic";
 
 export async function GET(request: Request) {
   try {

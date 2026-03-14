@@ -5,13 +5,22 @@
 # ==========================================================
 set -Eeuo pipefail
 
-URL="http://127.0.0.1:3000/"
-HTTP_STATUS=$(curl -o /dev/null -s -w "%{http_code}\n" "$URL")
+WEB_URL="http://127.0.0.1:3000/"
+API_URL="http://127.0.0.1:4000/health"
 
-if [ "$HTTP_STATUS" = "200" ] || [ "$HTTP_STATUS" = "301" ] || [ "$HTTP_STATUS" = "302" ] || [ "$HTTP_STATUS" = "307" ] || [ "$HTTP_STATUS" = "308" ]; then
-    echo "Healthcheck OK: HTTP $HTTP_STATUS ($URL)"
-    exit 0
-else
-    echo "Healthcheck Failed: HTTP $HTTP_STATUS ($URL)"
-    exit 1
-fi
+check_url() {
+    local url="$1"
+    local status
+    status=$(curl -o /dev/null -s -w "%{http_code}\n" "$url")
+
+    if [ "$status" = "200" ] || [ "$status" = "301" ] || [ "$status" = "302" ] || [ "$status" = "307" ] || [ "$status" = "308" ]; then
+        echo "Healthcheck OK: HTTP $status ($url)"
+        return 0
+    fi
+
+    echo "Healthcheck Failed: HTTP $status ($url)"
+    return 1
+}
+
+check_url "$WEB_URL"
+check_url "$API_URL"

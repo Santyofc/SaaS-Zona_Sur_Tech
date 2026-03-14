@@ -19,7 +19,10 @@ import {
   uniqueIndex,
   index,
   integer,
+  numeric,
+  boolean,
 } from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
 
 // ---------------------------------------------------------------------------
 // Enums
@@ -47,22 +50,39 @@ export const invitationStatusEnum = pgEnum("invitation_status", [
   "expired",
 ]);
 
+/**
+ * ERP Inventory Movement Types
+ */
+export const movementTypeEnum = pgEnum("movement_type", [
+  "initial_stock",
+  "manual_adjustment",
+  "sale_out",
+  "sale_cancel_revert",
+  "purchase_in",
+  "internal_transfer",
+]);
+
+/**
+ * ERP Sale Status
+ */
+export const saleStatusEnum = pgEnum("sale_status", [
+  "draft",
+  "completed",
+  "cancelled",
+]);
+
 // ---------------------------------------------------------------------------
 // Tables
 // ---------------------------------------------------------------------------
 
 /**
  * public.users — profile mirror for auth.users.
- *
- * IMPORTANT:
- * - The `id` column mirrors auth.users.id (UUID from Supabase Auth).
- * - This table is NOT the identity source. Always use auth.users for identity.
- * - password_hash is kept for schema backward-compat only. Supabase manages auth.
  */
 export const users = pgTable("users", {
   id: uuid("id").defaultRandom().primaryKey(),
   email: text("email").notNull().unique(),
-  /** Sentinel value "SUPABASE_MANAGED" — not used for authentication. */
+  name: text("name"),
+  image: text("image"),
   passwordHash: text("password_hash"),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
@@ -70,12 +90,10 @@ export const users = pgTable("users", {
 
 /**
  * public.organizations — the tenant entity.
- * Every resource in the system must be scoped to an organization.
  */
 export const organizations = pgTable("organizations", {
   id: uuid("id").defaultRandom().primaryKey(),
   name: text("name").notNull(),
-  /** Optional URL-safe identifier for vanity URLs. */
   slug: text("slug").unique(),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
@@ -83,24 +101,16 @@ export const organizations = pgTable("organizations", {
 
 /**
  * public.memberships — the tenant membership record.
- *
- * Design decisions:
- * - user_id references auth.users(id) directly (NOT public.users.id)
- *   to prevent orphaned memberships when public.users records don't exist.
- * - The unique index on (user_id, organization_id) prevents double membership.
- * - status tracks the membership lifecycle (active/invited/suspended).
  */
 export const memberships = pgTable(
   "memberships",
   {
     id: uuid("id").defaultRandom().primaryKey(),
-    /** References auth.users(id). Do NOT reference public.users.id. */
     userId: uuid("user_id").notNull(),
     organizationId: uuid("organization_id")
       .notNull()
       .references(() => organizations.id, { onDelete: "cascade" }),
     role: roleEnum("role").notNull().default("member"),
-    /** active | invited | suspended */
     status: text("status").notNull().default("active"),
     joinedAt: timestamp("joined_at", { withTimezone: true }).defaultNow().notNull(),
     updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
@@ -112,19 +122,11 @@ export const memberships = pgTable(
     ),
     userIdIdx: index("idx_memberships_user_id").on(table.userId),
     orgIdIdx: index("idx_memberships_org_id").on(table.organizationId),
-    userOrgCompositeIdx: index("idx_memberships_user_id_org_id").on(
-      table.userId,
-      table.organizationId,
-    ),
   }),
 );
 
 /**
  * public.org_invitations — tenant invitation records.
- *
- * Replaces the legacy `invitations` table which was tied to integer team_id.
- * Tokens are 64-char hex strings (32 bytes of crypto random).
- * A partial unique index prevents duplicate pending invites for (org, email).
  */
 export const orgInvitations = pgTable(
   "org_invitations",
@@ -135,9 +137,7 @@ export const orgInvitations = pgTable(
       .references(() => organizations.id, { onDelete: "cascade" }),
     email: text("email").notNull(),
     role: roleEnum("role").notNull().default("member"),
-    /** auth.users.id of inviter — nullable in case the inviter is deleted. */
     invitedBy: uuid("invited_by"),
-    /** 64-char hex token — UNIQUE globally. */
     token: text("token").notNull().unique(),
     status: invitationStatusEnum("status").notNull().default("pending"),
     expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
@@ -147,20 +147,12 @@ export const orgInvitations = pgTable(
   },
   (table) => ({
     orgIdIdx: index("idx_org_invitations_org_id").on(table.organizationId),
-    emailIdx: index("idx_org_invitations_email").on(table.email),
-    statusIdx: index("idx_org_invitations_status").on(table.status),
     tokenIdx: index("idx_org_invitations_token").on(table.token),
-    expiresAtIdx: index("idx_org_invitations_expires_at").on(table.expiresAt),
-    // NOTE: partial unique index (pending) is managed in SQL migration only;
-    // Drizzle doesn't support partial indexes in the table builder yet.
   }),
 );
 
 /**
  * public.org_activity_logs — tenant activity audit trail.
- *
- * Replaces the legacy `activity_logs` table which was tied to integer team_id.
- * All writes go through the log_org_activity RPC for atomicity.
  */
 export const orgActivityLogs = pgTable(
   "org_activity_logs",
@@ -169,9 +161,7 @@ export const orgActivityLogs = pgTable(
     organizationId: uuid("organization_id")
       .notNull()
       .references(() => organizations.id, { onDelete: "cascade" }),
-    /** auth.users.id of the actor — nullable in case the actor is deleted. */
     actorId: uuid("actor_id"),
-    /** Dot-separated action string: <entity>.<verb> */
     action: text("action").notNull(),
     entityType: text("entity_type"),
     entityId: text("entity_id"),
@@ -180,15 +170,165 @@ export const orgActivityLogs = pgTable(
   },
   (table) => ({
     orgIdIdx: index("idx_org_activity_logs_org_id").on(table.organizationId),
-    actorIdIdx: index("idx_org_activity_logs_actor_id").on(table.actorId),
-    actionIdx: index("idx_org_activity_logs_action").on(table.action),
     createdAtDescIdx: index("idx_org_activity_logs_created_at_desc").on(
       table.createdAt,
     ),
-    orgCreatedIdx: index("idx_org_activity_logs_org_created").on(
+  }),
+);
+
+// ---------------------------------------------------------------------------
+// ERP Module Tables
+// ---------------------------------------------------------------------------
+
+/**
+ * public.products — ERP Product Catalog.
+ */
+export const products = pgTable(
+  "products",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    organizationId: uuid("organization_id")
+      .notNull()
+      .references(() => organizations.id, { onDelete: "cascade" }),
+    sku: text("sku"),
+    name: text("name").notNull(),
+    description: text("description"),
+    /** Sale price using high precision numeric for currency. */
+    salePrice: numeric("sale_price", { precision: 12, scale: 2 }).notNull().default("0"),
+    /** Cost price using high precision numeric for currency. */
+    costPrice: numeric("cost_price", { precision: 12, scale: 2 }).notNull().default("0"),
+    isActive: boolean("is_active").notNull().default(true),
+    createdBy: uuid("created_by").references(() => users.id),
+    updatedBy: uuid("updated_by").references(() => users.id),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => ({
+    orgIdIdx: index("idx_products_org_id").on(table.organizationId),
+    orgSkuUniqueIndex: uniqueIndex("idx_products_org_sku")
+      .on(table.organizationId, table.sku)
+      .where(sql`sku IS NOT NULL`),
+  }),
+);
+
+/**
+ * public.inventory_movements — Stock ledger (Source of Truth).
+ */
+export const inventoryMovements = pgTable(
+  "inventory_movements",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    organizationId: uuid("organization_id")
+      .notNull()
+      .references(() => organizations.id, { onDelete: "cascade" }),
+    productId: uuid("product_id")
+      .notNull()
+      .references(() => products.id, { onDelete: "restrict" }),
+    movementType: movementTypeEnum("movement_type").notNull(),
+    /** Quantity can be decimal (e.g., kilograms). */
+    quantity: numeric("quantity", { precision: 12, scale: 4 }).notNull(),
+    /** Optional unit cost at the time of movement. */
+    unitCost: numeric("unit_cost", { precision: 12, scale: 2 }),
+    /** Optional reference to related entities (Sale, Purchase). */
+    referenceType: text("reference_type"),
+    referenceId: text("reference_id"),
+    note: text("note"),
+    createdBy: uuid("created_by").references(() => users.id),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => ({
+    orgIdIdx: index("idx_inv_mov_org_id").on(table.organizationId),
+    prodIdIdx: index("idx_inv_mov_prod_id").on(table.productId),
+    compositeIdx: index("idx_inv_mov_org_prod").on(
       table.organizationId,
-      table.createdAt,
+      table.productId,
     ),
+    refIdx: index("idx_inv_mov_reference").on(table.referenceType, table.referenceId),
+  }),
+);
+
+/**
+ * public.inventory_balances — Materialized stock levels.
+ */
+export const inventoryBalances = pgTable(
+  "inventory_balances",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    organizationId: uuid("organization_id")
+      .notNull()
+      .references(() => organizations.id, { onDelete: "cascade" }),
+    productId: uuid("product_id")
+      .notNull()
+      .references(() => products.id, { onDelete: "cascade" }),
+    currentQuantity: numeric("current_quantity", { precision: 12, scale: 4 })
+      .notNull()
+      .default("0"),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+},
+  (table) => ({
+    orgProdUniqueIndex: uniqueIndex("idx_inv_bal_org_prod").on(
+      table.organizationId,
+      table.productId,
+    ),
+  }),
+);
+
+/**
+ * public.sales — ERP Sales transactions.
+ */
+export const sales = pgTable(
+  "sales",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    organizationId: uuid("organization_id")
+      .notNull()
+      .references(() => organizations.id, { onDelete: "cascade" }),
+    saleNumber: text("sale_number").notNull(),
+    status: saleStatusEnum("status").notNull().default("completed"),
+    subtotal: numeric("subtotal", { precision: 12, scale: 2 }).notNull().default("0"),
+    tax: numeric("tax", { precision: 12, scale: 2 }).notNull().default("0"),
+    discount: numeric("discount", { precision: 12, scale: 2 }).notNull().default("0"),
+    total: numeric("total", { precision: 12, scale: 2 }).notNull().default("0"),
+    paymentMethod: text("payment_method"),
+    createdBy: uuid("created_by").references(() => users.id),
+    cancelledBy: uuid("cancelled_by").references(() => users.id),
+    cancelledAt: timestamp("cancelled_at", { withTimezone: true }),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => ({
+    orgIdIdx: index("idx_sales_org_id").on(table.organizationId),
+    orgSaleNumUniqueIndex: uniqueIndex("idx_sales_org_num").on(
+      table.organizationId,
+      table.saleNumber,
+    ),
+  }),
+);
+
+/**
+ * public.sale_items — Sales line items.
+ */
+export const saleItems = pgTable(
+  "sale_items",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    saleId: uuid("sale_id")
+      .notNull()
+      .references(() => sales.id, { onDelete: "cascade" }),
+    productId: uuid("product_id")
+      .notNull()
+      .references(() => products.id),
+    quantity: numeric("quantity", { precision: 12, scale: 4 }).notNull(),
+    unitPrice: numeric("unit_price", { precision: 12, scale: 2 }).notNull(),
+    taxAmount: numeric("tax_amount", { precision: 12, scale: 2 }).notNull().default("0"),
+    discountAmount: numeric("discount_amount", { precision: 12, scale: 2 })
+      .notNull()
+      .default("0"),
+    total: numeric("total", { precision: 12, scale: 2 }).notNull(),
+  },
+  (table) => ({
+    saleIdIdx: index("idx_sale_items_sale_id").on(table.saleId),
+    prodIdIdx: index("idx_sale_items_prod_id").on(table.productId),
   }),
 );
 

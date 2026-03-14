@@ -14,7 +14,7 @@ import {
   type Role,
 } from "@repo/auth";
 import { rateLimit, logger } from "@repo/platform";
-import { createAdminClient } from "@repo/auth/src/supabaseAdmin";
+import { sendInvitationEmail } from "@repo/email";
 
 // ---------------------------------------------------------------------------
 // POST /api/invitations
@@ -101,19 +101,18 @@ export async function POST(request: Request) {
 
     const inviteUrl = `${baseUrl}/invitations/accept?token=${token}`;
 
-    const supabaseAdmin = createAdminClient();
-    const { data: authData, error: authError } = await supabaseAdmin.auth.admin.inviteUserByEmail(email, {
-      data: {
-        organization_id: ctx.organizationId,
-        role: role
-      },
-      redirectTo: inviteUrl,
+    const emailResult = await sendInvitationEmail({
+      to: email,
+      organizationName: ctx.organizationName,
+      inviterName: ctx.authUser.user_metadata?.display_name ?? ctx.email,
+      role,
+      inviteUrl,
     });
 
-    if (authError) {
-      logger.error(`[EMAIL] Failed to send Supabase invitation email to ${email}`, authError);
+    if (emailResult.error) {
+      logger.error(`[EMAIL] Failed to send invitation email to ${email}`, emailResult.error);
     } else {
-      logger.info(`[EMAIL] Sent Supabase invitation email to ${email}`);
+      logger.info(`[EMAIL] Sent invitation email to ${email}`);
     }
 
     logger.info(

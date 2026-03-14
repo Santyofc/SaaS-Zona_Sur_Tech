@@ -95,7 +95,7 @@ export function KernelLoader({ path }: { path: string }) {
             {/* System Info */}
             <div className="mt-12 px-4 py-1.5 rounded-full bg-zs-emerald/10 border border-zs-emerald/20 text-[10px] font-black text-zs-emerald uppercase tracking-[0.2em] flex items-center gap-2">
                 <div className="w-1.5 h-1.5 rounded-full bg-zs-emerald animate-pulse" />
-                Destino: {getRouteLabel(path)} // TLS 1.3
+                <span>Destino: {getRouteLabel(path)} | TLS 1.3</span>
             </div>
           </div>
         </motion.div>

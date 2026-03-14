@@ -1,116 +1,159 @@
-# 🚀 VM Platform (SaaS Engine)
+# SaaS Zona Sur Tech
 
-![Next.js](https://img.shields.io/badge/Next.js%2014-black?style=for-the-badge&logo=next.js&logoColor=white)
-![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
-![Turborepo](https://img.shields.io/badge/Turborepo-EF4444?style=for-the-badge&logo=turborepo&logoColor=white)
-![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
-![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)
-![Drizzle](https://img.shields.io/badge/Drizzle_ORM-C5F74F?style=for-the-badge&logo=drizzle&logoColor=black)
+Monorepo `pnpm` + `turbo` para una plataforma SaaS multi-tenant con:
 
-**VM Platform** es una arquitectura SaaS B2B de alto rendimiento, diseñada con una estética **"hacker-tech"** (minimalista, de alto contraste y orientada al desarrollador/power user). El proyecto está construido como un **monorepo** para garantizar la extrema escalabilidad, reutilización de código y separación estricta de responsabilidades.
+- `apps/web`: Next.js 14 App Router. Frontend principal y SaaS core temporal.
+- `apps/api`: NestJS. Backend oficial del dominio ERP.
+- `packages/auth`: guards y helpers de auth/tenancy sobre Supabase Auth.
+- `packages/db`: esquema Drizzle, migraciones SQL y acceso PostgreSQL.
+- `packages/platform`: rate limiting, logging y utilidades operativas.
+- `packages/email`: envío de correos transaccionales.
+- `packages/ui`: componentes compartidos.
 
-Desarrollado bajo la identidad de **Zona Sur Tech**, este motor incluye desde autenticación robusta hasta multi-tenancy y flujos de monetización listos para producción.
+## Arquitectura actual
 
----
+- Auth y sesión: Supabase Auth.
+- Organización activa: se resuelve en `web` y viaja al API como `X-Organization-Id`.
+- SaaS core multi-tenant: rutas `app/api` dentro de `apps/web`.
+- ERP: `apps/api` con NestJS.
+- Contrato web -> API:
+  - `Authorization: Bearer <supabase_access_token>`
+  - `X-Organization-Id: <active_org_id>`
 
-## 🏗️ Arquitectura del Monorepo
+El API valida JWT, membership activa y permisos por rol. `organizationId` en `app_metadata` no es autoridad para el workspace activo.
 
-El proyecto utiliza **Turborepo** y **pnpm workspaces** para gestionar múltiples paquetes y aplicaciones de forma eficiente.
+## Estructura
 
 ```text
-vm-platform/
-├── apps/
-│   └── web/           # Aplicación principal Next.js 14 (App Router)
-├── packages/
-│   ├── auth/          # Lógica de autenticación (Supabase/NextAuth)
-│   ├── db/            # Capa de base de datos (PostgreSQL + Drizzle ORM)
-│   ├── email/         # Proveedor de correos transaccionales (Resend)
-│   ├── monitoring/    # Sistema de observabilidad y logging estructurado
-│   ├── platform/      # Core logic, suscripciones y utilidades SaaS
-│   ├── ui/            # ZS Design System (TailwindCSS + Framer Motion)
-│   └── ui-experiments/# Sandboxes y prototipos visuales
-└── supabase/          # Configuración local de Supabase y migraciones
+apps/
+  api/        NestJS ERP API
+  web/        Next.js frontend + SaaS core
+packages/
+  auth/       Auth, permisos, memberships, invitaciones
+  db/         Drizzle schema + migrations
+  email/      Email transactional
+  platform/   Logging, rate limit, helpers
+  ui/         Design system compartido
+  ui-experiments/
+infra/
+  docker/     Compose de producción
+  nginx/      Reverse proxy de VPS
+  scripts/    Deploy, rollback y healthchecks
 ```
 
-## ⚡ Stack Tecnológico (Zero-Leak Policy)
+## Requisitos
 
-*   **Framework**: [Next.js 14](https://nextjs.org/) (App Router, Server Components by default).
-*   **Lenguaje**: [TypeScript](https://www.typescriptlang.org/) (Tipado estricto, sin `any`).
-*   **Base de Datos**: PostgreSQL vía [Supabase](https://supabase.com/).
-*   **ORM**: [Drizzle ORM](https://orm.drizzle.team/) (Type-safe SQL).
-*   **Estilos**: [Tailwind CSS](https://tailwindcss.com/) (Sistema de tokens propio `zs-*`).
-*   **Animaciones**: [Framer Motion](https://www.framer.com/motion/) (Optimizadas con Intersection Observer).
-*   **Pagos**: [Stripe](https://stripe.com/).
-*   **Gestor de Paquetes**: [pnpm](https://pnpm.io/).
+- Node.js `20.x`
+- `pnpm` `9.x`
+- Docker Desktop / Docker Engine
+- PostgreSQL accesible por `DATABASE_URL`
+- Proyecto Supabase configurado
 
----
+## Instalación
 
-## 🚀 Características Clave (SaaS Foundations)
+```bash
+corepack enable pnpm
+pnpm install
+cp .env.example .env
+```
 
-- 🏢 **Multi-Tenancy**: Sistema avanzado de Organizaciones y Workspaces.
-- 🔐 **Autenticación Segura**: Flujos de registro, login y recuperación vía Supabase Auth.
-- 💳 **Monetización Integrada**: Webhooks y flujos de suscripción con Stripe.
-- 🎨 **ZS Design System**: Componentes UI altamente iterativos, con soporte nativo para dark mode, glassmorphism (`shadow-zs-glow-blue`) y animaciones fluidas.
-- 🛠️ **Hacker Terminal**: Interfaz de línea de comandos simulada e hiper-realista para interacciones avanzadas (AI powered).
+## Variables mínimas
 
----
+Revisar `.env.example`. Las claves mínimas para desarrollo son:
 
-## 💻 Desarrollo Local
+- `DATABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- `SUPABASE_URL`
+- `SUPABASE_SERVICE_ROLE_KEY`
+- `NEXT_PUBLIC_API_URL`
+- `SUPABASE_JWKS_URL`
+- `CORS_ORIGIN`
 
-### Prerrequisitos
-- Node.js (v20+)
-- pnpm (v9+)
-- Docker (Obligatorio para Supabase local)
-- [Supabase CLI](https://supabase.com/docs/guides/cli)
+## Desarrollo local
 
-### Instalación
+Web:
 
-1.  **Clonar el repositorio**:
-    ```bash
-    git clone https://github.com/Santyofc/vm-platform.git
-    cd vm-platform
-    ```
+```bash
+pnpm dev:web
+```
 
-2.  **Instalar dependencias**:
-    ```bash
-    pnpm install
-    ```
+API:
 
-3.  **Configurar variables de entorno**:
-    Copia el archivo `.env.example` en la raíz y en `apps/web` a `.env.local` e ingresa tus credenciales.
-    ```bash
-    cp .env.example .env.local
-    ```
+```bash
+pnpm dev:api
+```
 
-4.  **Iniciar Infraestructura (Supabase Local)**:
-    Esto levantará una instancia completa de PostgreSQL, Auth y Storage en Docker.
-    ```bash
-    pnpm supabase:start
-    ```
+Ambos:
 
-5.  **Correr Migraciones**:
-    Aplica el esquema de la base de datos a tu instancia local.
-    ```bash
-    pnpm --filter db db:push
-    ```
+```bash
+pnpm dev
+```
 
-6.  **Iniciar Servidor de Desarrollo**:
-    ```bash
-    pnpm dev
-    ```
-    La aplicación estará disponible en `http://localhost:3000`.
+Por defecto:
 
----
+- Web: `http://localhost:3000`
+- API ERP: `http://localhost:4000`
 
-## 🛡️ Principios de Código (The Zona Sur Tech Way)
+## Comandos útiles
 
-1.  **Server-First**: Todo es un `Server Component` por defecto. `use client` se reserva estricta y únicamente para interactividad en las hojas del árbol.
-2.  **Type Safety**: El compilador es la primera línea de defensa.
-3.  **Performance Absoluta**: Animaciones y canvas pausados fuera del viewport. Suscripciones a eventos centralizadas (sin memory leaks de `window.addEventListener`).
-4.  **Estética Atrevida**: Sin colores hexadecimales quemados. Uso mandatorio del sistema de tokens `zs-*` (ej. `bg-zs-bg-primary`).
+```bash
+pnpm lint
+pnpm typecheck
+pnpm build
+pnpm --filter @repo/web dev
+pnpm --filter api start:dev
+docker compose up --build
+docker compose build
+```
 
----
+## Base de datos
 
-## 📄 Licencia
+Migraciones SQL versionadas en `packages/db/drizzle`.
 
-Propiedad de **Zona Sur Tech**. Todos los derechos reservados.
+Aplicar migraciones:
+
+```bash
+pnpm --filter @repo/db db:migrate
+```
+
+Generar artefactos Drizzle:
+
+```bash
+pnpm --filter @repo/db db:generate
+```
+
+## Docker local
+
+`docker-compose.yml` levanta:
+
+- `db` PostgreSQL
+- `redis`
+- `api`
+- `web`
+
+El archivo está alineado con la estructura real del repo. No existen `apps/dashboard` ni `apps/client`.
+
+## Producción en VPS
+
+- Compose de producción: `infra/docker/docker-compose.prod.yml`
+- Nginx VPS: `infra/nginx/vm-platform.conf`
+- Healthcheck: `infra/scripts/healthcheck.sh`
+
+Recomendación actual:
+
+- `zonasurtech.online` -> `web`
+- `api.zonasurtech.online` -> `api`
+
+## Estado del repositorio
+
+Estado actual recomendado: `MVP estable para desarrollo`.
+
+No está listo todavía para producción pública. Faltan al menos:
+
+- gestión formal de secretos
+- observabilidad/alerting real
+- backups validados
+- endurecimiento de CORS/cookies según dominio final
+- pruebas automatizadas de flujos críticos
+- revisión de seguridad y límites operativos

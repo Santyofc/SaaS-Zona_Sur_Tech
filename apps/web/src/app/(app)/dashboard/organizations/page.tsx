@@ -1,10 +1,12 @@
 import { requireAuth, handleAuthError } from "@repo/auth";
-import { createAdminClient } from "@repo/auth/src/supabaseAdmin";
 import { PageHeader, EmptyState } from "@/components/dashboard/ui-primitives";
 import { Building2, Plus } from "lucide-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { WorkspaceSwitcher } from "@/components/dashboard/WorkspaceSwitcher";
+import { createAdminClient } from "@/lib/supabase";
+
+export const dynamic = "force-dynamic";
 
 export default async function OrganizationsPage() {
   try {

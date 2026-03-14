@@ -19,6 +19,8 @@ import {
   handleAuthError,
 } from "@repo/auth";
 
+export const dynamic = "force-dynamic";
+
 export async function GET() {
   try {
     const ctx = await requirePermission("members:read");

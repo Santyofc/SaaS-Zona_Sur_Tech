@@ -7,6 +7,7 @@ import Link from "next/link";
 import { ActivityFeed } from "../ActivityFeed";
 import { apiListActivity, type ActivityLogEntry } from "@/lib/api";
 import { Spinner } from "../ui-primitives";
+import { MiniSaasGrid } from "../MiniSaasGrid";
 
 interface DashboardContentProps {
   session: {
@@ -202,11 +203,14 @@ export function DashboardContent({ session }: DashboardContentProps) {
 
           <div className="mt-8 p-4 rounded-xl bg-white/5 border border-white/10 italic">
             <p className="text-zs-text-secondary text-xs leading-relaxed">
-              "La infraestructura multitenant está operando bajo protocolos de seguridad Supabase Auth v2."
+              &quot;La infraestructura multitenant está operando bajo protocolos de seguridad Supabase Auth v2.&quot;
             </p>
           </div>
         </motion.section>
       </div>
+
+      {/* Mini SaaS Hub */}
+      <MiniSaasGrid />
 
       {/* Decorative Blur Orbs */}
       <div className="fixed bottom-[-10%] left-[-10%] w-[40%] h-[40%] bg-zs-blue/5 rounded-full blur-[120px] pointer-events-none -z-10" />

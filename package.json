@@ -2,18 +2,21 @@
   "name": "vm-platform",
   "version": "0.0.0",
   "private": true,
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ],
   "scripts": {
     "build": "turbo build",
     "dev": "turbo dev",
+    "dev:web": "pnpm --filter @repo/web dev",
+    "dev:api": "pnpm --filter api start:dev",
     "lint": "turbo lint",
+    "typecheck": "turbo typecheck",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "supabase:start": "supabase start",
     "supabase:stop": "supabase stop",
     "supabase:status": "supabase status"
+  },
+  "engines": {
+    "node": ">=20.11.0",
+    "pnpm": ">=9 <10"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",

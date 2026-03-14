@@ -88,12 +88,7 @@ export async function listOrganizationMembers(
       role,
       status,
       joined_at,
-      updated_at,
-      users (
-        name,
-        email,
-        image
-      )
+      updated_at
     `
     )
     .eq("organization_id", organizationId)
@@ -106,6 +101,31 @@ export async function listOrganizationMembers(
 
   if (!data) {
     throw new NotFoundError("Organization not found.");
+  }
+
+  const userIds = [...new Set((data ?? []).map((row) => row.user_id))];
+  let profilesByUserId = new Map<string, MemberProfile>();
+
+  if (userIds.length > 0) {
+    const { data: userProfiles, error: usersError } = await supabase
+      .from("users")
+      .select("id, name, email, image")
+      .in("id", userIds);
+
+    if (usersError) {
+      console.error("[MEMBERS] Failed to load profile enrichment:", usersError);
+    } else {
+      profilesByUserId = new Map(
+        (userProfiles ?? []).map((profile) => [
+          profile.id,
+          {
+            name: profile.name,
+            email: profile.email,
+            image: profile.image,
+          },
+        ])
+      );
+    }
   }
 
   // Sort: owners first by privilege, then by join date.
@@ -126,18 +146,7 @@ export async function listOrganizationMembers(
 
   return sorted.map((row) => {
     const rawRow = row as unknown as RawMemberRow;
-    // Normalize: Supabase may return users as array or single object.
-    const rawProfile = Array.isArray(rawRow.users)
-      ? (rawRow.users[0] ?? null)
-      : rawRow.users;
-
-    const profile = rawProfile
-      ? {
-          name: rawProfile.name,
-          email: rawProfile.email,
-          image: rawProfile.image,
-        }
-      : null;
+    const profile = profilesByUserId.get(rawRow.user_id) ?? null;
 
     return {
       membershipId: rawRow.id,

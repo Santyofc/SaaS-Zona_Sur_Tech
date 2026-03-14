@@ -14,23 +14,11 @@ import {
   Calendar
 } from "lucide-react";
 import { requireSuperAdmin } from "@repo/auth";
-import { createClient } from "@supabase/supabase-js";
 import { AdminSearch } from "../components/AdminSearch";
 import { RealTimeLogs } from "./components/RealTimeLogs.client";
+import { createAdminClient } from "@/lib/supabase";
 
-// Internal admin client
-function createAdminClient() {
-  const url = process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-  if (!url || !key) {
-    throw new Error("[FATAL] SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY is not set.");
-  }
-
-  return createClient(url, key, {
-    auth: { autoRefreshToken: false, persistSession: false },
-  });
-}
+export const dynamic = "force-dynamic";
 
 interface PageProps {
   searchParams: { q?: string };

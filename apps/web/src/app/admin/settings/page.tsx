@@ -12,6 +12,8 @@ import {
 } from "lucide-react";
 import { requireSuperAdmin } from "@repo/auth";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminSettingsPage() {
   await requireSuperAdmin();
 

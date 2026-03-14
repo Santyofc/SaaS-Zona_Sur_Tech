@@ -22,6 +22,20 @@
       "when": 1772959783101,
       "tag": "0002_drop_rate_limits",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1773431841000,
+      "tag": "0003_add_erp_module",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1773456000000,
+      "tag": "0004_auth_contracts",
+      "breakpoints": true
     }
   ]
 }

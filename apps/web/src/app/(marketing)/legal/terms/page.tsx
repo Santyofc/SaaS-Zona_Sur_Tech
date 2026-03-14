@@ -55,14 +55,14 @@ export default function TermsPage() {
           <section className="zs-card p-8 border-zs-border/50">
             <h2 className="text-2xl font-black text-white uppercase tracking-widest italic mb-4">4. Intellectual Property</h2>
             <p className="mb-4">
-              Zona Sur Tech retains all intellectual property rights to the platform, including its codebase, design system ("Hacker-Tech Aesthetic"), and associated trademarks. You are granted a limited, personal, non-transferable license to use the service.
+              Zona Sur Tech retains all intellectual property rights to the platform, including its codebase, design system (&quot;Hacker-Tech Aesthetic&quot;), and associated trademarks. You are granted a limited, personal, non-transferable license to use the service.
             </p>
           </section>
 
           <section className="zs-card p-8 border-zs-border/50">
             <h2 className="text-2xl font-black text-white uppercase tracking-widest italic mb-4">5. Limitation of Liability</h2>
             <p className="mb-4">
-              Zona Sur Tech provides its services on an "AS IS" basis. To the maximum extent permitted by law, we shall not be liable for any indirect, incidental, special, or consequential damages resulting from your use of the platform.
+              Zona Sur Tech provides its services on an &quot;AS IS&quot; basis. To the maximum extent permitted by law, we shall not be liable for any indirect, incidental, special, or consequential damages resulting from your use of the platform.
             </p>
           </section>
 

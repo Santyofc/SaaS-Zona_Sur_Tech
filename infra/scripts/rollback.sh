@@ -31,8 +31,12 @@ fi
 LAST_COMMIT=$(cat "$RELEASE_FILE")
 
 echo "[1/3] Restoring previous commit ($LAST_COMMIT)..."
-git checkout main
-git reset --hard "$LAST_COMMIT"
+git fetch origin main
+if [ -n "$(git status --porcelain)" ]; then
+    echo "ERROR: Working tree is not clean. Aborting rollback to avoid overwriting local changes."
+    exit 1
+fi
+git checkout --detach "$LAST_COMMIT"
 
 echo "[2/3] Rebuilding stack..."
 docker compose --env-file .env -p vm-platform -f infra/docker/docker-compose.prod.yml up -d --build

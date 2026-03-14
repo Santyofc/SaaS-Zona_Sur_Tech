@@ -37,6 +37,11 @@ export const PERMISSIONS = [
   "projects:create",
   "projects:update",
   "projects:delete",
+
+  // ERP
+  "erp:read",
+  "erp:write",
+  "erp:sales",
 ] as const;
 
 export type Permission = (typeof PERMISSIONS)[number];
@@ -80,6 +85,9 @@ export const ROLE_PERMISSIONS: Record<Role, readonly Permission[]> = {
     "projects:create",
     "projects:update",
     "projects:delete",
+    "erp:read",
+    "erp:write",
+    "erp:sales",
   ],
 
   admin: [
@@ -96,6 +104,9 @@ export const ROLE_PERMISSIONS: Record<Role, readonly Permission[]> = {
     "projects:create",
     "projects:update",
     "projects:delete",
+    "erp:read",
+    "erp:write",
+    "erp:sales",
   ],
 
   member: [
@@ -105,7 +116,11 @@ export const ROLE_PERMISSIONS: Record<Role, readonly Permission[]> = {
     "projects:read",
     "projects:create",
     "projects:update",
-    // projects:delete intentionally omitted — members cannot delete projects
+    "erp:read",
+    "erp:sales",
+    // members can sell and read erp, but erp:write (catalog/stock master) is restricted ? 
+    // Usually members in small retail need to read and sell. 
+    // Let's at least give them sales and read.
   ],
 
   viewer: [

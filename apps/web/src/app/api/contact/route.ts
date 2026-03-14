@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getEmailClient } from "@repo/email/src/client";
+import { getEmailClient } from "@repo/email";
 import { siteConfig } from "@/config/site";
 
 export async function POST(request: Request) {

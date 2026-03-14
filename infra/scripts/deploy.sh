@@ -34,8 +34,12 @@ fi
 
 echo "[3/6] Pulling latest code..."
 git fetch origin main
+if [ -n "$(git status --porcelain)" ]; then
+    echo "ERROR: Working tree is not clean. Aborting deploy to avoid overwriting local changes."
+    exit 1
+fi
 git checkout main
-git reset --hard origin/main
+git pull --ff-only origin main
 
 echo "[4/6] Validating Docker Compose..."
 docker compose --env-file .env -f infra/docker/docker-compose.prod.yml config > /dev/null

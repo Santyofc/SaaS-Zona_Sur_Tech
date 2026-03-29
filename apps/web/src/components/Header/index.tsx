@@ -78,11 +78,11 @@ const Header = () => {
                   } `}
               >
                 <Image
-                  src="/images/logo/logo-white.svg"
+                  src="/images/logo/logo.png"
                   alt="Zona Sur Tech"
                   width={sticky ? 50 : 60}
                   height={sticky ? 40 : 50}
-                  className="header-logo object-contain"
+                  className="header-logo object-contain drop-shadow-[0_0_15px_rgba(37,99,235,0.4)]"
                 />
               </Link>
             </div>

@@ -28,7 +28,7 @@ export const metadata: Metadata = {
   title: "ZonaSur Tech - Next Generation SaaS",
   description: "High-performance architecture by ZonaSur Tech. Designed for extreme scalability and premium interactive experiences.",
   alternates: {
-    canonical: "./",
+    canonical: "https://zonasurtech.online",
   },
 };
 

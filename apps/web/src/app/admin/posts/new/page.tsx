@@ -3,6 +3,7 @@ import { EntryForm } from "@/components/cms/EntryForm.client";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
+export const dynamic = "force-dynamic";
 export const metadata = { title: "Nuevo Post | CMS" };
 
 export default function NewPostPage() {

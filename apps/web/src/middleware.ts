@@ -60,13 +60,16 @@ export async function middleware(request: NextRequest) {
   const isFacturas = host?.startsWith("facturas.") || pathname.startsWith("/facturas");
   const isDashboard = pathname.startsWith("/dashboard");
 
+  // 4. Auth routes logic
+  const isAuthRoute = pathname.startsWith("/signin") || pathname.startsWith("/signup");
+  
   // 1. Protection: Dashboard
-  if (isDashboard && !user) {
+  if (isDashboard && !user && !isAuthRoute) {
     return NextResponse.redirect(new URL("/signin", request.url));
   }
 
   // 2. Protection: Admin / CMS
-  if (isCMS) {
+  if (isCMS && !isAuthRoute) {
     if (!user) {
       return NextResponse.redirect(new URL("/signin", request.url));
     }
@@ -83,15 +86,6 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  // 3. Protection: Facturas
-  if (isFacturas) {
-    if (host?.startsWith("facturas.") && !pathname.startsWith("/facturas")) {
-      return NextResponse.rewrite(new URL(`/facturas${pathname}`, request.url));
-    }
-  }
-
-  // 4. Auth routes logic
-  const isAuthRoute = pathname.startsWith("/signin") || pathname.startsWith("/signup");
   if (isAuthRoute && user) {
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }

@@ -28,11 +28,11 @@ export default function SigninPage({
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-zs-blue/10 border border-zs-blue/20 text-zs-blue mb-6 shadow-zs-glow-blue">
                 <ShieldCheck size={32} />
               </div>
-              <h1 className="text-4xl font-black text-white mb-3 italic tracking-tight">
-                Santy <span className="text-zs-blue">Tech</span>
+              <h1 className="text-4xl font-black text-white mb-3 italic tracking-tight uppercase">
+                Zona Sur <span className="text-zs-blue">Tech</span>
               </h1>
-              <p className="text-zs-text-secondary text-sm font-medium">
-                Autenticación de Nivel Industrial
+              <p className="text-zs-text-secondary text-sm font-medium uppercase tracking-widest">
+                Acceso al Kernel Industrial
               </p>
             </div>
 

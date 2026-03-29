@@ -28,10 +28,10 @@ export default function SignupPage({
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-zs-violet/10 border border-zs-violet/20 text-zs-violet mb-6 shadow-zs-glow-violet">
                 <UserPlus size={32} />
               </div>
-              <h1 className="text-4xl font-black text-white mb-3 italic tracking-tight">
-                Santy <span className="text-zs-violet">Tech</span>
+              <h1 className="text-4xl font-black text-white mb-3 italic tracking-tight uppercase">
+                Zona Sur <span className="text-zs-violet">Tech</span>
               </h1>
-              <p className="text-zs-text-secondary text-sm font-medium">
+              <p className="text-zs-text-secondary text-sm font-medium uppercase tracking-widest">
                 Inicializa tu Nodo en el Kernel
               </p>
             </div>

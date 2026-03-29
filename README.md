@@ -49,3 +49,4 @@ NestJS API (apps/api)
 PostgreSQL (Drizzle ORM)
       ↓
 Servicios externos (Facturación / Bots / IA)
+```

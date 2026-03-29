@@ -582,6 +582,156 @@ export const journalItems = pgTable(
 );
 
 // ---------------------------------------------------------------------------
+// CMS Module
+// ---------------------------------------------------------------------------
+
+/**
+ * Content status lifecycle — used by both blog posts and CMS pages.
+ */
+export const cmsEntryStatusEnum = pgEnum("cms_entry_status", [
+  "draft",
+  "published",
+  "archived",
+]);
+
+/**
+ * Collection type discriminator — keeps posts and pages in one table,
+ * avoids N identical tables with different names.
+ */
+export const cmsCollectionTypeEnum = pgEnum("cms_collection_type", [
+  "post",
+  "page",
+]);
+
+/**
+ * public.cms_entries — Unified content model for blog posts + CMS pages.
+ *
+ * - `content`     JSONB: structured blocks (for pages) or rich-text AST (for posts)
+ * - `seo_meta`    JSONB: { title, description, og_image, noindex }
+ * - `blocks`      JSONB: block-based layout (hero, features, cta, etc.) — pages only
+ * - slug is unique per (organizationId, collectionType) pair
+ */
+export const cmsEntries = pgTable(
+  "cms_entries",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    organizationId: uuid("organization_id")
+      .notNull()
+      .references(() => organizations.id, { onDelete: "cascade" }),
+    collectionType: cmsCollectionTypeEnum("collection_type")
+      .notNull()
+      .default("post"),
+
+    // Core content fields
+    title: text("title").notNull(),
+    slug: text("slug").notNull(),
+    excerpt: text("excerpt"),
+    coverImage: text("cover_image"),
+    author: text("author"),
+
+    // JSONB for flexible rich-text / MDX AST content (blog)
+    content: jsonb("content"),
+    // JSONB for block-based layout (pages)
+    blocks: jsonb("blocks"),
+    // SEO metadata bag
+    seoMeta: jsonb("seo_meta"),
+
+    status: cmsEntryStatusEnum("status").notNull().default("draft"),
+    publishedAt: timestamp("published_at", { withTimezone: true }),
+
+    createdBy: uuid("created_by").references(() => users.id),
+    updatedBy: uuid("updated_by").references(() => users.id),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => ({
+    // slug must be unique within (org, collection type) — a post and a page can share a slug
+    orgTypeSlugUniqueIdx: uniqueIndex("idx_cms_entries_org_type_slug").on(
+      table.organizationId,
+      table.collectionType,
+      table.slug,
+    ),
+    orgIdIdx: index("idx_cms_entries_org_id").on(table.organizationId),
+    statusIdx: index("idx_cms_entries_status").on(table.status),
+    collectionTypeIdx: index("idx_cms_entries_collection_type").on(
+      table.collectionType,
+    ),
+    publishedAtIdx: index("idx_cms_entries_published_at").on(table.publishedAt),
+  }),
+);
+
+/**
+ * public.cms_media — Supabase Storage media reference table.
+ *
+ * Tracks every file uploaded via the admin panel.
+ * The actual file lives in Supabase Storage; this row holds metadata.
+ */
+export const cmsMedia = pgTable(
+  "cms_media",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    organizationId: uuid("organization_id")
+      .notNull()
+      .references(() => organizations.id, { onDelete: "cascade" }),
+
+    // Supabase Storage path (e.g. "org-id/images/filename.avif")
+    storagePath: text("storage_path").notNull(),
+    // Public CDN URL
+    publicUrl: text("public_url").notNull(),
+    // Original file name as uploaded
+    filename: text("filename").notNull(),
+    mimeType: text("mime_type"),
+    sizeBytes: integer("size_bytes"),
+    // Alt text for accessibility
+    alt: text("alt"),
+
+    uploadedBy: uuid("uploaded_by").references(() => users.id),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => ({
+    orgIdIdx: index("idx_cms_media_org_id").on(table.organizationId),
+    storagePathUniqueIdx: uniqueIndex("idx_cms_media_storage_path").on(
+      table.storagePath,
+    ),
+  }),
+);
+
+/**
+ * public.cms_settings — Per-organization CMS configuration.
+ *
+ * Stored as key-value pairs so we can add new settings without schema changes.
+ * Example keys: "site_name", "site_description", "default_author", "logo_url"
+ */
+export const cmsSettings = pgTable(
+  "cms_settings",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    organizationId: uuid("organization_id")
+      .notNull()
+      .references(() => organizations.id, { onDelete: "cascade" }),
+    key: text("key").notNull(),
+    value: text("value"),
+    updatedBy: uuid("updated_by").references(() => users.id),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => ({
+    // Each key is unique per organization
+    orgKeyUniqueIdx: uniqueIndex("idx_cms_settings_org_key").on(
+      table.organizationId,
+      table.key,
+    ),
+  }),
+);
+
+// ---------------------------------------------------------------------------
 // Notifications
 // ---------------------------------------------------------------------------
 

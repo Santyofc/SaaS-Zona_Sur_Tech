@@ -202,8 +202,15 @@ export default function RootLayout({
           rel="dns-prefetch"
           href="https://www.googletagmanager.com"
         />
+        <script
+          async
+          {...{ "custom-element": "amp-auto-ads" } as any}
+          src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js"
+        ></script>
       </head>
       <body className="bg-zs-bg-primary">
+        {/* @ts-expect-error Custom AMP web component */}
+        <amp-auto-ads type="adsense" data-ad-client="ca-pub-8338467922774671"></amp-auto-ads>
         <Providers>
           <div className="isolate relative min-h-screen">
             <HackerCursor />

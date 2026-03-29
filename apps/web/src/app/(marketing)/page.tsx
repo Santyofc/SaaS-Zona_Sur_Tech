@@ -19,6 +19,7 @@ import HeroSection from "./components/HeroSection";
 import StatsTape from "./components/StatsTape";
 import FeaturesGrid from "./components/FeaturesGrid";
 import CTASection from "./components/CTASection";
+import SEOContextLinks from "./components/SEOContextLinks";
 import dynamic from "next/dynamic";
 
 const LiveEmulators = dynamic(() => import("./components/LiveEmulators.client"), {
@@ -38,6 +39,7 @@ export default function Home() {
       <StatsTape />
       <FeaturesGrid />
       <LiveEmulators />
+      <SEOContextLinks />
       <CTASection />
     </main>
   );

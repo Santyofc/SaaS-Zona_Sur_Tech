@@ -6,8 +6,16 @@ import { PriceCalculator } from "./components/PriceCalculator";
 
 
 export const metadata = {
-    title: "Planes Industriales | Zona Sur Tech",
-    description: "Invierta en infraestructura de alto nivel. Escalabilidad garantizada, seguridad militar y rendimiento extremo.",
+    title: "Precios y Planes | ERP Facturación Electrónica Costa Rica | ZonaSur Tech",
+    description: "Planes accesibles de ERP y facturación electrónica para PYMES costarricenses. Desde ₡15,000/mes con cumplimiento Hacienda v4.3 incluido.",
+    alternates: {
+        canonical: "https://zonasurtech.online/pricing",
+    },
+    openGraph: {
+        title: "Precios y Planes | ZonaSur Tech ERP Costa Rica",
+        description: "ERP y facturación electrónica Hacienda para PYMES en Costa Rica. Planes desde ₡15,000/mes.",
+        url: "https://zonasurtech.online/pricing",
+    },
 };
 
 const plans = [

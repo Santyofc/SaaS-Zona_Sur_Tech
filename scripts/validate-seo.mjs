@@ -220,17 +220,21 @@ async function checkSitemap() {
       fail(`Sitemap has only ${urlCount} URLs`, 'minimum 5 required');
     }
 
-    // Ensure no www or http URLs
-    if (text.includes('www.')) {
-      fail('Sitemap contains www. URLs', 'Canonical must be non-www');
+    // Extract only <loc> URLs (ignores XML namespace declarations)
+    const locUrls = [...text.matchAll(/<loc>([^<]+)<\/loc>/gi)].map(m => m[1]);
+
+    const hasWwwLoc = locUrls.some(u => u.includes('www.'));
+    if (hasWwwLoc) {
+      fail('Sitemap <loc> contains www. URLs', 'Canonical must be non-www');
     } else {
-      pass('No www. URLs in sitemap');
+      pass('No www. URLs in sitemap <loc> entries');
     }
 
-    if (text.includes('http://')) {
-      fail('Sitemap contains http:// URLs', 'Must use https://');
+    const hasHttpLoc = locUrls.some(u => u.startsWith('http://'));
+    if (hasHttpLoc) {
+      fail('Sitemap <loc> contains http:// URLs', 'Must use https://');
     } else {
-      pass('All sitemap URLs use https://');
+      pass('All sitemap <loc> URLs use https://');
     }
   } catch (e) {
     fail('sitemap.xml fetch failed', e.message);

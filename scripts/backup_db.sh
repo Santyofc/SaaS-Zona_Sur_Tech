@@ -9,7 +9,16 @@ BACKUP_DIR="/opt/vm-platform/backups"
 TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
 BACKUP_FILE="$BACKUP_DIR/db_backup_$TIMESTAMP.sql.gz"
 CONTAINER_NAME="vm-platform-db-1"
-DB_USER="postgres"
+
+# Buscar credenciales en el .env de la plataforma
+ENV_FILE="/opt/vm-platform/.env"
+if [ -f "$ENV_FILE" ]; then
+    DB_USER=$(grep "^POSTGRES_USER=" "$ENV_FILE" | cut -d'=' -f2 | tr -d '"'\'' ')
+else
+    DB_USER="admin"
+fi
+
+DB_USER=${DB_USER:-admin}
 
 # Asegurar que el directorio de backups existe
 mkdir -p $BACKUP_DIR

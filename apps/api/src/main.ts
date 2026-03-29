@@ -20,6 +20,10 @@ async function bootstrap() {
     }),
   );
 
+  // Security Hardening
+  const helmet = (await import('helmet')).default;
+  app.use(helmet());
+
   // CORS
   app.enableCors({
     origin: corsOrigin,

@@ -1,5 +1,5 @@
 import { Injectable, Inject, NotFoundException } from '@nestjs/common';
-import { products, inventoryMovements, inventoryBalances } from '@repo/db';
+import { products, inventoryMovements, inventoryBalances, withTenantContext } from '@repo/db';
 import { eq, and, sql } from 'drizzle-orm';
 import { CreateProductDto, UpdateProductDto } from './dto/product.dto';
 
@@ -18,7 +18,7 @@ export class ProductsService {
   async create(organizationId: string, userId: string, data: CreateProductDto) {
     const { initialStock, ...productData } = data;
 
-    return await this.db.transaction(async (tx: any) => {
+    return await withTenantContext(this.db, organizationId, async (tx: any) => {
       // 1. Create product
       const [newProduct] = await tx
         .insert(products)

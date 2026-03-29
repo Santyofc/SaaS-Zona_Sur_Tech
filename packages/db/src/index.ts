@@ -40,4 +40,5 @@ export const db = new Proxy({} as Database, {
 });
 
 export * from "./schema";
+export * from "./rls";
 export * from "drizzle-orm";

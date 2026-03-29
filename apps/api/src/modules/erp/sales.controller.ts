@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Body, Param, UseGuards } from '@nestjs/common';
-import { ErpService } from './erp.service';
+import { SalesService } from './sales.service';
 import { CreateSaleDto } from './dto/erp.dto';
 import { CurrentUser, ActiveOrg } from '../../common/decorators/ctx.decorator';
 import { SupabaseAuthGuard } from '../auth/guards/supabase-auth.guard';
@@ -9,12 +9,12 @@ import { RequirePermission } from '../auth/decorators/require-permission.decorat
 @Controller('erp/sales')
 @UseGuards(SupabaseAuthGuard, OrganizationAccessGuard)
 export class SalesController {
-  constructor(private readonly erpService: ErpService) {}
+  constructor(private readonly salesService: SalesService) {}
 
   @Get()
   @RequirePermission('erp:read')
   async getSales(@ActiveOrg() organizationId: string) {
-    return this.erpService.getSales(organizationId);
+    return this.salesService.getSales(organizationId);
   }
 
   @Get(':id')
@@ -23,7 +23,7 @@ export class SalesController {
     @ActiveOrg() organizationId: string,
     @Param('id') id: string,
   ) {
-    return this.erpService.getSaleDetails(organizationId, id);
+    return this.salesService.getSaleDetails(organizationId, id);
   }
 
   @Post()
@@ -33,7 +33,7 @@ export class SalesController {
     @CurrentUser() user: any,
     @Body() data: CreateSaleDto,
   ) {
-    return this.erpService.createSale(organizationId, user.userId, data);
+    return this.salesService.createSale(organizationId, user.userId, data);
   }
 
   @Post(':id/cancel')
@@ -43,6 +43,6 @@ export class SalesController {
     @CurrentUser() user: any,
     @Param('id') id: string,
   ) {
-    return this.erpService.cancelSale(organizationId, user.userId, id);
+    return this.salesService.cancelSale(organizationId, user.userId, id);
   }
 }

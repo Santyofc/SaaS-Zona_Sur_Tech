@@ -5,8 +5,12 @@ import dynamic from "next/dynamic";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://zonasurtech.online"),
   title: "ZonaSur Tech - Next Generation SaaS",
   description: "High-performance architecture by ZonaSur Tech. Designed for extreme scalability and premium interactive experiences.",
+  alternates: {
+    canonical: "./",
+  },
 };
 
 const HackerCursor = dynamic(

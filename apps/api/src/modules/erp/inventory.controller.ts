@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Body, UseGuards } from '@nestjs/common';
-import { ErpService } from './erp.service';
+import { InventoryService } from './inventory.service';
 import { InventoryAdjustmentDto } from './dto/erp.dto';
 import { CurrentUser, ActiveOrg } from '../../common/decorators/ctx.decorator';
 import { SupabaseAuthGuard } from '../auth/guards/supabase-auth.guard';
@@ -9,18 +9,18 @@ import { RequirePermission } from '../auth/decorators/require-permission.decorat
 @Controller('erp/inventory')
 @UseGuards(SupabaseAuthGuard, OrganizationAccessGuard)
 export class InventoryController {
-  constructor(private readonly erpService: ErpService) {}
+  constructor(private readonly inventoryService: InventoryService) {}
 
   @Get('balances')
   @RequirePermission('erp:read')
   async getBalances(@ActiveOrg() organizationId: string) {
-    return this.erpService.getBalances(organizationId);
+    return this.inventoryService.getBalances(organizationId);
   }
 
   @Get('movements')
   @RequirePermission('erp:read')
   async getMovements(@ActiveOrg() organizationId: string) {
-    return this.erpService.getMovements(organizationId);
+    return this.inventoryService.getMovements(organizationId);
   }
 
   @Post('adjust')
@@ -30,6 +30,6 @@ export class InventoryController {
     @CurrentUser() user: any,
     @Body() data: InventoryAdjustmentDto,
   ) {
-    return this.erpService.adjustInventory(organizationId, user.userId, data);
+    return this.inventoryService.adjustInventory(organizationId, user.userId, data);
   }
 }

@@ -32,15 +32,6 @@ export default function Home() {
       <div className="fixed inset-0 pointer-events-none" aria-hidden="true">
         <div className="absolute top-[-20%] left-[-10%] w-[70vw] h-[70vw] bg-zs-blue/5 rounded-full blur-[150px]" />
         <div className="absolute bottom-[-20%] right-[-10%] w-[60vw] h-[60vw] bg-zs-violet/5 rounded-full blur-[150px]" />
-        <div
-          className="absolute inset-0 opacity-[0.03]"
-          style={{
-            backgroundImage: `linear-gradient(var(--color-zs-text-muted) 1px, transparent 1px), linear-gradient(90deg, var(--color-zs-text-muted) 1px, transparent 1px)`,
-            backgroundSize: "40px 40px",
-            transform: "perspective(1000px) rotateX(60deg) translateY(-100px) translateZ(-200px)",
-            transformOrigin: "top center",
-          }}
-        />
       </div>
 
       <HeroSection />

@@ -154,21 +154,21 @@ export default function ContactPage() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black text-zs-text-muted uppercase tracking-widest ml-1">Identidad / Nombre</label>
-                    <input type="text" name="name" required placeholder="Tu nombre" className="zs-input bg-black/20 focus:border-zs-blue/50 focus:ring-zs-blue/10" />
+                    <label htmlFor="name" className="text-[10px] font-black text-zs-text-muted uppercase tracking-widest ml-1">Identidad / Nombre</label>
+                    <input id="name" type="text" name="name" required placeholder="Tu nombre" className="zs-input bg-black/20 focus:border-zs-blue/50 focus:ring-zs-blue/10" />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black text-zs-text-muted uppercase tracking-widest ml-1">Protocolo Email</label>
-                    <input type="email" name="email" required placeholder="email@dominio.com" className="zs-input bg-black/20 focus:border-zs-blue/50 focus:ring-zs-blue/10" />
+                    <label htmlFor="email" className="text-[10px] font-black text-zs-text-muted uppercase tracking-widest ml-1">Protocolo Email</label>
+                    <input id="email" type="email" name="email" required placeholder="email@dominio.com" className="zs-input bg-black/20 focus:border-zs-blue/50 focus:ring-zs-blue/10" />
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black text-zs-text-muted uppercase tracking-widest ml-1">Asunto de Misión</label>
-                  <input type="text" name="subject" required placeholder="¿Cómo podemos escalar juntos?" className="zs-input bg-black/20 focus:border-zs-blue/50 focus:ring-zs-blue/10" />
+                  <label htmlFor="subject" className="text-[10px] font-black text-zs-text-muted uppercase tracking-widest ml-1">Asunto de Misión</label>
+                  <input id="subject" type="text" name="subject" required placeholder="¿Cómo podemos escalar juntos?" className="zs-input bg-black/20 focus:border-zs-blue/50 focus:ring-zs-blue/10" />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black text-zs-text-muted uppercase tracking-widest ml-1">Payload / Mensaje</label>
-                  <textarea rows={5} name="body" required placeholder="Describe tus requerimientos técnicos..." className="zs-input bg-black/20 resize-none focus:border-zs-blue/50 focus:ring-zs-blue/10" />
+                  <label htmlFor="body" className="text-[10px] font-black text-zs-text-muted uppercase tracking-widest ml-1">Payload / Mensaje</label>
+                  <textarea id="body" rows={5} name="body" required placeholder="Describe tus requerimientos técnicos..." className="zs-input bg-black/20 resize-none focus:border-zs-blue/50 focus:ring-zs-blue/10" />
                 </div>
 
                 <button 
@@ -188,17 +188,17 @@ export default function ContactPage() {
             <div className="mt-12 pt-12 border-t border-zs-border">
               <span className="text-[10px] font-black text-zs-text-muted uppercase tracking-widest block mb-4 text-center">Protocolos Sociales</span>
               <div className="flex justify-center gap-6">
-                <a href={siteConfig.contact.socials.github} target="_blank" rel="noopener noreferrer">
+                <a href={siteConfig.contact.socials.github} target="_blank" rel="noopener noreferrer" aria-label="Visit our Github Profile">
                   <motion.div whileHover={{ y: -5 }} className="text-zs-text-secondary hover:text-white transition-colors cursor-pointer">
                     <Github className="w-6 h-6" />
                   </motion.div>
                 </a>
-                <a href={siteConfig.contact.socials.twitter} target="_blank" rel="noopener noreferrer">
+                <a href={siteConfig.contact.socials.twitter} target="_blank" rel="noopener noreferrer" aria-label="Visit our Twitter Profile">
                   <motion.div whileHover={{ y: -5 }} className="text-zs-text-secondary hover:text-[#1DA1F2] transition-colors cursor-pointer">
                     <Twitter className="w-6 h-6" />
                   </motion.div>
                 </a>
-                <a href={siteConfig.contact.socials.linkedin} target="_blank" rel="noopener noreferrer">
+                <a href={siteConfig.contact.socials.linkedin} target="_blank" rel="noopener noreferrer" aria-label="Visit our LinkedIn Profile">
                   <motion.div whileHover={{ y: -5 }} className="text-zs-text-secondary hover:text-[#0A66C2] transition-colors cursor-pointer">
                     <Linkedin className="w-6 h-6" />
                   </motion.div>

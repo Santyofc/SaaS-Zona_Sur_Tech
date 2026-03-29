@@ -1,14 +1,3 @@
-/**
- * @repo/db — Drizzle ORM schema for vm-platform.
- *
- * This schema mirrors the Supabase public schema. Identity always comes from
- * auth.users (Supabase manages it). public.users is a profile mirror only.
- *
- * Naming conventions:
- * - JS property names: camelCase
- * - DB column names: snake_case (Drizzle maps them automatically)
- */
-
 import {
   pgTable,
   pgEnum,
@@ -30,7 +19,6 @@ import { sql } from "drizzle-orm";
 
 /**
  * Membership roles — ordered from highest to lowest privilege.
- * Must stay in sync with packages/auth/src/roles.ts (ROLES constant).
  */
 export const roleEnum = pgEnum("organization_role", [
   "owner",
@@ -47,33 +35,27 @@ export const invitationStatusEnum = pgEnum("invitation_status", [
   "pending",
   "accepted",
   "revoked",
-  "expired",
 ]);
 
 /**
- * ERP Inventory Movement Types
+ * Inventory movement types.
  */
 export const movementTypeEnum = pgEnum("movement_type", [
-  "initial_stock",
-  "manual_adjustment",
-  "sale_out",
-  "sale_cancel_revert",
-  "purchase_in",
-  "internal_transfer",
+  "in",     // Purchase, Return from customer
+  "out",    // Sale, Return to supplier
+  "adj_up", // Manual audit increase
+  "adj_down", // Manual audit decrease, waste, loss
 ]);
 
 /**
- * ERP Sale Status
+ * Sale status lifecycle.
  */
 export const saleStatusEnum = pgEnum("sale_status", [
   "draft",
+  "pending",
   "completed",
   "cancelled",
 ]);
-
-// ---------------------------------------------------------------------------
-// Tables
-// ---------------------------------------------------------------------------
 
 /**
  * public.users — profile mirror for auth.users.
@@ -193,9 +175,7 @@ export const products = pgTable(
     sku: text("sku"),
     name: text("name").notNull(),
     description: text("description"),
-    /** Sale price using high precision numeric for currency. */
     salePrice: numeric("sale_price", { precision: 12, scale: 2 }).notNull().default("0"),
-    /** Cost price using high precision numeric for currency. */
     costPrice: numeric("cost_price", { precision: 12, scale: 2 }).notNull().default("0"),
     isActive: boolean("is_active").notNull().default(true),
     createdBy: uuid("created_by").references(() => users.id),
@@ -225,11 +205,8 @@ export const inventoryMovements = pgTable(
       .notNull()
       .references(() => products.id, { onDelete: "restrict" }),
     movementType: movementTypeEnum("movement_type").notNull(),
-    /** Quantity can be decimal (e.g., kilograms). */
     quantity: numeric("quantity", { precision: 12, scale: 4 }).notNull(),
-    /** Optional unit cost at the time of movement. */
     unitCost: numeric("unit_cost", { precision: 12, scale: 2 }),
-    /** Optional reference to related entities (Sale, Purchase). */
     referenceType: text("reference_type"),
     referenceId: text("reference_id"),
     note: text("note"),
@@ -264,7 +241,7 @@ export const inventoryBalances = pgTable(
       .notNull()
       .default("0"),
     updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
-},
+  },
   (table) => ({
     orgProdUniqueIndex: uniqueIndex("idx_inv_bal_org_prod").on(
       table.organizationId,
@@ -298,10 +275,7 @@ export const sales = pgTable(
   },
   (table) => ({
     orgIdIdx: index("idx_sales_org_id").on(table.organizationId),
-    orgSaleNumUniqueIndex: uniqueIndex("idx_sales_org_num").on(
-      table.organizationId,
-      table.saleNumber,
-    ),
+    orgSaleNumUniqueIndex: uniqueIndex("idx_sales_org_num").on(table.organizationId, table.saleNumber),
   }),
 );
 
@@ -312,6 +286,9 @@ export const saleItems = pgTable(
   "sale_items",
   {
     id: uuid("id").defaultRandom().primaryKey(),
+    organizationId: uuid("organization_id")
+      .notNull()
+      .references(() => organizations.id, { onDelete: "cascade" }),
     saleId: uuid("sale_id")
       .notNull()
       .references(() => sales.id, { onDelete: "cascade" }),
@@ -321,15 +298,308 @@ export const saleItems = pgTable(
     quantity: numeric("quantity", { precision: 12, scale: 4 }).notNull(),
     unitPrice: numeric("unit_price", { precision: 12, scale: 2 }).notNull(),
     taxAmount: numeric("tax_amount", { precision: 12, scale: 2 }).notNull().default("0"),
-    discountAmount: numeric("discount_amount", { precision: 12, scale: 2 })
-      .notNull()
-      .default("0"),
+    discountAmount: numeric("discount_amount", { precision: 12, scale: 2 }).notNull().default("0"),
     total: numeric("total", { precision: 12, scale: 2 }).notNull(),
   },
   (table) => ({
+    orgIdIdx: index("idx_sale_items_org_id").on(table.organizationId),
     saleIdIdx: index("idx_sale_items_sale_id").on(table.saleId),
     prodIdIdx: index("idx_sale_items_prod_id").on(table.productId),
   }),
 );
 
+// ---------------------------------------------------------------------------
+// CRM Module
+// ---------------------------------------------------------------------------
 
+export const leadStatusEnum = pgEnum("lead_status", [
+  "new",
+  "contacted",
+  "qualified",
+  "lost",
+  "converted",
+]);
+
+export const crmLeads = pgTable(
+  "crm_leads",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    organizationId: uuid("organization_id")
+      .notNull()
+      .references(() => organizations.id, { onDelete: "cascade" }),
+    firstName: text("first_name").notNull(),
+    lastName: text("last_name"),
+    email: text("email"),
+    phone: text("phone"),
+    company: text("company"),
+    source: text("source"),
+    status: leadStatusEnum("status").notNull().default("new"),
+    assignedTo: uuid("assigned_to").references(() => users.id),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => ({
+    orgIdIdx: index("idx_crm_leads_org_id").on(table.organizationId),
+    statusIdx: index("idx_crm_leads_status").on(table.status),
+  })
+);
+
+export const crmOpportunities = pgTable(
+  "crm_opportunities",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    organizationId: uuid("organization_id")
+      .notNull()
+      .references(() => organizations.id, { onDelete: "cascade" }),
+    leadId: uuid("lead_id").references(() => crmLeads.id, { onDelete: "set null" }),
+    title: text("title").notNull(),
+    value: numeric("value", { precision: 12, scale: 2 }).default("0"),
+    probability: integer("probability").default(0),
+    expectedCloseDate: timestamp("expected_close_date", { withTimezone: true }),
+    stage: text("stage").notNull().default("discovery"),
+    assignedTo: uuid("assigned_to").references(() => users.id),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => ({
+    orgIdIdx: index("idx_crm_opp_org_id").on(table.organizationId),
+  })
+);
+
+// ---------------------------------------------------------------------------
+// Purchases Module
+// ---------------------------------------------------------------------------
+
+export const purchaseStatusEnum = pgEnum("purchase_status", [
+  "draft",
+  "ordered",
+  "received",
+  "cancelled",
+]);
+
+export const suppliers = pgTable(
+  "suppliers",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    organizationId: uuid("organization_id")
+      .notNull()
+      .references(() => organizations.id, { onDelete: "cascade" }),
+    name: text("name").notNull(),
+    contactName: text("contact_name"),
+    email: text("email"),
+    phone: text("phone"),
+    taxId: text("tax_id"),
+    address: text("address"),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => ({
+    orgIdIdx: index("idx_suppliers_org_id").on(table.organizationId),
+  })
+);
+
+export const purchases = pgTable(
+  "purchases",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    organizationId: uuid("organization_id")
+      .notNull()
+      .references(() => organizations.id, { onDelete: "cascade" }),
+    supplierId: uuid("supplier_id").notNull().references(() => suppliers.id),
+    purchaseNumber: text("purchase_number").notNull(),
+    status: purchaseStatusEnum("status").notNull().default("draft"),
+    total: numeric("total", { precision: 12, scale: 2 }).notNull().default("0"),
+    receivedAt: timestamp("received_at", { withTimezone: true }),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => ({
+    orgIdIdx: index("idx_purchases_org_id").on(table.organizationId),
+    orgNumUniqueIdx: uniqueIndex("idx_purchases_org_num").on(table.organizationId, table.purchaseNumber),
+  })
+);
+
+export const purchaseItems = pgTable(
+  "purchase_items",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    organizationId: uuid("organization_id")
+      .notNull()
+      .references(() => organizations.id, { onDelete: "cascade" }),
+    purchaseId: uuid("purchase_id").notNull().references(() => purchases.id, { onDelete: "cascade" }),
+    productId: uuid("product_id").notNull().references(() => products.id),
+    quantity: numeric("quantity", { precision: 12, scale: 4 }).notNull(),
+    unitPrice: numeric("unit_price", { precision: 12, scale: 2 }).notNull(),
+    total: numeric("total", { precision: 12, scale: 2 }).notNull(),
+  },
+  (table) => ({
+    orgIdIdx: index("idx_purchase_items_org_id").on(table.organizationId),
+    purchaseIdIdx: index("idx_purchase_items_purchase_id").on(table.purchaseId),
+  })
+);
+
+// ---------------------------------------------------------------------------
+// Invoicing & Payments
+// ---------------------------------------------------------------------------
+
+export const invoiceStatusEnum = pgEnum("invoice_status", [
+  "draft",
+  "open",
+  "paid",
+  "void",
+  "overdue",
+]);
+
+export const invoices = pgTable(
+  "invoices",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    organizationId: uuid("organization_id")
+      .notNull()
+      .references(() => organizations.id, { onDelete: "cascade" }),
+    invoiceNumber: text("invoice_number").notNull(),
+    saleId: uuid("sale_id").references(() => sales.id),
+    customerId: uuid("customer_id"),
+    status: invoiceStatusEnum("status").notNull().default("draft"),
+    dueDate: timestamp("due_date", { withTimezone: true }),
+    subtotal: numeric("subtotal", { precision: 12, scale: 2 }).notNull().default("0"),
+    tax: numeric("tax", { precision: 12, scale: 2 }).notNull().default("0"),
+    total: numeric("total", { precision: 12, scale: 2 }).notNull().default("0"),
+    notes: text("notes"),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => ({
+    orgIdIdx: index("idx_invoices_org_id").on(table.organizationId),
+    orgNumUniqueIdx: uniqueIndex("idx_invoices_org_num").on(table.organizationId, table.invoiceNumber),
+  })
+);
+
+export const invoiceItems = pgTable(
+  "invoice_items",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    organizationId: uuid("organization_id")
+      .notNull()
+      .references(() => organizations.id, { onDelete: "cascade" }),
+    invoiceId: uuid("invoice_id").notNull().references(() => invoices.id, { onDelete: "cascade" }),
+    productId: uuid("product_id").notNull().references(() => products.id),
+    quantity: numeric("quantity", { precision: 12, scale: 4 }).notNull(),
+    unitPrice: numeric("unit_price", { precision: 12, scale: 2 }).notNull(),
+    taxAmount: numeric("tax_amount", { precision: 12, scale: 2 }).notNull().default("0"),
+    total: numeric("total", { precision: 12, scale: 2 }).notNull(),
+  },
+  (table) => ({
+    orgIdIdx: index("idx_invoice_items_org_id").on(table.organizationId),
+    invoiceIdIdx: index("idx_invoice_items_invoice_id").on(table.invoiceId),
+  })
+);
+
+export const payments = pgTable(
+  "payments",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    organizationId: uuid("organization_id")
+      .notNull()
+      .references(() => organizations.id, { onDelete: "cascade" }),
+    invoiceId: uuid("invoice_id").references(() => invoices.id),
+    amount: numeric("amount", { precision: 12, scale: 2 }).notNull(),
+    method: text("method").notNull(),
+    reference: text("reference"),
+    paymentDate: timestamp("payment_date", { withTimezone: true }).defaultNow(),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => ({
+    orgIdIdx: index("idx_payments_org_id").on(table.organizationId),
+  })
+);
+
+// ---------------------------------------------------------------------------
+// Accounting (Double-Entry Ledger)
+// ---------------------------------------------------------------------------
+
+export const accountTypeEnum = pgEnum("account_type", [
+  "asset",
+  "liability",
+  "equity",
+  "revenue",
+  "expense",
+]);
+
+export const accounts = pgTable(
+  "accounts",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    organizationId: uuid("organization_id")
+      .notNull()
+      .references(() => organizations.id, { onDelete: "cascade" }),
+    code: text("code").notNull(),
+    name: text("name").notNull(),
+    type: accountTypeEnum("type").notNull(),
+    parentAccountId: uuid("parent_account_id"),
+    balance: numeric("balance", { precision: 12, scale: 2 }).notNull().default("0"),
+    isActive: boolean("is_active").default(true),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => ({
+    orgIdIdx: index("idx_accounts_org_id").on(table.organizationId),
+    orgCodeUniqueIdx: uniqueIndex("idx_accounts_org_code").on(table.organizationId, table.code),
+  })
+);
+
+export const journalEntries = pgTable(
+  "journal_entries",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    organizationId: uuid("organization_id")
+      .notNull()
+      .references(() => organizations.id, { onDelete: "cascade" }),
+    description: text("description").notNull(),
+    documentReference: text("document_reference"),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => ({
+    orgIdIdx: index("idx_journal_org_id").on(table.organizationId),
+  })
+);
+
+export const journalItems = pgTable(
+  "journal_items",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    organizationId: uuid("organization_id")
+      .notNull()
+      .references(() => organizations.id, { onDelete: "cascade" }),
+    entryId: uuid("entry_id").notNull().references(() => journalEntries.id, { onDelete: "cascade" }),
+    accountId: uuid("account_id").notNull().references(() => accounts.id),
+    debit: numeric("debit", { precision: 12, scale: 2 }).notNull().default("0"),
+    credit: numeric("credit", { precision: 12, scale: 2 }).notNull().default("0"),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => ({
+    orgIdIdx: index("idx_journal_items_org_id").on(table.organizationId),
+  })
+);
+
+// ---------------------------------------------------------------------------
+// Notifications
+// ---------------------------------------------------------------------------
+
+export const notifications = pgTable(
+  "notifications",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    organizationId: uuid("organization_id")
+      .notNull()
+      .references(() => organizations.id, { onDelete: "cascade" }),
+    userId: uuid("user_id").notNull().references(() => users.id),
+    title: text("title").notNull(),
+    message: text("message").notNull(),
+    type: text("type").default("info"),
+    isRead: boolean("is_read").default(false),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => ({
+    orgUserIdx: index("idx_notif_org_user").on(table.organizationId, table.userId),
+  })
+);

@@ -2,6 +2,8 @@ import React from "react";
 import { Check, Zap, Shield, Globe, Cpu, ZapOff, CheckCircle2 } from "lucide-react";
 import Link from "next/link";
 import { GlitchText } from "@/components/ui/GlitchText.client";
+import { PriceCalculator } from "./components/PriceCalculator";
+
 
 export const metadata = {
     title: "Planes Industriales | Zona Sur Tech",
@@ -102,6 +104,8 @@ export default function PricingPage() {
                         </div>
                     ))}
                 </div>
+
+                <PriceCalculator />
 
                 <div className="mt-24 p-8 zs-card bg-black/40 border-zs-border flex flex-col md:flex-row items-center justify-center gap-12 max-w-4xl mx-auto">
                     <div className="flex items-center gap-6">

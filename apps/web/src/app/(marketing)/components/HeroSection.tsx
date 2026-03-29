@@ -27,12 +27,12 @@ export default function HeroSection() {
 
         {/* Left — static copy + animated entry (client leaf) */}
         <HeroText>
-          <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-zs-blue/10 border border-zs-blue/20 text-zs-blue mb-8">
-            <span className="w-2 h-2 rounded-full bg-zs-blue animate-pulse" />
-            <span className="text-[10px] font-black uppercase tracking-widest italic">
-              Santi Devs Online
+          <Link href="/api/health" target="_blank" className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-zs-emerald/10 border border-zs-emerald/20 text-zs-emerald mb-8 group hover:bg-zs-emerald/20 transition-all">
+            <span className="w-2 h-2 rounded-full bg-zs-emerald animate-pulse shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
+            <span className="text-[10px] font-black uppercase tracking-widest italic tracking-[0.2em]">
+              System Status: Operational
             </span>
-          </div>
+          </Link>
 
           <h1 className="text-[clamp(3.5rem,12vw,10rem)] font-black text-white tracking-tighter uppercase italic leading-[0.95] mb-12 pt-8">
             El Nuevo <br />

@@ -3,6 +3,25 @@ import "../styles/prism-vsc-dark-plus.css";
 import Providers from "./providers";
 import dynamic from "next/dynamic";
 import { Metadata } from "next";
+import { Inter, Syne, DM_Sans } from "next/font/google";
+
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
+});
+
+const syne = Syne({
+  subsets: ["latin"],
+  variable: "--font-syne",
+  display: "swap",
+});
+
+const dmSans = DM_Sans({
+  subsets: ["latin"],
+  variable: "--font-dm-sans",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://zonasurtech.online"),
@@ -34,7 +53,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html suppressHydrationWarning className="!scroll-smooth" lang="en">
+    <html
+      suppressHydrationWarning
+      className={`!scroll-smooth ${inter.variable} ${syne.variable} ${dmSans.variable}`}
+      lang="en"
+    >
       <body className="bg-zs-bg-primary">
         <Providers>
           <div className="isolate relative min-h-screen">

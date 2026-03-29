@@ -10,6 +10,45 @@
     "paths": {
       "@/*": [
         "./src/*"
+      ],
+      "@repo/db": [
+        "../../packages/db/src"
+      ],
+      "@repo/db/cms-schema": [
+        "../../packages/db/src/cms-schema"
+      ],
+      "@repo/db/*": [
+        "../../packages/db/*"
+      ],
+      "@repo/auth": [
+        "../../packages/auth/src"
+      ],
+      "@repo/auth/*": [
+        "../../packages/auth/*"
+      ],
+      "@repo/ui": [
+        "../../packages/ui/src"
+      ],
+      "@repo/ui/*": [
+        "../../packages/ui/*"
+      ],
+      "@repo/platform": [
+        "../../packages/platform/src"
+      ],
+      "@repo/platform/*": [
+        "../../packages/platform/*"
+      ],
+      "@repo/email": [
+        "../../packages/email/src"
+      ],
+      "@repo/email/*": [
+        "../../packages/email/*"
+      ],
+      "@repo/ui-experiments": [
+        "../../packages/ui-experiments/src"
+      ],
+      "@repo/ui-experiments/*": [
+        "../../packages/ui-experiments/*"
       ]
     }
   },

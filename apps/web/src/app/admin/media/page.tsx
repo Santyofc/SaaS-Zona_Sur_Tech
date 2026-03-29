@@ -1,5 +1,5 @@
 /** /admin/media — Media library (upload + gallery grid) */
-import { getMembershipContext } from "@repo/auth";
+import { requireOrganization } from "@repo/auth";
 import { listMedia } from "@/lib/cms/queries";
 import { deleteMedia } from "@/lib/cms/actions";
 import { MediaUploader } from "@/components/cms/MediaUploader.client";
@@ -13,7 +13,7 @@ export default async function CmsMediaPage({
 }: {
   searchParams: { page?: string };
 }) {
-  const ctx = await getMembershipContext();
+  const ctx = await requireOrganization();
   const page = Number(searchParams.page ?? 1);
 
   const { items: media, total, totalPages } = await listMedia(

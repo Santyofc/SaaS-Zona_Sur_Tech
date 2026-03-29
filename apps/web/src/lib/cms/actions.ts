@@ -338,7 +338,33 @@ export async function updateCmsSettings(rawInput: UpdateSettingsInput) {
       )
   );
 
+  revalidatePath("/", "layout");
   revalidatePath("/admin/settings");
+  revalidateTag("cms-settings");
 
   return { success: true };
+}
+
+/**
+ * Manually triggers revalidation for a specific entry.
+ * Securely uses CMS_REVALIDATE_SECRET on the server.
+ */
+export async function revalidateCmsEntry(tag: string, slug: string) {
+  // Guard with permission check
+  await requireCmsPermission("cms:settings");
+
+  try {
+    // Revalidation logic
+    revalidateTag(tag);
+    if (slug) {
+      revalidateTag(`cms-entry-${slug}`);
+      revalidatePath(`/blog/${slug}`);
+    }
+    revalidatePath("/", "layout"); // Global refresh for safety
+
+    return { success: true };
+  } catch (error) {
+    console.error("[CMS] Revalidation failed:", error);
+    throw new Error("Failed to revalidate content");
+  }
 }

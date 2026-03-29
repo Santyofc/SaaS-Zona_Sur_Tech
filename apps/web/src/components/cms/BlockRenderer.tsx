@@ -13,6 +13,8 @@
  */
 import Link from "next/link";
 import type { Block } from "@repo/db/cms-schema";
+import { remark } from "remark";
+import remarkHtml from "remark-html";
 
 interface BlockRendererProps {
   blocks: Block[];
@@ -99,18 +101,21 @@ function CtaBlock({ title, subtitle, ctaLabel, ctaHref }: Extract<Block, { type:
   );
 }
 
-function RichTextBlock({ body }: Extract<Block, { type: "richtext" }>) {
+async function parseHtml(raw: string) {
+  const file = await remark()
+    .use(remarkHtml, { sanitize: true })
+    .process(raw);
+  return file.toString();
+}
+
+async function RichTextBlock({ body }: Extract<Block, { type: "richtext" }>) {
+  const safeHtml = await parseHtml(body);
   return (
-    <section className="py-12 px-4">
-      <div className="container mx-auto max-w-3xl">
-        <div
-          className="prose prose-invert prose-lg max-w-none
-            prose-headings:font-black prose-headings:tracking-tight
-            prose-a:text-zs-blue prose-a:no-underline hover:prose-a:underline
-            prose-code:bg-zs-bg-secondary prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded"
-          dangerouslySetInnerHTML={{ __html: body }}
-        />
-      </div>
+    <section className="py-16 px-4">
+      <div 
+        className="container mx-auto max-w-4xl prose prose-invert prose-zs"
+        dangerouslySetInnerHTML={{ __html: safeHtml }} 
+      />
     </section>
   );
 }
@@ -136,25 +141,27 @@ function ImageBlock({ src, alt, caption }: Extract<Block, { type: "image" }>) {
   );
 }
 
-export function BlockRenderer({ blocks }: BlockRendererProps) {
+export async function BlockRenderer({ blocks }: BlockRendererProps) {
   return (
-    <>
-      {blocks.map((block, i) => {
+    <div className="flex flex-col">
+      {await Promise.all(blocks.map(async (block, index) => {
+        const key = `block-${index}-${block.type}`;
+        
         switch (block.type) {
           case "hero":
-            return <HeroBlock key={i} {...block} />;
+            return <HeroBlock key={key} {...block} />;
           case "features":
-            return <FeaturesBlock key={i} {...block} />;
+            return <FeaturesBlock key={key} {...block} />;
           case "cta":
-            return <CtaBlock key={i} {...block} />;
+            return <CtaBlock key={key} {...block} />;
           case "richtext":
-            return <RichTextBlock key={i} {...block} />;
+            return <RichTextBlock key={key} {...block} />;
           case "image":
-            return <ImageBlock key={i} {...block} />;
+            return <ImageBlock key={key} {...block} />;
           default:
             return null;
         }
-      })}
-    </>
+      }))}
+    </div>
   );
 }

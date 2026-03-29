@@ -1,6 +1,6 @@
 /** /admin/pages/[id] — Edit existing CMS page */
 import { notFound } from "next/navigation";
-import { getMembershipContext } from "@repo/auth";
+import { requireOrganization } from "@repo/auth";
 import { getEntryById } from "@/lib/cms/queries";
 import { EntryForm } from "@/components/cms/EntryForm.client";
 import Link from "next/link";
@@ -9,7 +9,7 @@ import { ArrowLeft } from "lucide-react";
 export const dynamic = "force-dynamic";
 
 export default async function EditCmsPagePage({ params }: { params: { id: string } }) {
-  const ctx = await getMembershipContext();
+  const ctx = await requireOrganization();
   const entry = await getEntryById(ctx.organizationId, params.id);
 
   if (!entry || entry.collectionType !== "page") notFound();

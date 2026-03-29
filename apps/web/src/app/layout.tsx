@@ -49,81 +49,72 @@ const dmSans = DM_Sans({
  * TASK 7: Metadata with preconnect + critical preloads.
  * metadataBase drives all relative canonical URLs throughout the app.
  */
-export const metadata: Metadata = {
-  metadataBase: new URL(BASE_URL),
+import { getPublishedEntryBySlug, getCmsSettings } from "@/lib/cms/queries";
 
-  title: {
-    default: "ZonaSur Tech | ERP y Facturación Electrónica Costa Rica",
-    template: "%s | ZonaSur Tech",
-  },
-  description:
-    "Software ERP y Facturación Electrónica para PYMES en Costa Rica. Cumplimos con Hacienda (v4.3), marketplace, inventario y CRM en una sola plataforma.",
+export async function generateMetadata(): Promise<Metadata> {
+  // Use a hardcoded Org ID for marketing settings or fetch first available
+  // For this implementation, we fallback to defaults if no custom settings exist
+  const DEFAULT_ORG_ID = "00000000-0000-0000-0000-000000000000"; // Placeholder or seed ID
+  
+  let settings: Record<string, string> = {};
+  try {
+    settings = await getCmsSettings(DEFAULT_ORG_ID);
+  } catch {
+    // Silent fail — use defaults
+  }
 
-  alternates: {
-    canonical: BASE_URL,
-  },
+  const siteName = settings.siteName || "ZonaSur Tech";
+  const siteDescription = settings.siteDescription || "Software ERP y Facturación Electrónica para PYMES en Costa Rica. Cumplimos con Hacienda (v4.3), marketplace, inventario y CRM en una sola plataforma.";
 
-  openGraph: {
-    type: "website",
-    locale: "es_CR",
-    url: BASE_URL,
-    siteName: "ZonaSur Tech",
-    title: "ZonaSur Tech | ERP y Facturación Electrónica Costa Rica",
-    description:
-      "Plataforma SaaS de gestión empresarial para PYMES costarricenses.",
-    images: [
-      {
-        url: "/images/og/og-default.png",
-        width: 1200,
-        height: 630,
-        alt: "ZonaSur Tech - ERP y Facturación Electrónica Costa Rica",
-      },
-    ],
-  },
-
-  twitter: {
-    card: "summary_large_image",
-    site: "@zonasurtech",
-    creator: "@zonasurtech",
-    title: "ZonaSur Tech | ERP y Facturación Electrónica Costa Rica",
-    description: "Plataforma SaaS de gestión empresarial para PYMES costarricenses.",
-    images: ["/images/og/og-default.png"],
-  },
-
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
+  return {
+    metadataBase: new URL(BASE_URL),
+    title: {
+      default: `${siteName} | ERP y Facturación Electrónica Costa Rica`,
+      template: `%s | ${siteName}`,
+    },
+    description: siteDescription,
+    alternates: {
+      canonical: BASE_URL,
+    },
+    openGraph: {
+      type: "website",
+      locale: "es_CR",
+      url: BASE_URL,
+      siteName: siteName,
+      title: `${siteName} | ERP y Facturación Electrónica Costa Rica`,
+      description: siteDescription,
+      images: [
+        {
+          url: settings.ogImageUrl || "/images/og/og-default.png",
+          width: 1200,
+          height: 630,
+          alt: `${siteName} - ERP y Facturación Electrónica Costa Rica`,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${siteName} | ERP y Facturación Electrónica Costa Rica`,
+      description: siteDescription,
+      images: [settings.ogImageUrl || "/images/og/og-default.png"],
+    },
+    robots: {
       index: true,
       follow: true,
-      "max-image-preview": "large",
-      "max-snippet": -1,
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+      },
     },
-  },
-
-  keywords: [
-    "facturación electrónica Costa Rica",
-    "ERP Costa Rica",
-    "software PYMES Costa Rica",
-    "Hacienda Costa Rica",
-    "inventario Costa Rica",
-    "ZonaSur Tech",
-  ],
-
-  authors: [{ name: "ZonaSur Tech", url: BASE_URL }],
-  creator: "ZonaSur Tech",
-  publisher: "ZonaSur Tech",
-
-  verification: {
-    google: process.env.NEXT_PUBLIC_GOOGLE_VERIFICATION ?? "",
-  },
-
-  icons: {
-    icon: "/icon.svg",
-    shortcut: "/favicon.ico",
-    apple: "/apple-touch-icon.png",
-  },
-};
+    icons: {
+      icon: "/icon.svg",
+      shortcut: "/favicon.ico",
+      apple: "/apple-touch-icon.png",
+    },
+  };
+}
 
 /**
  * TASK 7: Preconnect hints.

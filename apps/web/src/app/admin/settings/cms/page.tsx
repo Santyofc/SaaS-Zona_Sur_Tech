@@ -1,15 +1,17 @@
 /** /admin/settings — CMS Settings page */
-import { getMembershipContext } from "@repo/auth";
-import { getCmsSettings } from "@/lib/cms/queries";
+import { requireOrganization } from "@repo/auth";
+import { getCmsSettings, getAdminEntryList } from "@/lib/cms/queries";
 import { SettingsForm } from "@/components/cms/SettingsForm.client";
-import { Settings } from "lucide-react";
+import { EntryList } from "./EntryList.client";
+import { Settings, RefreshCw } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Configuración CMS | ZonaSur Tech" };
 
 export default async function CmsSettingsPage() {
-  const ctx = await getMembershipContext();
+  const ctx = await requireOrganization();
   const settings = await getCmsSettings(ctx.organizationId);
+  const entries = await getAdminEntryList(ctx.organizationId);
 
   return (
     <div className="space-y-6">
@@ -36,6 +38,19 @@ export default async function CmsSettingsPage() {
             logoUrl: settings.logo_url ?? "",
             accentColor: settings.accent_color ?? "",
           }}
+        />
+      </div>
+
+      <div className="pt-8 border-t border-white/5">
+        <EntryList 
+          entries={entries.map(e => ({
+            id: e.id,
+            slug: e.slug,
+            title: e.title,
+            collection_type: e.collectionType,
+            updated_at: e.updatedAt.toISOString(),
+            status: e.status
+          }))} 
         />
       </div>
     </div>

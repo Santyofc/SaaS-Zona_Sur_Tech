@@ -11,11 +11,9 @@ const LiveEmulators = dynamic(() => import("./components/LiveEmulators.client"),
   ssr: false,
 });
 
-/**
- * Task 2: Per-page metadata with explicit canonical for homepage.
- * This overrides the root layout's fallback metadata.
- */
-export const metadata: Metadata = {
+import { getPublishedEntryBySlug } from "@/lib/cms/queries";
+
+const DEFAULT_METADATA: Metadata = {
   title: "ERP y Facturación Electrónica en Costa Rica | ZonaSur Tech",
   description:
     "Software ERP y Facturación Electrónica para PYMES costarricenses. Cumplimiento con Ministerio de Hacienda versión 4.3. Inventario, CRM y marketplace en una sola plataforma.",
@@ -38,12 +36,35 @@ export const metadata: Metadata = {
   },
 };
 
-export default function Home() {
+export async function generateMetadata(): Promise<Metadata> {
+  try {
+    const entry = await getPublishedEntryBySlug("home", "page");
+    if (!entry) return DEFAULT_METADATA;
+
+    const seo = (entry.seoMeta ?? {}) as { title?: string; description?: string; ogImage?: string; noindex?: boolean };
+
+    return {
+      title: seo.title || entry.title || DEFAULT_METADATA.title || undefined,
+      description: seo.description || entry.excerpt || DEFAULT_METADATA.description || undefined,
+      alternates: DEFAULT_METADATA.alternates,
+      openGraph: {
+        ...DEFAULT_METADATA.openGraph,
+        title: seo.title || entry.title || DEFAULT_METADATA.openGraph?.title || undefined,
+        description: seo.description || entry.excerpt || DEFAULT_METADATA.openGraph?.description || undefined,
+        images: seo.ogImage ? [{ url: seo.ogImage }] : DEFAULT_METADATA.openGraph?.images,
+      },
+      robots: seo.noindex ? { index: false, follow: false } : undefined,
+    };
+  } catch {
+    return DEFAULT_METADATA;
+  }
+}
+
+export default async function Home() {
+  // Option for passing down CMS dynamic contents into React components
+  // const entry = await getPublishedEntryBySlug("home").catch(() => null);
   return (
-    <main
-      className="relative bg-zs-bg-primary overflow-hidden font-mono selection:bg-zs-blue/30 selection:text-white"
-      // Task 7: LD+JSON structured data for Google
-    >
+    <main className="relative bg-zs-bg-primary overflow-hidden font-mono selection:bg-zs-blue/30 selection:text-white">
       {/* Schema.org SoftwareApplication */}
       <script
         type="application/ld+json"

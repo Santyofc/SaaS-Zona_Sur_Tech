@@ -3,12 +3,41 @@ import { NeuralNetworkMap } from "@/components/Systems/SystemMap";
 import { Terminal, Shield, Activity, Globe } from "lucide-react";
 import Link from "next/link";
 
-export const metadata = {
+import { getPublishedEntryBySlug } from "@/lib/cms/queries";
+import { Metadata } from "next";
+
+const DEFAULT_METADATA: Metadata = {
     title: "Sistemas Core | Zona Sur Tech",
     description: "Visualización en tiempo real de la infraestructura global de Zona Sur Tech.",
 };
 
-export default function SystemsPage() {
+export async function generateMetadata(): Promise<Metadata> {
+    try {
+        const entry = await getPublishedEntryBySlug("systems", "page");
+        if (!entry) return DEFAULT_METADATA;
+
+        const seo = (entry.seoMeta ?? {}) as { title?: string; description?: string; ogImage?: string; noindex?: boolean };
+        return {
+            title: seo.title || entry.title || DEFAULT_METADATA.title || undefined,
+            description: seo.description || entry.excerpt || DEFAULT_METADATA.description || undefined,
+            openGraph: {
+                title: seo.title || entry.title || DEFAULT_METADATA.title || undefined,
+                description: seo.description || entry.excerpt || DEFAULT_METADATA.description || undefined,
+                images: seo.ogImage ? [{ url: seo.ogImage }] : undefined,
+            },
+            robots: seo.noindex ? { index: false, follow: false } : undefined,
+        };
+    } catch {
+        return DEFAULT_METADATA;
+    }
+}
+
+export default async function SystemsPage() {
+    const entry = await getPublishedEntryBySlug("systems", "page").catch(() => null);
+    
+    // Core Overrides
+    const pageTitle = (entry?.title as string | undefined | null) ?? "Arquitectura Distribuida";
+    const pageSubtitle = entry?.excerpt ?? "Nuestros nodos operan en una malla neural de baja latencia, garantizando consistencia atómica y seguridad de grado militar en cada transacción.";
     return (
         <main className="min-h-screen bg-zs-bg-primary pt-32 pb-20 px-4 md:px-8 relative overflow-hidden">
             {/* Background Decor */}
@@ -25,14 +54,14 @@ export default function SystemsPage() {
                     </div>
 
                     <h1 className="text-6xl md:text-8xl font-black text-white tracking-tighter uppercase italic leading-[0.8] mb-8">
-                        Arquitectura <br />
+                        {pageTitle.split(' ')[0]} <br />
                         <span className="text-transparent bg-clip-text bg-gradient-to-r from-zs-cyan via-zs-blue to-zs-violet drop-shadow-[0_0_30px_rgba(37,99,235,0.3)]">
-                            Distribuida
+                            {pageTitle.split(' ').slice(1).join(' ') || "Distribuida"}
                         </span>
                     </h1>
 
-                    <p className="text-xl text-zs-text-secondary font-light max-w-2xl leading-relaxed">
-                        Nuestros nodos operan en una malla neural de baja latencia, garantizando consistencia atómica y seguridad de grado militar en cada transacción.
+                    <p className="text-xl text-zs-text-secondary font-light max-w-2xl leading-relaxed whitespace-pre-line">
+                        {pageSubtitle}
                     </p>
                 </div>
 

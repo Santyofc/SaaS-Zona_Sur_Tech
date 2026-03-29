@@ -11,7 +11,10 @@ import {
   Activity, 
   ChevronRight,
   Terminal,
-  Layers
+  Layers,
+  FileText,
+  LayoutTemplate,
+  ImageIcon
 } from "lucide-react";
 import { LogoZS } from "@repo/ui/src/components/LogoZS";
 import { TerminateSessionButton } from "./components/TerminateSessionButton";
@@ -52,6 +55,13 @@ export default function AdminLayout({
           <AdminNavLink href="/admin/users" icon={<Users />} label="Identities" active={pathname === "/admin/users"} />
           <AdminNavLink href="/admin/organizations" icon={<Layers />} label="Nodes (Orgs)" active={pathname === "/admin/organizations"} />
           <AdminNavLink href="/admin/activity" icon={<Activity />} label="Global Logs" active={pathname === "/admin/activity"} />
+
+          <div className="mt-10 text-[10px] font-black uppercase tracking-[0.2em] text-zs-text-muted mb-4 px-4">
+            Content Management
+          </div>
+          <AdminNavLink href="/admin/posts" icon={<FileText />} label="Blog Posts" active={pathname.startsWith("/admin/posts")} />
+          <AdminNavLink href="/admin/pages" icon={<LayoutTemplate />} label="CMS Pages" active={pathname.startsWith("/admin/pages")} />
+          <AdminNavLink href="/admin/media" icon={<ImageIcon />} label="Media Library" active={pathname.startsWith("/admin/media")} />
 
           <div className="mt-10 text-[10px] font-black uppercase tracking-[0.2em] text-zs-text-muted mb-4 px-4">
             Security & Core

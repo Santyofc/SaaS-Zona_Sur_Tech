@@ -1,6 +1,6 @@
 /** /admin/posts/[id] — Edit existing post */
 import { notFound } from "next/navigation";
-import { getMembershipContext } from "@repo/auth";
+import { requireOrganization } from "@repo/auth";
 import { getEntryById } from "@/lib/cms/queries";
 import { EntryForm } from "@/components/cms/EntryForm.client";
 import { ArrowLeft, Globe } from "lucide-react";
@@ -13,13 +13,13 @@ interface Props {
 }
 
 export async function generateMetadata({ params }: Props) {
-  const ctx = await getMembershipContext();
+  const ctx = await requireOrganization();
   const entry = await getEntryById(ctx.organizationId, params.id);
   return { title: entry ? `Editar: ${entry.title}` : "Post no encontrado" };
 }
 
 export default async function EditPostPage({ params }: Props) {
-  const ctx = await getMembershipContext();
+  const ctx = await requireOrganization();
   const entry = await getEntryById(ctx.organizationId, params.id);
 
   if (!entry || entry.collectionType !== "post") notFound();

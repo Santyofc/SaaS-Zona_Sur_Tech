@@ -5,12 +5,12 @@
  * - On-demand revalidation via revalidateTag("cms-entry-SLUG") from server actions
  * - Full SEO metadata from the entry's seoMeta bag
  * - 404 via notFound() if slug doesn't exist or is not published
- * - Renders markdown content from the CMS
+ * - Renders markdown content through safe remark pipeline (no raw dangerouslySetInnerHTML)
  */
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getPublishedEntryBySlug, getAllPublishedSlugs } from "@/lib/cms/queries";
-import type { SeoMeta } from "@repo/db/cms-schema";
+import { MarkdownRenderer } from "@/components/cms/MarkdownRenderer";
 import { ArrowLeft, Calendar, User } from "lucide-react";
 import Link from "next/link";
 import { AdBanner } from "@/components/ui/AdBanner";
@@ -28,7 +28,7 @@ export const revalidate = 3600;
 export async function generateStaticParams() {
   try {
     const slugs = await getAllPublishedSlugs("post");
-    return slugs.map((slug) => ({ slug }));
+    return slugs.map(({ slug }) => ({ slug }));
   } catch {
     // DB may not be available at build time (first deploy)
     return [];
@@ -56,7 +56,7 @@ export async function generateMetadata({
     return { title: "Post no encontrado | ZonaSur Tech" };
   }
 
-  const seo = (entry.seoMeta as SeoMeta) ?? {};
+  const seo = (entry.seoMeta ?? {}) as { title?: string; description?: string; ogImage?: string; noindex?: boolean };
 
   return {
     title: seo?.title ?? entry.title,
@@ -181,81 +181,11 @@ export default async function BlogPostPage({
         </div>
       )}
 
-      {/* Body — markdown renderer */}
+      {/* Body — safe markdown renderer via remark pipeline */}
       <section className="px-4 pb-24">
         <div className="container mx-auto max-w-3xl">
           <AdBanner />
-          <div
-            className="prose prose-invert prose-lg max-w-none
-              prose-headings:font-black prose-headings:tracking-tight prose-headings:text-white
-              prose-h2:text-2xl prose-h2:mt-12 prose-h2:mb-4
-              prose-h3:text-xl prose-h3:mt-8 prose-h3:mb-3
-              prose-p:text-zs-text-secondary prose-p:leading-relaxed
-              prose-a:text-zs-blue prose-a:no-underline hover:prose-a:underline
-              prose-strong:text-white
-              prose-code:bg-zs-bg-secondary prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-zs-cyan
-              prose-li:text-zs-text-secondary
-              prose-hr:border-zs-border"
-          >
-            {markdownBody.split("\n\n").map((paragraph, i) => {
-              const trimmed = paragraph.trim();
-              if (!trimmed) return null;
-
-              // Headings
-              if (trimmed.startsWith("### "))
-                return <h3 key={i}>{trimmed.slice(4)}</h3>;
-              if (trimmed.startsWith("## "))
-                return <h2 key={i}>{trimmed.slice(3)}</h2>;
-              if (trimmed.startsWith("# "))
-                return <h2 key={i}>{trimmed.slice(2)}</h2>;
-
-              // Unordered list
-              if (trimmed.startsWith("- ")) {
-                const items = trimmed
-                  .split("\n")
-                  .filter((l) => l.startsWith("- "));
-                return (
-                  <ul key={i}>
-                    {items.map((item, j) => (
-                      <li key={j}>{item.slice(2)}</li>
-                    ))}
-                  </ul>
-                );
-              }
-
-              // Ordered list
-              if (/^\d+\.\s/.test(trimmed)) {
-                const items = trimmed
-                  .split("\n")
-                  .filter((l) => /^\d+\.\s/.test(l));
-                return (
-                  <ol key={i}>
-                    {items.map((item, j) => (
-                      <li key={j}>{item.replace(/^\d+\.\s/, "")}</li>
-                    ))}
-                  </ol>
-                );
-              }
-
-              // HR
-              if (trimmed === "---") return <hr key={i} />;
-
-              // Regular paragraph with inline markdown
-              const html = trimmed
-                .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
-                .replace(
-                  /\[([^\]]+)\]\(([^)]+)\)/g,
-                  '<a href="$2">$1</a>'
-                );
-
-              return (
-                <p
-                  key={i}
-                  dangerouslySetInnerHTML={{ __html: html }}
-                />
-              );
-            })}
-          </div>
+          <MarkdownRenderer content={markdownBody} />
           <div className="mt-12">
             <AdBanner />
           </div>

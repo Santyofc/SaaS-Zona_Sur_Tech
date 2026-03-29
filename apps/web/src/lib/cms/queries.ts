@@ -130,9 +130,12 @@ export async function getPublishedEntryBySlug(
  */
 export async function getAllPublishedSlugs(
   collectionType: "post" | "page"
-): Promise<string[]> {
+): Promise<{ slug: string; updatedAt: Date | null }[]> {
   const results = await db
-    .select({ slug: cmsEntries.slug })
+    .select({ 
+      slug: cmsEntries.slug,
+      updatedAt: cmsEntries.updatedAt
+    })
     .from(cmsEntries)
     .where(
       and(
@@ -142,7 +145,7 @@ export async function getAllPublishedSlugs(
     )
     .orderBy(desc(cmsEntries.publishedAt));
 
-  return results.map((r) => r.slug);
+  return results;
 }
 
 /**
@@ -227,3 +230,33 @@ export async function getCmsSettings(
 
   return Object.fromEntries(rows.map((r) => [r.key, r.value ?? ""]));
 }
+
+/**
+ * Returns a summary list of all entries for an org (Admin only).
+ */
+export async function getAdminEntryList(
+  organizationId: string
+): Promise<Array<{
+  id: string;
+  title: string;
+  slug: string;
+  collectionType: "post" | "page";
+  status: "draft" | "published";
+  updatedAt: Date;
+}>> {
+  const results = await db
+    .select({
+      id: cmsEntries.id,
+      title: cmsEntries.title,
+      slug: cmsEntries.slug,
+      collectionType: cmsEntries.collectionType,
+      status: cmsEntries.status,
+      updatedAt: cmsEntries.updatedAt,
+    })
+    .from(cmsEntries)
+    .where(eq(cmsEntries.organizationId, organizationId))
+    .orderBy(desc(cmsEntries.updatedAt));
+
+  return results as any;
+}
+

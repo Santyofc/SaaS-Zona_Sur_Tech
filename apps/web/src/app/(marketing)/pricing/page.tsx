@@ -5,7 +5,10 @@ import { GlitchText } from "@/components/ui/GlitchText.client";
 import { PriceCalculator } from "./components/PriceCalculator";
 
 
-export const metadata = {
+import { getPublishedEntryBySlug } from "@/lib/cms/queries";
+import { Metadata } from "next";
+
+const DEFAULT_METADATA = {
     title: "Precios y Planes | ERP Facturación Electrónica Costa Rica | ZonaSur Tech",
     description: "Planes accesibles de ERP y facturación electrónica para PYMES costarricenses. Desde ₡15,000/mes con cumplimiento Hacienda v4.3 incluido.",
     alternates: {
@@ -17,6 +20,30 @@ export const metadata = {
         url: "https://zonasurtech.online/pricing",
     },
 };
+
+export async function generateMetadata(): Promise<Metadata> {
+    try {
+        const entry = await getPublishedEntryBySlug("pricing", "page");
+        if (!entry) return DEFAULT_METADATA;
+
+        const seo = (entry.seoMeta ?? {}) as { title?: string; description?: string; ogImage?: string; noindex?: boolean };
+        
+        return {
+            title: seo.title || entry.title || DEFAULT_METADATA.title || undefined,
+            description: seo.description || entry.excerpt || DEFAULT_METADATA.description || undefined,
+            alternates: DEFAULT_METADATA.alternates,
+            openGraph: {
+                ...DEFAULT_METADATA.openGraph,
+                title: seo.title || entry.title || DEFAULT_METADATA.openGraph?.title || undefined,
+                description: seo.description || entry.excerpt || DEFAULT_METADATA.openGraph?.description || undefined,
+                images: seo.ogImage ? [{ url: seo.ogImage }] : undefined,
+            },
+            robots: seo.noindex ? { index: false, follow: false } : undefined,
+        };
+    } catch {
+        return DEFAULT_METADATA;
+    }
+}
 
 const plans = [
     {
@@ -46,7 +73,27 @@ const plans = [
     }
 ];
 
-export default function PricingPage() {
+export default async function PricingPage() {
+    // Hybrid CMS Pattern: we attempt to load the 'pricing' page entry to grab overrides
+    const entry = await getPublishedEntryBySlug("pricing", "page").catch(() => null);
+    
+    // Fallbacks
+    const pageTitle = entry?.title ?? "Escalado Estratégico";
+    const pageSubtitle = entry?.excerpt ?? "Pague solo por la potencia de cómputo y los nodos que necesita. Sin costos ocultos, solo rendimiento industrial puro.";
+    
+    // We try to parse plans from the 'content' raw JSON block if the admin provided it, 
+    // otherwise fallback to hardcoded default plans.
+    let displayPlans = plans;
+    try {
+        if (entry?.content && typeof entry.content === 'object' && 'raw' in entry.content && entry.content.raw) {
+            const parsedPlans = JSON.parse(entry.content.raw as string) as any[];
+            if (Array.isArray(parsedPlans) && parsedPlans.length > 0) {
+                displayPlans = parsedPlans;
+            }
+        }
+    } catch {
+        // Safe fallback; if the JSON mapping is incorrect or empty, we use the default hardcoded components
+    }
     return (
         <main className="min-h-screen bg-zs-bg-primary pt-32 pb-20 px-4 md:px-8 relative overflow-hidden">
             {/* Background Decor */}
@@ -66,20 +113,20 @@ export default function PricingPage() {
                     </div>
 
                     <h1 className="text-6xl md:text-9xl font-black text-white tracking-tighter uppercase italic leading-[0.8] mb-8">
-                        Escalado <br />
+                        {pageTitle.split(' ')[0]} <br />
                         <GlitchText 
-                            text="Estratégico" 
+                            text={pageTitle.split(' ').slice(1).join(' ') || "Estratégico"} 
                             className="text-transparent bg-clip-text bg-gradient-to-r from-zs-cyan via-zs-blue to-zs-violet drop-shadow-[0_0_30px_rgba(37,99,235,0.3)]"
                         />
                     </h1>
 
-                    <p className="text-xl text-zs-text-secondary font-light leading-relaxed">
-                        Pague solo por la potencia de cómputo y los nodos que necesita. Sin costos ocultos, solo rendimiento industrial puro.
+                    <p className="text-xl text-zs-text-secondary font-light leading-relaxed whitespace-pre-line">
+                        {pageSubtitle}
                     </p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-7xl mx-auto">
-                    {plans.map((plan, i) => (
+                    {displayPlans.map((plan: any, i: number) => (
                         <div key={i} className={`zs-card p-10 flex flex-col items-start text-left relative overflow-hidden group transition-all duration-500 hover:-translate-y-2 ${plan.highlight ? 'bg-zs-bg-secondary/60 border-zs-blue/30 shadow-zs-glow-blue/10' : 'bg-zs-bg-secondary/40 border-zs-border'}`}>
                             {plan.highlight && (
                                 <div className="absolute top-0 right-0 p-4">
@@ -98,7 +145,7 @@ export default function PricingPage() {
                             </p>
 
                             <div className="space-y-4 mb-12 w-full">
-                                {plan.features.map((feat, j) => (
+                                {plan.features.map((feat: any, j: number) => (
                                     <div key={j} className="flex items-center gap-3 group/item">
                                         <CheckCircle2 className={`w-4 h-4 ${plan.highlight ? 'text-zs-blue' : 'text-zs-text-muted'} group-hover/item:scale-125 transition-transform`} />
                                         <span className="text-xs font-bold text-zs-text-secondary uppercase tracking-tight">{feat}</span>

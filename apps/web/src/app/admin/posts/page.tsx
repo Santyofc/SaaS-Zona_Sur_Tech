@@ -5,7 +5,7 @@
 import Link from "next/link";
 import { listEntries } from "@/lib/cms/queries";
 import { deleteEntry, publishEntry } from "@/lib/cms/actions";
-import { getMembershipContext } from "@repo/auth";
+import { requireOrganization } from "@repo/auth";
 import { PlusCircle, Eye, Pencil, Trash2, Globe, FileText } from "lucide-react";
 
 export const dynamic = "force-dynamic";
@@ -19,7 +19,7 @@ export default async function CmsPostsPage({
 }: {
   searchParams: { page?: string; status?: string; q?: string };
 }) {
-  const ctx = await getMembershipContext();
+  const ctx = await requireOrganization();
   const page = Number(searchParams.page ?? 1);
   const status = searchParams.status as "draft" | "published" | "archived" | undefined;
 

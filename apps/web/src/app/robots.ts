@@ -1,11 +1,11 @@
 import { MetadataRoute } from 'next'
 
+const BASE_URL = 'https://zonasurtech.online'
+
 /**
- * Task 1: Production-hardened robots.txt
- * - Protects auth, api, admin, static assets from indexing
- * - Explicitly blocks *.txt routes (resolves /auth/register.txt GSC issue)
- * - Blocks /_next/static/* to prevent font/media indexing
- * - Allows only canonical marketing pages
+ * Production-hardened robots.txt
+ * - Protects auth, api, admin, and system routes
+ * - Allows canonical marketing and blog content
  */
 export default function robots(): MetadataRoute.Robots {
   return {
@@ -14,48 +14,31 @@ export default function robots(): MetadataRoute.Robots {
         userAgent: '*',
         allow: [
           '/',
-          '/features',
           '/pricing',
-          '/contact',
-          '/about',
-          '/blog',
-          '/facturacion-electronica-costa-rica',
-          '/software-para-pymes-costa-rica',
-          '/sistema-inventario-costa-rica',
-          '/docs',
           '/technology',
+          '/systems',
+          '/blog',
           '/sitemap.xml',
-          '/robots.txt',
         ],
         disallow: [
           '/api/',
           '/auth/',
-          '/app/',
-          '/dashboard/',
           '/admin/',
+          '/dashboard/',
           '/gateway/',
-          '/oauth/',
-          '/portfolio/',
-          '/actions/',
           '/_next/',
           '/*.txt',
           '/*.log',
           '/*.env',
-          '/ide/',
-          '/docker/',
-          '/coming-soon',
-          '/test',
-          '/error',
         ],
       },
-      // Block AdsBot explicitly (it ignores Disallow)
       {
         userAgent: 'AdsBot-Google',
         allow: '/',
-        disallow: ['/api/', '/auth/', '/app/', '/dashboard/'],
+        disallow: ['/api/', '/auth/', '/admin/'],
       },
     ],
-    sitemap: 'https://zonasurtech.online/sitemap.xml',
-    host: 'https://zonasurtech.online',
+    sitemap: `${BASE_URL}/sitemap.xml`,
+    host: BASE_URL,
   }
 }

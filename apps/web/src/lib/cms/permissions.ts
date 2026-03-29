@@ -74,8 +74,7 @@ export function hasCmsAnyPermission(
 // Server-side guard (used in Server Actions)
 // ---------------------------------------------------------------------------
 
-import { ForbiddenError } from "@repo/auth";
-import { getMembershipContext } from "@repo/auth";
+import { ForbiddenError, requireOrganization } from "@repo/auth";
 
 /**
  * Resolves the calling user's org membership and checks the CMS permission.
@@ -91,7 +90,7 @@ import { getMembershipContext } from "@repo/auth";
  * }
  */
 export async function requireCmsPermission(permission: CmsPermission) {
-  const ctx = await getMembershipContext();
+  const ctx = await requireOrganization();
 
   if (!hasCmsPermission(ctx.role, permission)) {
     throw new ForbiddenError(
@@ -101,3 +100,4 @@ export async function requireCmsPermission(permission: CmsPermission) {
 
   return ctx;
 }
+

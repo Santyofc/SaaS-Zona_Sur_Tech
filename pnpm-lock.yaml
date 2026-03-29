@@ -68,6 +68,9 @@ importers:
       class-validator:
         specifier: ^0.14.1
         version: 0.14.4
+      drizzle-orm:
+        specifier: ^0.45.1
+        version: 0.45.1(@types/pg@8.18.0)(@upstash/redis@1.37.0)(postgres@3.4.8)
       helmet:
         specifier: ^8.1.0
         version: 8.1.0

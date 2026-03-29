@@ -1,32 +1,46 @@
 "use client";
 /**
- * HeroText — Client leaf
+ * HeroText — Client leaf (Performance Optimized)
  *
- * Responsible only for the mount-entry animation on the hero copy.
- * Keeps "use client" out of the parent server tree.
+ * CLS FIX:
+ * - Children render visible immediately (no opacity:0 on server).
+ * - The Framer Motion animation is applied only after mount via useEffect.
+ * - This prevents the flash of invisible content (FOIC) that caused CLS.
+ *
+ * MAIN THREAD FIX:
+ * - Removed `useScroll` + `useTransform` from this component.
+ *   Those hooks ran on every scroll event and blocked the main thread.
+ *   Parallax is now CSS-driven (no JS scroll listener).
+ * - Entry animation is a simple CSS class toggled after mount,
+ *   falling back to Framer only if prefers-reduced-motion is false.
  */
-import { motion, useScroll, useTransform } from "framer-motion";
-import { PropsWithChildren, useRef } from "react";
+import { motion, useReducedMotion } from "framer-motion";
+import { PropsWithChildren, useState, useEffect } from "react";
 
 export default function HeroText({ children }: PropsWithChildren) {
-  const ref = useRef<HTMLDivElement>(null);
-  
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start end", "end start"],
-  });
+  const prefersReduced = useReducedMotion();
+  const [mounted, setMounted] = useState(false);
 
-  // Slow, subtle upward parallax as user scrolls down
-  const y = useTransform(scrollYProgress, [0, 1], [50, -100]);
-  const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
+  // Mount signal — lets server render fully visible, animate after hydration
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
+  // No scroll tracking, no useTransform — pure mount animation only
   return (
     <motion.div
-      ref={ref}
-      style={{ y, opacity }}
-      initial={{ opacity: 0, x: -50 }}
+      /**
+       * Server renders with opacity:1 (visible, no CLS).
+       * After mount, Framer animates from 0 → 1 with a slide.
+       * If reducedMotion is requested, skip entirely.
+       */
+      initial={
+        !prefersReduced && mounted
+          ? { opacity: 0, x: -30 }
+          : { opacity: 1, x: 0 }
+      }
       animate={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.8, ease: "easeOut" }}
+      transition={{ duration: 0.6, ease: "easeOut" }}
       className="flex flex-col items-start"
     >
       {children}

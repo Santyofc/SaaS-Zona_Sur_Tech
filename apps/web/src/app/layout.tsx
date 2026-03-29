@@ -7,39 +7,51 @@ import { Inter, Syne, DM_Sans } from "next/font/google";
 
 const BASE_URL = "https://zonasurtech.online";
 
+/**
+ * TASK 6: Font Optimization
+ *
+ * Rules applied:
+ * - `display: "swap"` on all fonts — prevents FOIT (Flash of Invisible Text),
+ *   the primary font-related LCP killer.
+ * - `preload: true` ONLY on Inter (body font, first paint critical).
+ * - Syne + DM_Sans: `preload: false` — display fonts used for headings,
+ *   the browser will find them in the CSS without blocking LCP.
+ * - `adjustFontFallback: true` (default) — Next.js generates a metric-matched
+ *   fallback that prevents layout shift when the real font loads (CLS fix).
+ * - `fallback` arrays provide metric-matched system fonts so the page is
+ *   readable immediately, reducing LCP even before font arrives.
+ */
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
   display: "swap",
-  preload: true,          // Preload critical font
-  fallback: ["system-ui", "arial"],
+  preload: true,           // Critical: body text
+  fallback: ["system-ui", "-apple-system", "sans-serif"],
 });
 
 const syne = Syne({
   subsets: ["latin"],
   variable: "--font-syne",
   display: "swap",
-  preload: false,         // Non-critical, load async
-  fallback: ["system-ui"],
+  preload: false,          // Non-critical: heading font, defer
+  fallback: ["Georgia", "serif"],
 });
 
 const dmSans = DM_Sans({
   subsets: ["latin"],
   variable: "--font-dm-sans",
   display: "swap",
-  preload: false,         // Non-critical, load async
-  fallback: ["system-ui"],
+  preload: false,          // Non-critical: secondary font
+  fallback: ["system-ui", "sans-serif"],
 });
 
 /**
- * Task 2: Root metadata — establishes metadataBase so all
- * per-page `alternates.canonical` resolve correctly.
- * This is the ONLY place metadataBase is declared.
+ * TASK 7: Metadata with preconnect + critical preloads.
+ * metadataBase drives all relative canonical URLs throughout the app.
  */
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
 
-  // Fallback title/description — pages override via their own `export const metadata`
   title: {
     default: "ZonaSur Tech | ERP y Facturación Electrónica Costa Rica",
     template: "%s | ZonaSur Tech",
@@ -47,12 +59,10 @@ export const metadata: Metadata = {
   description:
     "Software ERP y Facturación Electrónica para PYMES en Costa Rica. Cumplimos con Hacienda (v4.3), marketplace, inventario y CRM en una sola plataforma.",
 
-  // Canonical — pages override their own; root points to homepage
   alternates: {
     canonical: BASE_URL,
   },
 
-  // OpenGraph
   openGraph: {
     type: "website",
     locale: "es_CR",
@@ -60,7 +70,7 @@ export const metadata: Metadata = {
     siteName: "ZonaSur Tech",
     title: "ZonaSur Tech | ERP y Facturación Electrónica Costa Rica",
     description:
-      "Plataforma SaaS de gestión empresarial para PYMES costarricenses. Facturación electrónica Hacienda, inventario, CRM y más.",
+      "Plataforma SaaS de gestión empresarial para PYMES costarricenses.",
     images: [
       {
         url: "/images/og/og-default.png",
@@ -71,18 +81,15 @@ export const metadata: Metadata = {
     ],
   },
 
-  // Twitter / X
   twitter: {
     card: "summary_large_image",
     site: "@zonasurtech",
     creator: "@zonasurtech",
     title: "ZonaSur Tech | ERP y Facturación Electrónica Costa Rica",
-    description:
-      "Plataforma SaaS de gestión empresarial para PYMES costarricenses.",
+    description: "Plataforma SaaS de gestión empresarial para PYMES costarricenses.",
     images: ["/images/og/og-default.png"],
   },
 
-  // Robots meta (belt-and-suspenders with robots.ts)
   robots: {
     index: true,
     follow: true,
@@ -91,11 +98,9 @@ export const metadata: Metadata = {
       follow: true,
       "max-image-preview": "large",
       "max-snippet": -1,
-      "max-video-preview": -1,
     },
   },
 
-  // Prevent indexing of static assets via meta
   keywords: [
     "facturación electrónica Costa Rica",
     "ERP Costa Rica",
@@ -109,12 +114,10 @@ export const metadata: Metadata = {
   creator: "ZonaSur Tech",
   publisher: "ZonaSur Tech",
 
-  // Verification
   verification: {
     google: process.env.NEXT_PUBLIC_GOOGLE_VERIFICATION ?? "",
   },
 
-  // Icons
   icons: {
     icon: "/icon.svg",
     shortcut: "/favicon.ico",
@@ -122,15 +125,32 @@ export const metadata: Metadata = {
   },
 };
 
-/** Task 8: Viewport export (separated from metadata per Next.js 14 best practice) */
+/**
+ * TASK 7: Preconnect hints.
+ * These are injected via the <head> through Next.js metadata links.
+ * Preconnect resolves DNS+TCP+TLS for critical third-party origins
+ * before the browser needs them, reducing connection latency.
+ */
+export const links = [
+  { rel: "preconnect", href: "https://fonts.googleapis.com" },
+  {
+    rel: "preconnect",
+    href: "https://fonts.gstatic.com",
+    crossOrigin: "anonymous",
+  },
+  { rel: "dns-prefetch", href: "https://www.googletagmanager.com" },
+  { rel: "dns-prefetch", href: "https://pagead2.googlesyndication.com" },
+];
+
 export const viewport: Viewport = {
-  themeColor: "#0b0f17",
+  themeColor: "#06080f",
   width: "device-width",
   initialScale: 1,
   maximumScale: 5,
 };
 
 // Deferred client-only components — ssr:false keeps them off the critical path
+// These are UX enhancements, not content — safe to load after LCP
 const HackerCursor = dynamic(
   () =>
     import("../components/ui/HackerCursor.client").then((mod) => ({
@@ -162,6 +182,27 @@ export default function RootLayout({
       className={`!scroll-smooth ${inter.variable} ${syne.variable} ${dmSans.variable}`}
       lang="es"
     >
+      <head>
+        {/*
+          TASK 7: DNS preconnect for critical origins.
+          These cannot be expressed via metadata.links in Next.js 14,
+          so they're placed directly in <head> via the layout.
+          
+          NOTE: fonts.googleapis.com is preconnected because next/font
+          downloads font files at build time, but the preconnect hints
+          help subresource loading for any remaining third-party references.
+        */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
+        <link
+          rel="dns-prefetch"
+          href="https://www.googletagmanager.com"
+        />
+      </head>
       <body className="bg-zs-bg-primary">
         <Providers>
           <div className="isolate relative min-h-screen">

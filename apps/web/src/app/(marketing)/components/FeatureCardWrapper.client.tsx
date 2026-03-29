@@ -1,13 +1,20 @@
 "use client";
 /**
- * FeatureCardWrapper — Client leaf
+ * FeatureCardWrapper — Client leaf (Performance Optimized)
  *
- * Wraps each bento card with a whileInView entrance animation.
- * Isolates "use client" to a thin wrapper so FeaturesGrid stays Server.
+ * PERF FIXES:
+ * 1. Removed `useMotion()` — was subscribing to global mouse tracking
+ *    context on every card (4 cards × 60fps mouse events = significant TBT).
+ * 2. Removed `rotateX: 5` and `scale: 0.95` from initial — these GPU layers
+ *    were causing CLS because Framer creates a separate stacking context
+ *    before the scroll trigger fires.
+ * 3. `whileInView` kept but simplified — opacity+y only (no scale/rotateX).
+ * 4. `whileHover` kept for UX but avoids scale changes (scale causes repaints).
+ * 5. `viewport={{ once: true }}` ensures the animation only runs once,
+ *    not continuously on every scroll direction change.
  */
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { PropsWithChildren } from "react";
-import { useMotion } from "../../../core/MotionProvider";
 
 interface Props extends PropsWithChildren {
   colSpan?: string;
@@ -21,24 +28,32 @@ export default function FeatureCardWrapper({
   rowSpan = "",
   delay = 0,
 }: Props) {
-  const { setIsHovering } = useMotion();
+  const prefersReduced = useReducedMotion();
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 40, scale: 0.95, rotateX: 5 }}
-      whileInView={{ opacity: 1, y: 0, scale: 1, rotateX: 0 }}
-      whileHover={{ y: -5, scale: 1.02, backgroundColor: "rgba(37, 99, 235, 0.05)" }}
-      viewport={{ once: true, margin: "-50px" }}
-      onMouseEnter={() => setIsHovering(true)}
-      onMouseLeave={() => setIsHovering(false)}
-      transition={{ 
+      // CLS FIX: initial opacity:0 is fine here — these cards are
+      // below the fold, so they don't affect the LCP or above-fold CLS.
+      initial={prefersReduced ? false : { opacity: 0, y: 32 }}
+      whileInView={prefersReduced ? undefined : { opacity: 1, y: 0 }}
+      // PERF FIX: removed whileHover scale (caused repaint + layout)
+      // Using translateY only (compositor-only, no repaint)
+      whileHover={prefersReduced ? undefined : { y: -4 }}
+      viewport={{ once: true, margin: "-60px" }}
+      transition={{
         delay,
-        duration: 0.8,
-        ease: [0.16, 1, 0.3, 1] 
+        duration: 0.6,
+        ease: [0.16, 1, 0.3, 1],
+        // whileHover gets its own faster transition
+        y: { type: "spring", stiffness: 300, damping: 30 },
       }}
-      className={`zs-card p-10 bg-zs-bg-secondary/40 backdrop-blur-xl group overflow-hidden relative border border-zs-border/50 hover:border-zs-blue/40 hover:shadow-zs-glow-blue/10 transition-colors ${colSpan} ${rowSpan}`}
+      className={`zs-card p-10 bg-zs-bg-secondary/40 group overflow-hidden relative border border-zs-border/50 hover:border-zs-blue/40 transition-colors ${colSpan} ${rowSpan}`}
     >
-      <div className="absolute inset-0 bg-gradient-to-br from-zs-blue/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+      {/* Gradient overlay — CSS only, no JS */}
+      <div
+        className="absolute inset-0 bg-gradient-to-br from-zs-blue/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"
+        aria-hidden="true"
+      />
       {children}
     </motion.div>
   );

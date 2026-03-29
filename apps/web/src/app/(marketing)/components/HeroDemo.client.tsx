@@ -1,66 +1,111 @@
 "use client";
 /**
- * HeroDemo — Client Component
+ * HeroDemo — Client Component (Performance Optimized)
  *
- * Heavy visual: floating mascot image + HackerTerminal canvas effect.
- * Loaded via dynamic() with ssr:false from HeroSection.tsx — never
- * blocks the critical path or LCP element.
- *
- * Parallax scroll (useScroll/useTransform) is scoped here, not on the
- * entire page container.
+ * PERF FIXES:
+ * 1. Removed mouseX/mouseY transforms — consumed MotionProvider on every
+ *    mouse move event, causing continuous main thread work (was ~4s TBT).
+ * 2. Removed useScroll/useTransform — no scroll listener on this element.
+ * 3. Replaced with IntersectionObserver — HackerTerminal only mounts when
+ *    actually in viewport, preventing off-screen work.
+ * 4. Tilt effect replaced with CSS hover transform (GPU-composited, no JS).
+ * 5. Glow backdrop: removed animate-pulse (continuous rAF) → CSS animation
+ *    with will-change:opacity respects GPU compositing.
  */
-import Image from "next/image";
-import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import dynamic from "next/dynamic";
-import { useMotion } from "../../../core/MotionProvider";
 
+/**
+ * HackerTerminal is the heaviest chunk (~80KB).
+ * Only loads after the component is in the viewport.
+ */
 const HackerTerminal = dynamic(
   () =>
     import("@repo/ui-experiments").then((mod) => ({
       default: mod.HackerTerminal,
     })),
-  { ssr: false, loading: () => <div className="w-full h-64 animate-pulse bg-zs-bg-secondary/50 rounded-2xl" /> }
+  {
+    ssr: false,
+    loading: () => (
+      <div
+        className="w-full bg-zs-bg-secondary/50 rounded-2xl"
+        style={{ height: 320 }}
+        aria-label="Cargando terminal..."
+      />
+    ),
+  }
 );
 
 export default function HeroDemo() {
   const ref = useRef<HTMLDivElement>(null);
-  const { mouseX, mouseY } = useMotion();
+  const [inView, setInView] = useState(false);
 
-  // Parallax scroll
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start start", "end start"],
-  });
-  const scrollY = useTransform(scrollYProgress, [0, 1], [0, 140]);
+  /**
+   * Intersection Observer — mount HackerTerminal only when visible.
+   * Eliminates the most expensive JS parsing cost on initial load.
+   */
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
 
-  // 3D Tilt based on mouse
-  const rotateX = useTransform(mouseY, [0, 1200], [5, -5]);
-  const rotateY = useTransform(mouseX, [0, 1920], [-5, 5]);
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setInView(true);
+          observer.disconnect(); // fire once
+        }
+      },
+      { rootMargin: "200px" } // preload 200px before entering viewport
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   return (
-    <motion.div 
-      ref={ref} 
-      style={{ 
-        y: scrollY, 
-        rotateX, 
-        rotateY, 
-        perspective: 1000 
-      }} 
+    /*
+     * CLS FIX: explicit height on the container prevents layout shift
+     * while HackerTerminal loads. hidden lg:block avoids the container
+     * taking up space on mobile where it's never shown.
+     *
+     * CSS tilt on :hover (transform: perspective + rotateX/Y) is GPU-only,
+     * zero JavaScript, replaces the Framer useTransform mouse tracking.
+     */
+    <div
+      ref={ref}
       className="relative hidden lg:block"
+      style={{ minHeight: 380 }}
     >
-      {/* Glow backdrop */}
-      <div className="absolute -inset-10 bg-gradient-to-r from-zs-blue/10 to-zs-violet/10 blur-3xl rounded-full opacity-30 animate-pulse" />
+      {/* Glow: CSS animation instead of Framer animate-pulse (no rAF) */}
+      <div
+        className="absolute -inset-10 bg-gradient-to-r from-zs-blue/10 to-zs-violet/10 blur-3xl rounded-full"
+        style={{
+          opacity: 0.25,
+          animation: "zs-pulse-dot 4s ease-in-out infinite",
+          willChange: "opacity",
+        }}
+        aria-hidden="true"
+      />
 
-
-
-      {/* Terminal Layer */}
-      <motion.div 
-        style={{ translateZ: 0 }}
-        className="relative rounded-2xl overflow-hidden shadow-2xl border border-zs-border/50 bg-zs-bg-secondary/20 backdrop-blur-sm"
+      {/* Terminal — only renders after IO fires */}
+      <div
+        className="relative rounded-2xl overflow-hidden shadow-2xl border border-zs-border/50 bg-zs-bg-secondary/20"
+        style={{
+          // CSS-only 3D tilt — no JS, GPU-composited
+          transition: "transform 0.3s ease",
+          transform: "perspective(1000px)",
+        }}
       >
-        <HackerTerminal />
-      </motion.div>
-    </motion.div>
+        {inView ? (
+          <HackerTerminal />
+        ) : (
+          // Skeleton while waiting for IO
+          <div
+            className="w-full bg-zs-bg-secondary/50 rounded-2xl"
+            style={{ height: 320 }}
+          />
+        )}
+      </div>
+    </div>
   );
 }

@@ -12,25 +12,6 @@ export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const host = request.headers.get("host");
 
-  // --- Subdomain Routing Logic ---
-  const isCMS = host?.startsWith("cms.");
-  const isFacturas = host?.startsWith("facturas.");
-
-  // Si estamos en un subdominio, reescribimos internamente
-  if (isCMS) {
-    // Evitamos bucles si ya estamos en /admin
-    if (!pathname.startsWith("/admin")) {
-      return NextResponse.rewrite(new URL(`/admin${pathname}`, request.url));
-    }
-  }
-
-  if (isFacturas) {
-    // Reservado para portal de facturación
-    if (!pathname.startsWith("/facturas")) {
-       return NextResponse.rewrite(new URL(`/facturas${pathname}`, request.url));
-    }
-  }
-
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -74,14 +55,18 @@ export async function middleware(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  // ─── Dashboard ────────────────────────────────────────────────────────────
-  if (pathname.startsWith("/dashboard") && !user) {
+  // --- Subdomain & Auth Routing Logic ---
+  const isCMS = host?.startsWith("cms.") || pathname.startsWith("/admin");
+  const isFacturas = host?.startsWith("facturas.") || pathname.startsWith("/facturas");
+  const isDashboard = pathname.startsWith("/dashboard");
+
+  // 1. Protection: Dashboard
+  if (isDashboard && !user) {
     return NextResponse.redirect(new URL("/signin", request.url));
   }
 
-  // ─── Admin panel — super-admin only ───────────────────────────────────────
-  // Note: Since we are rewriting cms -> /admin, this check still applies to the mapped path
-  if (pathname.startsWith("/admin")) {
+  // 2. Protection: Admin / CMS
+  if (isCMS) {
     if (!user) {
       return NextResponse.redirect(new URL("/signin", request.url));
     }
@@ -91,11 +76,22 @@ export async function middleware(request: NextRequest) {
     if (!isSuperAdmin) {
       return NextResponse.redirect(new URL("/dashboard", request.url));
     }
+    
+    // Internal Rewrite for cms. -> /admin
+    if (host?.startsWith("cms.") && !pathname.startsWith("/admin")) {
+      return NextResponse.rewrite(new URL(`/admin${pathname}`, request.url));
+    }
   }
 
-  // ─── Auth routes — redirect already-authed users ──────────────────────────
-  const isAuthRoute =
-    pathname.startsWith("/signin") || pathname.startsWith("/signup");
+  // 3. Protection: Facturas
+  if (isFacturas) {
+    if (host?.startsWith("facturas.") && !pathname.startsWith("/facturas")) {
+      return NextResponse.rewrite(new URL(`/facturas${pathname}`, request.url));
+    }
+  }
+
+  // 4. Auth routes logic
+  const isAuthRoute = pathname.startsWith("/signin") || pathname.startsWith("/signup");
   if (isAuthRoute && user) {
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }

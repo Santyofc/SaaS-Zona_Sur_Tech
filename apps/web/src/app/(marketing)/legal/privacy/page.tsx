@@ -1,114 +1,93 @@
-import React from "react";
-import { Shield } from "lucide-react";
-import { Metadata } from "next";
-import { siteConfig } from "@/config/site";
+"use client";
 
-export const metadata: Metadata = {
-  title: "Privacy Policy | Zona Sur Tech",
-  description: "Privacy Policy and data handling for Zona Sur Tech applications and OAuth integrations.",
-};
+import React from "react";
+import { Shield, Lock, Eye, FileText, ChevronRight } from "lucide-react";
+import { motion } from "framer-motion";
+
+/**
+ * ════════════════════════════════════════════════════════════
+ * ZS PRIVACY POLICY — ZonaSur Tech
+ * Propósito: Cumplimiento legal y transparencia de datos (CR)
+ * ════════════════════════════════════════════════════════════
+ */
 
 export default function PrivacyPage() {
   return (
-    <main className="pt-32 pb-20 px-4 md:px-8 bg-zs-bg-primary min-h-screen font-sans">
-      <div className="container mx-auto max-w-4xl">
+    <main className="min-h-screen bg-zs-bg-primary pt-32 pb-20 px-4 md:px-8 relative overflow-hidden">
+      <div className="container mx-auto max-w-4xl relative z-10">
         <div className="mb-16">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-zs-blue/10 border border-zs-blue/20 text-zs-blue mb-6">
+          <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-zs-blue/10 border border-zs-blue/20 text-zs-blue mb-8">
             <Shield className="w-4 h-4" />
-            <span className="text-[10px] font-black uppercase tracking-widest">Legal & Compliance</span>
+            <span className="text-[10px] font-black uppercase tracking-widest italic">Protocolo de Privacidad v2.0</span>
           </div>
-          <h1 className="text-4xl md:text-6xl font-black text-white uppercase italic tracking-tighter leading-none mb-8">
-            Privacy <span className="text-zs-blue">Policy</span>
+          <h1 className="text-5xl md:text-7xl font-black text-white tracking-tighter uppercase italic leading-none mb-8">
+            Privacidad de <br />
+            <span className="text-zs-blue">Datos Industriales</span>
           </h1>
-          <p className="text-zs-text-secondary text-lg leading-relaxed">
-            This Privacy Policy explains how Zona Sur Tech collects, uses, and protects your information when you use our platform and authenticate via third-party providers (like Google or GitHub OAuth). 
+          <p className="text-zs-text-secondary text-lg font-light leading-relaxed">
+            Su información técnica y financiera es el núcleo de su operación. En Zona Sur Tech, protegemos ese núcleo con estándares de seguridad de grado militar y estricto cumplimiento legal.
           </p>
         </div>
 
-        <div className="grid gap-8 text-zs-text-secondary leading-relaxed">
-          <section className="zs-card p-8 border-zs-border/50">
-            <h2 className="text-2xl font-black text-white uppercase tracking-widest italic mb-4">1. Information we collect</h2>
-            <p className="mb-4">
-              When you use our services or authenticate using OAuth providers (such as Google or GitHub), we only collect the minimum information necessary to provide you with access to our platform:
-            </p>
-            <ul className="list-disc pl-6 space-y-2 mb-4 text-sm">
-              <li><strong>Profile Information:</strong> Such as your name, email address, and profile picture provided by the OAuth provider.</li>
-              <li><strong>Authentication Data:</strong> OAuth tokens necessary to maintain your secure session.</li>
-              <li><strong>Usage Data:</strong> Basic application logs to ensure system reliability and security.</li>
-            </ul>
-          </section>
+        <div className="space-y-12">
+          <LegalSection 
+            number="01"
+            title="Marco Normativo (Costa Rica)"
+            content="En cumplimiento con la Ley de Protección de la Persona frente al Tratamiento de sus Datos Personales (Ley N° 8968) de Costa Rica, informamos que los datos recolectados a través de la plataforma ZST son tratados bajo estrictas medidas de seguridad técnica y organizativa."
+          />
 
-          <section className="zs-card p-8 border-zs-border/50">
-            <h2 className="text-2xl font-black text-white uppercase tracking-widest italic mb-4">2. How we use information</h2>
-            <p className="mb-4">
-              The information we collect is used exclusively for the following purposes:
-            </p>
-            <ul className="list-disc pl-6 space-y-2 mb-4 text-sm">
-              <li>To provide, operate, and maintain your account securely.</li>
-              <li>To identify you when you sign in across different devices.</li>
-              <li>To send essential administrative and security notifications.</li>
-            </ul>
-            <div className="mt-4 p-4 border border-zs-emerald/20 bg-zs-emerald/5 rounded-lg">
-              <p className="text-zs-emerald font-bold mb-0">
-                Data Selling Policy: We do not and will never sell your personal data to third parties.
-              </p>
+          <LegalSection 
+            number="02"
+            title="Recolección de Información"
+            content="Recopilamos datos técnicos necesarios para la orquestación de servicios: Identificación fiscal (para Hacienda CR), credenciales de API cifradas, y telemetría de uso del sistema. Nunca accedemos a la lógica de negocio privada almacenada en sus nodos aislados."
+          />
+
+          <LegalSection 
+            number="03"
+            title="Seguridad del Kernel"
+            content="Toda la información reside en bases de datos aisladas físicamente en la región AWS US-East-2. Implementamos cifrado AES-256 en reposo y TLS 1.3 en tránsito para cada paquete de datos."
+          />
+
+          <div className="zs-card p-8 bg-zs-blue/5 border-zs-blue/20 mt-16">
+            <div className="flex items-center gap-4 mb-4">
+               <Lock className="w-5 h-5 text-zs-blue" />
+               <h4 className="text-sm font-black text-white uppercase tracking-widest italic">Derechos ARCO</h4>
             </div>
-          </section>
-
-          <section className="zs-card p-8 border-zs-border/50">
-            <h2 className="text-2xl font-black text-white uppercase tracking-widest italic mb-4">3. Data storage and security</h2>
-            <p className="mb-4">
-              Your data is stored securely using enterprise-grade infrastructure. We implement industry-standard encryption in transit (TLS/SSL) and at rest. Access to personal data is strictly monitored and limited to essential operational integrity.
+            <p className="text-xs text-zs-text-secondary leading-relaxed">
+                Usted mantiene el derecho de acceso, rectificación, cancelación y oposición de sus datos. Para ejercer estos derechos o solicitar el borrado de sus registros, contacte a <strong>legal@zonasurtech.online</strong>.
             </p>
-          </section>
-
-          <section className="zs-card p-8 border-zs-border/50">
-            <h2 className="text-2xl font-black text-white uppercase tracking-widest italic mb-4">4. Third-party services</h2>
-            <p className="mb-4">
-              We may utilize trusted third-party services to facilitate our operations:
-            </p>
-            <ul className="list-disc pl-6 space-y-2 mb-4 text-sm">
-              <li><strong>Authentication:</strong> Supabase, Google, and GitHub for managing secure logins.</li>
-              <li><strong>Hosting & Databases:</strong> AWS and Vercel for secure infrastructure hosting.</li>
-            </ul>
-            <p className="text-sm">
-              These providers are bound by strict confidentiality and data protection agreements and cannot use your data for their own independent purposes.
-            </p>
-          </section>
-
-          <section className="zs-card p-8 border-zs-border/50">
-            <h2 className="text-2xl font-black text-white uppercase tracking-widest italic mb-4">5. User rights</h2>
-            <p className="mb-4">
-              You retain full sovereignty over your data. You have the right to:
-            </p>
-            <ul className="list-disc pl-6 space-y-2 mb-4 text-sm">
-              <li>Access the personal information we hold about you.</li>
-              <li>Request correction of inaccurate data.</li>
-              <li>Request complete deletion of your account and associated data (Right to be Forgotten).</li>
-              <li>Revoke OAuth access at any time from your Google or GitHub account settings.</li>
-            </ul>
-          </section>
-
-          <section className="zs-card p-8 border-zs-border/50">
-            <h2 className="text-2xl font-black text-white uppercase tracking-widest italic mb-4">6. Contact information</h2>
-            <p className="mb-4">
-              If you have any questions, security concerns, or wish to exercise your data rights, please contact our dedicated support and compliance team at:
-            </p>
-            <p className="font-bold text-white text-lg">
-              {siteConfig.contact.emails.support}
-            </p>
-            <p className="text-sm mt-2">
-              Or reach out corporately at: {siteConfig.contact.emails.corporate}
-            </p>
-          </section>
+          </div>
         </div>
 
-        <div className="mt-20 pt-8 border-t border-zs-border text-center">
-          <p className="text-sm text-zs-text-muted italic">
-            Last Updated: March 2026. Zona Sur Tech Infrastructure.
-          </p>
+        <div className="mt-20 pt-12 border-t border-zs-border flex justify-between items-center text-zs-text-muted">
+           <span className="text-[10px] font-bold uppercase tracking-widest">Última actualización: 23 de Marzo, 2026</span>
+           <div className="flex gap-6">
+              <FileText className="w-4 h-4" />
+              <Shield className="w-4 h-4" />
+           </div>
         </div>
       </div>
+
+      {/* Background Decor */}
+      <div className="fixed inset-0 pointer-events-none -z-10">
+        <div className="absolute top-[-20%] left-[-10%] w-[50vw] h-[50vw] bg-zs-blue/5 rounded-full blur-[100px]" />
+      </div>
     </main>
+  );
+}
+
+function LegalSection({ number, title, content }: { number: string, title: string, content: string }) {
+  return (
+    <div className="flex gap-8 group">
+      <div className="text-zs-blue font-black text-xs pt-1 tracking-widest">{number}</div>
+      <div>
+        <h3 className="text-xl font-black text-white uppercase italic tracking-tighter mb-4 group-hover:text-zs-blue transition-colors">
+          {title}
+        </h3>
+        <p className="text-zs-text-secondary font-light leading-relaxed text-base italic">
+          {content}
+        </p>
+      </div>
+    </div>
   );
 }

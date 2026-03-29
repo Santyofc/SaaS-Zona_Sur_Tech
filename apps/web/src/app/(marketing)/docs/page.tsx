@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Terminal, Book, Shield, ChevronRight, Cpu, Zap, FileText, Layout, Activity, Network, Binary } from "lucide-react";
+import { Terminal, Book, Shield, ChevronRight, Cpu, Zap, FileText, Layout, Activity, Network, Binary, Building2 } from "lucide-react";
 import Link from "next/link";
 import { GlitchText } from "@/components/ui/GlitchText.client";
 import { motion } from "framer-motion";
@@ -48,13 +48,13 @@ export default function DocsPage() {
                         ]}
                     />
                     <DocCard 
-                        icon={<Shield className="w-6 h-6" />}
-                        title="Seguridad Industrial"
-                        description="Implementación de protocolos de confianza cero y encriptación de grado militar en sus aplicaciones."
+                        icon={<Building2 className="w-6 h-6" />}
+                        title="Onboarding Hacienda CR"
+                        description="Paso a paso para la sincronización de llaves criptográficas y métodos de facturación electrónica v4.3."
                         links={[
-                            { label: "Malla de Seguridad", href: "/security" },
-                            { label: "Enclaves de Datos", href: "/api-reference" },
-                            { label: "Firewall de IA", href: "/security" }
+                            { label: "Configuración de Llaves", href: "/docs" },
+                            { label: "Pruebas de Conexión", href: "/status" },
+                            { label: "Guía Tributaria", href: "/facturacion-electronica-costa-rica" }
                         ]}
                     />
                     <DocCard 
@@ -78,15 +78,21 @@ export default function DocsPage() {
                         <div className="flex-1 max-w-2xl">
                             <div className="flex items-center gap-3 mb-6">
                                 <Binary className="w-5 h-5 text-zs-blue" />
-                                <h3 className="text-3xl font-black text-white uppercase italic tracking-tighter">Específicación Técnica</h3>
+                                <h3 className="text-3xl font-black text-white uppercase italic tracking-tighter">Telemetría de Red</h3>
                             </div>
                             <p className="text-zs-text-secondary mb-8 leading-relaxed text-lg font-light">
                                 Acceda a la telemetría dinámica y a la referencia de la API para integrar el orquestador ZST directamente en su infraestructura. Sin fricción, solo datos puros.
                             </p>
-                            <Link href="/api-reference" className="zs-btn-brand px-12 py-5 rounded-2xl group inline-flex items-center justify-center gap-3 w-full sm:w-auto">
-                                <Activity className="w-5 h-5" />
-                                <span className="text-sm font-black uppercase tracking-widest">Ver Telemetría API</span>
-                            </Link>
+                            <div className="flex flex-col sm:flex-row gap-4">
+                                <Link href="/api-reference" className="zs-btn-brand px-12 py-5 rounded-2xl group inline-flex items-center justify-center gap-3 w-full sm:w-auto">
+                                    <Activity className="w-5 h-5" />
+                                    <span className="text-sm font-black uppercase tracking-widest">Ver Telemetría API</span>
+                                </Link>
+                                <Link href="/security" className="zs-btn-ghost px-12 py-5 rounded-2xl group inline-flex items-center justify-center gap-3 w-full sm:w-auto overflow-hidden relative">
+                                    <Shield className="w-5 h-5" />
+                                    <span className="text-sm font-black uppercase tracking-widest relative z-10">Marco Legal ZST</span>
+                                </Link>
+                            </div>
                         </div>
                         <div className="w-full lg:w-72 h-48 bg-black/60 rounded-3xl border border-zs-border p-6 flex items-center justify-center overflow-hidden">
                              <div className="flex items-end gap-1.5 h-full w-full">
@@ -95,7 +101,7 @@ export default function DocsPage() {
                                         key={i}
                                         animate={{ height: [`${20 + Math.random() * 60}%`, `${20 + Math.random() * 80}%`, `${20 + Math.random() * 60}%`] }}
                                         transition={{ duration: 1.5 + Math.random(), repeat: Infinity }}
-                                        className="w-full bg-zs-blue/40 rounded-t-sm"
+                                        className="w-full bg-zs-blue/40 rounded-t-sm shadow-[0_0_15px_rgba(37,99,235,0.3)]"
                                      />
                                  ))}
                              </div>

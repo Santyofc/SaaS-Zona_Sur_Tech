@@ -20,6 +20,7 @@ import StatsTape from "./components/StatsTape";
 import FeaturesGrid from "./components/FeaturesGrid";
 import CTASection from "./components/CTASection";
 import SEOContextLinks from "./components/SEOContextLinks";
+import EcosystemBento from "./components/EcosystemBento";
 import dynamic from "next/dynamic";
 
 const LiveEmulators = dynamic(() => import("./components/LiveEmulators.client"), {
@@ -39,6 +40,7 @@ export default function Home() {
       <StatsTape />
       <FeaturesGrid />
       <LiveEmulators />
+      <EcosystemBento />
       <SEOContextLinks />
       <CTASection />
     </main>

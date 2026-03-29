@@ -1,88 +1,87 @@
-import React from "react";
-import { Scale } from "lucide-react";
-import { Metadata } from "next";
-import { siteConfig } from "@/config/site";
+"use client";
 
-export const metadata: Metadata = {
-  title: "Terms of Service | Zona Sur Tech",
-  description: "Terms of Service and API usage guidelines for Zona Sur Tech.",
-};
+import React from "react";
+import { FileText, CreditCard, Settings, ShieldAlert, BadgeCheck } from "lucide-react";
+
+/**
+ * ══════════════════════════════════════════════════════════
+ * ZS TERMS OF SERVICE — ZonaSur Tech
+ * Propósito: Acuerdo legal de uso (Industrial Licensing)
+ * ══════════════════════════════════════════════════════════
+ */
 
 export default function TermsPage() {
   return (
-    <main className="pt-32 pb-20 px-4 md:px-8 bg-zs-bg-primary min-h-screen font-sans">
-      <div className="container mx-auto max-w-4xl">
+    <main className="min-h-screen bg-zs-bg-primary pt-32 pb-20 px-4 md:px-8 relative overflow-hidden">
+      <div className="container mx-auto max-w-4xl relative z-10">
         <div className="mb-16">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-zs-violet/10 border border-zs-violet/20 text-zs-violet mb-6">
-            <Scale className="w-4 h-4" />
-            <span className="text-[10px] font-black uppercase tracking-widest">Legal Agreement</span>
+          <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-zs-blue/10 border border-zs-blue/20 text-zs-blue mb-8">
+            <FileText className="w-4 h-4" />
+            <span className="text-[10px] font-black uppercase tracking-widest italic">Licencia de Operación v1.5</span>
           </div>
-          <h1 className="text-4xl md:text-6xl font-black text-white uppercase italic tracking-tighter leading-none mb-8">
-            Terms of <span className="text-zs-violet">Service</span>
+          <h1 className="text-5xl md:text-7xl font-black text-white tracking-tighter uppercase italic leading-none mb-8">
+            Términos de <br />
+            <span className="text-zs-blue">Uso Industrial</span>
           </h1>
-          <p className="text-zs-text-secondary text-lg leading-relaxed">
-            These Terms of Service govern your use of the Zona Sur Tech platform, APIs, and OAuth integrations. By accessing our services, you agree to these minimum required standards of operation.
+          <p className="text-zs-text-secondary text-lg font-light leading-relaxed">
+            Bienvenido al kernel de Zona Sur Tech. Al acceder a nuestros servicios, usted acepta regirse por los siguientes protocolos de uso industrial y legal.
           </p>
         </div>
 
-        <div className="grid gap-8 text-zs-text-secondary leading-relaxed">
-          <section className="zs-card p-8 border-zs-border/50">
-            <h2 className="text-2xl font-black text-white uppercase tracking-widest italic mb-4">1. Acceptance of terms</h2>
-            <p className="mb-4">
-              By registering an account (either manually or via third-party OAuth providers like Google or GitHub), you confirm your understanding and acceptance of these Terms of Service. If you do not agree, you must cease use of our services immediately.
-            </p>
-          </section>
+        <div className="space-y-12">
+          <TermSection 
+            icon={<BadgeCheck className="w-5 h-5" />}
+            title="Derecho de Uso"
+            content="Zona Sur Tech otorga una licencia limitada, no exclusiva e intransferible para el acceso a la plataforma SaaS. El uso está restringido a la orquestación de servicios empresariales legítimos dentro del marco legal de Costa Rica."
+          />
 
-          <section className="zs-card p-8 border-zs-border/50">
-            <h2 className="text-2xl font-black text-white uppercase tracking-widest italic mb-4">2. Account Responsibility</h2>
-            <p className="mb-4">
-              You are responsible for maintaining the security of your account credentials. When using OAuth authentication, you must also maintain the security of your third-party provider accounts. We are not liable for any compromises originating from your third-party linked accounts.
-            </p>
-          </section>
+          <TermSection 
+            icon={<CreditCard className="w-5 h-5" />}
+            title="Facturación y Pagos"
+            content="Los pagos se procesan de forma recurrente mensual según el plan seleccionado. Los precios están expresados en Dólares Americanos (USD). En Costa Rica, el servicio está sujeto a las normativas de IVA vigentes."
+          />
 
-          <section className="zs-card p-8 border-zs-border/50">
-            <h2 className="text-2xl font-black text-white uppercase tracking-widest italic mb-4">3. Permitted Usage</h2>
-            <p className="mb-4">
-              Our services are provided for legitimate business and personal use. You agree NOT to use the platform for:
-            </p>
-            <ul className="list-disc pl-6 space-y-2 mb-4 text-sm mt-4">
-              <li>Distributing malware, spam, or participating in malicious activities.</li>
-              <li>Attempting to bypass security infrastructure or load balancers.</li>
-              <li>Reverse-engineering proprietary software architectures.</li>
-            </ul>
-          </section>
+          <TermSection 
+            icon={<ShieldAlert className="w-5 h-5" />}
+            title="SLA de Disponibilidad"
+            content="ZST se compromete a mantener un tiempo de actividad (uptime) del 99.9% para servicios de grado industrial. Las ventanas de mantenimiento programado se notificarán con 48 horas de antelación vía telemetría de sistema."
+          />
 
-          <section className="zs-card p-8 border-zs-border/50">
-            <h2 className="text-2xl font-black text-white uppercase tracking-widest italic mb-4">4. Intellectual Property</h2>
-            <p className="mb-4">
-              Zona Sur Tech retains all intellectual property rights to the platform, including its codebase, design system (&quot;Hacker-Tech Aesthetic&quot;), and associated trademarks. You are granted a limited, personal, non-transferable license to use the service.
+          <div className="zs-card p-10 bg-zs-bg-secondary/40 border-zs-border mt-20 relative overflow-hidden group">
+            <div className="absolute inset-0 bg-zs-blue/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+            <h4 className="text-xl font-black text-white uppercase italic tracking-tighter mb-4">Jurisdicción</h4>
+            <p className="text-sm text-zs-text-secondary leading-relaxed font-light">
+                Cualquier disputa legal relacionada con los servicios de Zona Sur Tech será resuelta bajo las leyes de la República de Costa Rica, sometiéndose las partes a la jurisdicción de los tribunales de San José.
             </p>
-          </section>
-
-          <section className="zs-card p-8 border-zs-border/50">
-            <h2 className="text-2xl font-black text-white uppercase tracking-widest italic mb-4">5. Limitation of Liability</h2>
-            <p className="mb-4">
-              Zona Sur Tech provides its services on an &quot;AS IS&quot; basis. To the maximum extent permitted by law, we shall not be liable for any indirect, incidental, special, or consequential damages resulting from your use of the platform.
-            </p>
-          </section>
-
-          <section className="zs-card p-8 border-zs-border/50">
-            <h2 className="text-2xl font-black text-white uppercase tracking-widest italic mb-4">6. Contact Information</h2>
-            <p className="mb-4">
-              If you have any questions regarding these Terms or need assistance with your account, please contact our Legal and Operations team at:
-            </p>
-            <p className="font-bold text-white text-lg">
-              {siteConfig.contact.emails.corporate}
-            </p>
-          </section>
+          </div>
         </div>
 
-        <div className="mt-20 pt-8 border-t border-zs-border text-center">
-          <p className="text-sm text-zs-text-muted italic">
-            Last Updated: March 2026. Zona Sur Tech Systems.
-          </p>
+        <div className="mt-20 pt-12 border-t border-zs-border flex justify-between items-center text-zs-text-muted">
+           <span className="text-[10px] font-bold uppercase tracking-widest">ZST FINAL_LICENSE_RELEASE</span>
+           <div className="flex gap-4">
+              <span className="text-[9px] font-black uppercase tracking-[0.2em] border border-white/10 px-3 py-1 rounded">2026 EDITION</span>
+           </div>
         </div>
       </div>
+
+      {/* Background Decor */}
+      <div className="fixed inset-0 pointer-events-none -z-10">
+        <div className="absolute top-[-10%] right-[-10%] w-[60vw] h-[60vw] bg-zs-violet/5 rounded-full blur-[120px]" />
+      </div>
     </main>
+  );
+}
+
+function TermSection({ icon, title, content }: { icon: React.ReactNode, title: string, content: string }) {
+  return (
+    <div className="flex gap-6 items-start">
+      <div className="w-12 h-12 rounded-xl bg-zs-bg-secondary/60 border border-zs-border flex items-center justify-center text-zs-blue shrink-0 shadow-zs-glow-blue/5">
+        {icon}
+      </div>
+      <div>
+        <h3 className="text-2xl font-black text-white uppercase italic tracking-tighter mb-4">{title}</h3>
+        <p className="text-zs-text-secondary font-light leading-relaxed text-base italic">{content}</p>
+      </div>
+    </div>
   );
 }

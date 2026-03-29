@@ -1,159 +1,51 @@
-# SaaS Zona Sur Tech
+<h1 align="center">
+  SaaS Zona Sur Tech
+</h1>
 
-Monorepo `pnpm` + `turbo` para una plataforma SaaS multi-tenant con:
+<p align="center">
+  Plataforma SaaS multi-tenant tipo ERP para PYMEs.
+  <br/>
+  Ventas · Inventario · Facturación · Automatización
+</p>
 
-- `apps/web`: Next.js 14 App Router. Frontend principal y SaaS core temporal.
-- `apps/api`: NestJS. Backend oficial del dominio ERP.
-- `packages/auth`: guards y helpers de auth/tenancy sobre Supabase Auth.
-- `packages/db`: esquema Drizzle, migraciones SQL y acceso PostgreSQL.
-- `packages/platform`: rate limiting, logging y utilidades operativas.
-- `packages/email`: envío de correos transaccionales.
-- `packages/ui`: componentes compartidos.
+<p align="center">
+  <img src="https://img.shields.io/badge/Next.js-14-000000?style=for-the-badge&logo=next.js" />
+  <img src="https://img.shields.io/badge/NestJS-API-E0234E?style=for-the-badge&logo=nestjs" />
+  <img src="https://img.shields.io/badge/PostgreSQL-DB-336791?style=for-the-badge&logo=postgresql" />
+  <img src="https://img.shields.io/badge/Supabase-Auth-3ECF8E?style=for-the-badge&logo=supabase" />
+  <img src="https://img.shields.io/badge/AWS-EC2-FF9900?style=for-the-badge&logo=amazonaws" />
+</p>
 
-## Arquitectura actual
+<p align="center">
+  <a href="https://zonasurtech.online">🌐 Website</a> ·
+  <a href="https://github.com/Santyofc">💻 GitHub</a>
+</p>
 
-- Auth y sesión: Supabase Auth.
-- Organización activa: se resuelve en `web` y viaja al API como `X-Organization-Id`.
-- SaaS core multi-tenant: rutas `app/api` dentro de `apps/web`.
-- ERP: `apps/api` con NestJS.
-- Contrato web -> API:
-  - `Authorization: Bearer <supabase_access_token>`
-  - `X-Organization-Id: <active_org_id>`
+---
 
-El API valida JWT, membership activa y permisos por rol. `organizationId` en `app_metadata` no es autoridad para el workspace activo.
+## 🚀 Overview
 
-## Estructura
+SaaS modular diseñado para negocios que necesitan:
+
+- Control de ventas
+- Gestión de inventario
+- Facturación electrónica (CR)
+- Automatización de procesos
+- Centralización de operaciones
+
+Arquitectura enfocada en **multi-tenancy real + escalabilidad + módulos independientes**.
+
+---
+
+## 🧠 Arquitectura
 
 ```text
-apps/
-  api/        NestJS ERP API
-  web/        Next.js frontend + SaaS core
-packages/
-  auth/       Auth, permisos, memberships, invitaciones
-  db/         Drizzle schema + migrations
-  email/      Email transactional
-  platform/   Logging, rate limit, helpers
-  ui/         Design system compartido
-  ui-experiments/
-infra/
-  docker/     Compose de producción
-  nginx/      Reverse proxy de VPS
-  scripts/    Deploy, rollback y healthchecks
-```
-
-## Requisitos
-
-- Node.js `20.x`
-- `pnpm` `9.x`
-- Docker Desktop / Docker Engine
-- PostgreSQL accesible por `DATABASE_URL`
-- Proyecto Supabase configurado
-
-## Instalación
-
-```bash
-corepack enable pnpm
-pnpm install
-cp .env.example .env
-```
-
-## Variables mínimas
-
-Revisar `.env.example`. Las claves mínimas para desarrollo son:
-
-- `DATABASE_URL`
-- `NEXT_PUBLIC_SUPABASE_URL`
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-- `SUPABASE_URL`
-- `SUPABASE_SERVICE_ROLE_KEY`
-- `NEXT_PUBLIC_API_URL`
-- `SUPABASE_JWKS_URL`
-- `CORS_ORIGIN`
-
-## Desarrollo local
-
-Web:
-
-```bash
-pnpm dev:web
-```
-
-API:
-
-```bash
-pnpm dev:api
-```
-
-Ambos:
-
-```bash
-pnpm dev
-```
-
-Por defecto:
-
-- Web: `http://localhost:3000`
-- API ERP: `http://localhost:4000`
-
-## Comandos útiles
-
-```bash
-pnpm lint
-pnpm typecheck
-pnpm build
-pnpm --filter @repo/web dev
-pnpm --filter api start:dev
-docker compose up --build
-docker compose build
-```
-
-## Base de datos
-
-Migraciones SQL versionadas en `packages/db/drizzle`.
-
-Aplicar migraciones:
-
-```bash
-pnpm --filter @repo/db db:migrate
-```
-
-Generar artefactos Drizzle:
-
-```bash
-pnpm --filter @repo/db db:generate
-```
-
-## Docker local
-
-`docker-compose.yml` levanta:
-
-- `db` PostgreSQL
-- `redis`
-- `api`
-- `web`
-
-El archivo está alineado con la estructura real del repo. No existen `apps/dashboard` ni `apps/client`.
-
-## Producción en VPS
-
-- Compose de producción: `infra/docker/docker-compose.prod.yml`
-- Nginx VPS: `infra/nginx/vm-platform.conf`
-- Healthcheck: `infra/scripts/healthcheck.sh`
-
-Recomendación actual:
-
-- `zonasurtech.online` -> `web`
-- `api.zonasurtech.online` -> `api`
-
-## Estado del repositorio
-
-Estado actual recomendado: `MVP estable para desarrollo`.
-
-No está listo todavía para producción pública. Faltan al menos:
-
-- gestión formal de secretos
-- observabilidad/alerting real
-- backups validados
-- endurecimiento de CORS/cookies según dominio final
-- pruebas automatizadas de flujos críticos
-- revisión de seguridad y límites operativos
+Cliente (Browser)
+      ↓
+Next.js (apps/web)
+      ↓  JWT + OrgID
+NestJS API (apps/api)
+      ↓
+PostgreSQL (Drizzle ORM)
+      ↓
+Servicios externos (Facturación / Bots / IA)

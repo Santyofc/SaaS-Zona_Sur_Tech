@@ -13,13 +13,13 @@ import { Type } from 'class-transformer';
 
 export class InventoryAdjustmentDto {
   @IsUUID()
-  productId: string;
+  productId!: string;
 
   @IsNumber()
-  quantity: number;
+  quantity!: number;
 
   @IsEnum(['initial_stock', 'manual_adjustment', 'internal_transfer'])
-  movementType: string;
+  movementType!: string;
 
   @IsOptional()
   @IsString()
@@ -28,15 +28,15 @@ export class InventoryAdjustmentDto {
 
 export class SaleItemDto {
   @IsUUID()
-  productId: string;
+  productId!: string;
 
   @IsNumber()
   @IsPositive()
-  quantity: number;
+  quantity!: number;
 
   @IsNumber()
   @Min(0)
-  unitPrice: number;
+  unitPrice!: number;
 
   @IsOptional()
   @IsNumber()
@@ -48,7 +48,7 @@ export class CreateSaleDto {
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => SaleItemDto)
-  items: SaleItemDto[];
+  items!: SaleItemDto[];
 
   @IsOptional()
   @IsString()

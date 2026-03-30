@@ -1,4 +1,4 @@
-import { createAdminClient } from "@repo/auth/src/supabaseAdmin";
+import { createAdminClient } from "../../../auth/src/supabaseAdmin";
 import { logger } from "../logger";
 
 export async function runExpireInvitationsJob(): Promise<{ processed: number; success: boolean, error?: string }> {

@@ -86,6 +86,7 @@ export function SignUpForm({ defaultError }: { defaultError?: string }) {
                 name="nombre"
                 type="text"
                 required
+                autoComplete="name"
                 placeholder="Agente X"
                 className="zs-input pl-12 focus:border-zs-violet focus:ring-zs-violet/10"
               />
@@ -101,6 +102,7 @@ export function SignUpForm({ defaultError }: { defaultError?: string }) {
                 name="cargo"
                 type="text"
                 required
+                autoComplete="organization-title"
                 placeholder="Ingeniero de Sistemas"
                 className="zs-input pl-12 focus:border-zs-violet focus:ring-zs-violet/10"
               />
@@ -119,6 +121,7 @@ export function SignUpForm({ defaultError }: { defaultError?: string }) {
               name="empresa"
               type="text"
               required
+              autoComplete="organization"
               placeholder="Zona Sur Corp"
               className="zs-input pl-12 focus:border-zs-violet focus:ring-zs-violet/10"
             />
@@ -137,6 +140,7 @@ export function SignUpForm({ defaultError }: { defaultError?: string }) {
               name="email"
               type="email"
               required
+              autoComplete="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="nuevo.agente@santy.tech"
@@ -162,6 +166,7 @@ export function SignUpForm({ defaultError }: { defaultError?: string }) {
                 name="password"
                 type="password"
                 required
+                autoComplete="new-password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
@@ -181,6 +186,7 @@ export function SignUpForm({ defaultError }: { defaultError?: string }) {
                 name="confirmPassword"
                 type="password"
                 required
+                autoComplete="new-password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 placeholder="••••••••"

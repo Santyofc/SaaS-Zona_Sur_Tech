@@ -46,6 +46,7 @@ export function SignInForm({
               name="email"
               type="email"
               required
+              autoComplete="email"
               placeholder="agente@zonasurtech.online"
               className="zs-input pl-12"
             />
@@ -62,6 +63,7 @@ export function SignInForm({
               name="password"
               type="password"
               required
+              autoComplete="current-password"
               placeholder="••••••••"
               className="zs-input pl-12"
             />

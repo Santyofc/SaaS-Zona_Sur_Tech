@@ -1,6 +1,6 @@
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { cookies, headers } from "next/headers";
-import { withSharedCookieDomain } from "@/lib/edge-host";
+import { getCookieDomain } from "@/utils/supabase/cookie-config";
 
 export function createClient() {
   const cookieStore = cookies();
@@ -22,22 +22,24 @@ export function createClient() {
         },
         set(name: string, value: string, options: CookieOptions) {
           try {
-            cookieStore.set(withSharedCookieDomain({
+            cookieStore.set({
               name,
               value,
+              domain: getCookieDomain(host),
               ...options,
-            }, host));
+            });
           } catch (error) {
             // Ignored in SC
           }
         },
         remove(name: string, options: CookieOptions) {
           try {
-            cookieStore.set(withSharedCookieDomain({
+            cookieStore.set({
               name,
               value: "",
+              domain: getCookieDomain(host),
               ...options,
-            }, host));
+            });
           } catch (error) {
             // Ignored in SC
           }

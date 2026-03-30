@@ -2,13 +2,20 @@
   "name": "@repo/db",
   "version": "0.1.0",
   "private": true,
-  "main": "./src/index.ts",
+  "main": "./dist/index.js",
   "types": "./src/index.ts",
   "exports": {
-    ".": "./src/index.ts",
-    "./cms-schema": "./src/cms-schema.ts"
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./dist/index.js"
+    },
+    "./cms-schema": {
+      "types": "./src/cms-schema.ts",
+      "default": "./dist/cms-schema.js"
+    }
   },
   "scripts": {
+    "build": "tsc -p tsconfig.json",
     "db:generate": "drizzle-kit generate",
     "db:push": "drizzle-kit push",
     "typecheck": "tsc -p tsconfig.json --noEmit"

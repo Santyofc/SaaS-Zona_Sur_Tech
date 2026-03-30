@@ -16,44 +16,43 @@ export async function middleware(request: NextRequest) {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ?? process.env.SUPABASE_URL;
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? process.env.SUPABASE_ANON_KEY;
 
-  if (!supabaseUrl || !supabaseAnonKey) {
-    return response;
+  const canCheckAuth = Boolean(supabaseUrl && supabaseAnonKey);
+  let user: any = null;
+  if (canCheckAuth) {
+    const supabase = createServerClient(supabaseUrl!, supabaseAnonKey!, {
+      cookies: {
+        get(name: string) {
+          return request.cookies.get(name)?.value;
+        },
+        set(name: string, value: string, options: CookieOptions) {
+          // request.cookies.set is used for passing cookies to RSC, only name and value are needed/supported
+          request.cookies.set({ name, value });
+          response = NextResponse.next({
+            request: { headers: request.headers },
+          });
+          response.cookies.set(withSharedCookieDomain({
+            name,
+            value,
+            ...options,
+          }, host));
+        },
+        remove(name: string, options: CookieOptions) {
+          request.cookies.set({ name, value: "" });
+          response = NextResponse.next({
+            request: { headers: request.headers },
+          });
+          response.cookies.set(withSharedCookieDomain({
+            name,
+            value: "",
+            ...options,
+          }, host));
+        },
+      },
+    });
+
+    const authResult = await supabase.auth.getUser();
+    user = authResult.data.user ?? null;
   }
-
-  const supabase = createServerClient(supabaseUrl, supabaseAnonKey, {
-    cookies: {
-      get(name: string) {
-        return request.cookies.get(name)?.value;
-      },
-      set(name: string, value: string, options: CookieOptions) {
-        // request.cookies.set is used for passing cookies to RSC, only name and value are needed/supported
-        request.cookies.set({ name, value });
-        response = NextResponse.next({
-          request: { headers: request.headers },
-        });
-        response.cookies.set(withSharedCookieDomain({
-          name,
-          value,
-          ...options,
-        }, host));
-      },
-      remove(name: string, options: CookieOptions) {
-        request.cookies.set({ name, value: "" });
-        response = NextResponse.next({
-          request: { headers: request.headers },
-        });
-        response.cookies.set(withSharedCookieDomain({
-          name,
-          value: "",
-          ...options,
-        }, host));
-      },
-    },
-  });
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
 
   // --- Subdomain & Auth Routing Logic ---
   const isCMS = hostContext.surface === "cms" || pathname.startsWith("/admin");
@@ -73,13 +72,13 @@ export async function middleware(request: NextRequest) {
   const isAuthRoute = pathname.startsWith("/signin") || pathname.startsWith("/signup");
   
   // 1. Protection: Dashboard
-  if (isDashboard && !user && !isAuthRoute) {
+  if (isDashboard && (!canCheckAuth || !user) && !isAuthRoute) {
     return NextResponse.redirect(new URL("/signin", request.url));
   }
 
   // 2. Protection: Admin / CMS
   if (isCMS && !isAuthRoute) {
-    if (!user) {
+    if (!canCheckAuth || !user) {
       return NextResponse.redirect(new URL("/signin", request.url));
     }
     const isSuperAdmin =
@@ -117,7 +116,7 @@ export async function middleware(request: NextRequest) {
     });
   }
 
-  if (isAuthRoute && user) {
+  if (canCheckAuth && isAuthRoute && user) {
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 

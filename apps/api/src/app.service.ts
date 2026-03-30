@@ -9,4 +9,12 @@ export class AppService {
       timestamp: new Date().toISOString(),
     };
   }
+
+  getLive() {
+    return this.getHealth();
+  }
+
+  getReady() {
+    return this.getHealth();
+  }
 }

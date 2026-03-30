@@ -1,6 +1,6 @@
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
-import { getCookieDomain } from "./utils/supabase/cookie-config";
+import { resolveHostContext, withSharedCookieDomain } from "./lib/edge-host";
 
 export async function middleware(request: NextRequest) {
   let response = NextResponse.next({
@@ -11,54 +11,63 @@ export async function middleware(request: NextRequest) {
 
   const { pathname } = request.nextUrl;
   const host = request.headers.get("host");
+  const hostContext = resolveHostContext(host);
 
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        get(name: string) {
-          return request.cookies.get(name)?.value;
-        },
-        set(name: string, value: string, options: CookieOptions) {
-          const cookieDomain = getCookieDomain(host);
-          // request.cookies.set is used for passing cookies to RSC, only name and value are needed/supported
-          request.cookies.set({ name, value });
-          response = NextResponse.next({
-            request: { headers: request.headers },
-          });
-          response.cookies.set({
-            name,
-            value,
-            ...options,
-            domain: cookieDomain,
-          });
-        },
-        remove(name: string, options: CookieOptions) {
-          const cookieDomain = getCookieDomain(host);
-          request.cookies.set({ name, value: "" });
-          response = NextResponse.next({
-            request: { headers: request.headers },
-          });
-          response.cookies.set({
-            name,
-            value: "",
-            ...options,
-            domain: cookieDomain,
-          });
-        },
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ?? process.env.SUPABASE_URL;
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? process.env.SUPABASE_ANON_KEY;
+
+  if (!supabaseUrl || !supabaseAnonKey) {
+    return response;
+  }
+
+  const supabase = createServerClient(supabaseUrl, supabaseAnonKey, {
+    cookies: {
+      get(name: string) {
+        return request.cookies.get(name)?.value;
       },
-    }
-  );
+      set(name: string, value: string, options: CookieOptions) {
+        // request.cookies.set is used for passing cookies to RSC, only name and value are needed/supported
+        request.cookies.set({ name, value });
+        response = NextResponse.next({
+          request: { headers: request.headers },
+        });
+        response.cookies.set(withSharedCookieDomain({
+          name,
+          value,
+          ...options,
+        }, host));
+      },
+      remove(name: string, options: CookieOptions) {
+        request.cookies.set({ name, value: "" });
+        response = NextResponse.next({
+          request: { headers: request.headers },
+        });
+        response.cookies.set(withSharedCookieDomain({
+          name,
+          value: "",
+          ...options,
+        }, host));
+      },
+    },
+  });
 
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
   // --- Subdomain & Auth Routing Logic ---
-  const isCMS = host?.startsWith("cms.") || pathname.startsWith("/admin");
-  const isFacturas = host?.startsWith("facturas.") || pathname.startsWith("/facturas");
-  const isDashboard = pathname.startsWith("/dashboard");
+  const isCMS = hostContext.surface === "cms" || pathname.startsWith("/admin");
+  const isFacturas = hostContext.surface === "facturas" || pathname.startsWith("/facturas");
+  const isDashboard = hostContext.surface === "app" || pathname.startsWith("/dashboard");
+  const isTenantHost = hostContext.surface === "tenant" && !hostContext.isReservedTenant;
+  const isPublicRoute =
+    pathname.startsWith("/signin") ||
+    pathname.startsWith("/signup") ||
+    pathname.startsWith("/auth") ||
+    pathname.startsWith("/api") ||
+    pathname.startsWith("/_next") ||
+    pathname.startsWith("/images") ||
+    pathname.startsWith("/favicon");
 
   // 4. Auth routes logic
   const isAuthRoute = pathname.startsWith("/signin") || pathname.startsWith("/signup");
@@ -81,9 +90,31 @@ export async function middleware(request: NextRequest) {
     }
     
     // Internal Rewrite for cms. -> /admin
-    if (host?.startsWith("cms.") && !pathname.startsWith("/admin")) {
+    if (hostContext.surface === "cms" && !pathname.startsWith("/admin")) {
       return NextResponse.rewrite(new URL(`/admin${pathname}`, request.url));
     }
+  }
+
+  if (hostContext.surface === "app" && !pathname.startsWith("/dashboard") && !isPublicRoute) {
+    return NextResponse.rewrite(new URL(`/dashboard${pathname === "/" ? "" : pathname}`, request.url));
+  }
+
+  if (hostContext.surface === "app" && pathname === "/") {
+    return NextResponse.rewrite(new URL("/dashboard", request.url));
+  }
+
+  if (isFacturas && !pathname.startsWith("/facturas") && !isPublicRoute) {
+    return NextResponse.rewrite(new URL(`/facturas${pathname === "/" ? "" : pathname}`, request.url));
+  }
+
+  if (isTenantHost) {
+    const requestHeaders = new Headers(request.headers);
+    requestHeaders.set("x-zst-tenant-slug", hostContext.tenantSlug ?? "");
+    response = NextResponse.next({
+      request: {
+        headers: requestHeaders,
+      },
+    });
   }
 
   if (isAuthRoute && user) {

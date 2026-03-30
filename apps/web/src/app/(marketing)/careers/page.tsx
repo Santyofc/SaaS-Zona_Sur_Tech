@@ -46,7 +46,7 @@ export default function CareersPage() {
                         <Star className="w-4 h-4 text-zs-amber animate-spin-slow" />
                         <span className="text-zs-text-muted text-[10px] font-black uppercase tracking-[0.5em] group-hover:text-white transition-colors">Join the Elite</span>
                     </div>
-                    <h1 className="text-6xl md:text-9xl font-black text-white tracking-tighter uppercase italic leading-none mb-12">
+                    <h1 className="text-3xl md:text-5xl font-black text-white tracking-tighter uppercase italic leading-none mb-12">
                         Construye el <span className="text-zs-blue">Futuro</span>
                     </h1>
                     <p className="text-2xl text-zs-text-secondary leading-relaxed font-light">
@@ -113,7 +113,7 @@ export default function CareersPage() {
                 <section className="relative p-16 rounded-[4rem] bg-zs-blue relative overflow-hidden group">
                     <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.1),transparent)] transition-transform group-hover:scale-110 duration-1000" />
                     <div className="max-w-3xl relative z-10">
-                        <h2 className="text-4xl md:text-6xl font-black text-white uppercase italic tracking-tighter mb-8 leading-none">¿No ves tu <span className="text-black/40">Rol Ideal?</span></h2>
+                        <h2 className="text-3xl md:text-5xl font-black text-white uppercase italic tracking-tighter mb-8 leading-none">¿No ves tu <span className="text-black/40">Rol Ideal?</span></h2>
                         <p className="text-white/80 text-xl mb-12 leading-relaxed">
                             Si crees que puedes aportar algo extraordinario a Zona Sur Tech,
                             escríbenos directamente. Siempre hay espacio para el talento radical.

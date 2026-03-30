@@ -119,7 +119,7 @@ export default function FeaturesPage() {
           <p className="text-zs-blue text-sm font-black uppercase tracking-[0.3em] mb-4">
             Plataforma Completa
           </p>
-          <h1 className="text-4xl md:text-6xl font-black text-white tracking-tight uppercase italic leading-tight mb-6">
+          <h1 className="text-3xl md:text-5xl font-black text-white tracking-tight uppercase italic leading-tight mb-6">
             ERP y Facturación Electrónica{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-zs-cyan via-zs-blue to-zs-violet">
               para Costa Rica

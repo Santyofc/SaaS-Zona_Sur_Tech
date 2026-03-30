@@ -57,7 +57,7 @@ export default function StatusPage() {
                             <div className="w-2 h-2 rounded-full bg-zs-emerald animate-pulse" />
                             <span className="text-xs font-black uppercase tracking-[0.2em]">Todos los Sistemas Operativos</span>
                         </div>
-                        <h1 className="text-5xl md:text-7xl font-black text-white uppercase italic tracking-tighter mb-4 leading-none">
+                        <h1 className="text-3xl md:text-5xl font-black text-white uppercase italic tracking-tighter mb-4 leading-none">
                             Estatus del <span className="text-zs-cyan shadow-zs-glow-cyan">Kernel</span>
                         </h1>
                         <p className="text-zs-text-secondary max-w-2xl leading-relaxed mt-4">

@@ -67,7 +67,7 @@ export default function TechnologyClient({
                         transition={{ duration: 0.8 }}
                     >
                         <h2 className="text-zs-violet text-xs font-black uppercase tracking-[0.4em] mb-4 text-glow-violet">Stack de Ingeniería</h2>
-                        <h1 className="text-5xl md:text-8xl font-black text-white tracking-tighter uppercase italic mb-8 leading-none">
+                        <h1 className="text-3xl md:text-5xl font-black text-white tracking-tighter uppercase italic mb-8 leading-none">
                             {titleText.split(' ')[0]} <span className="text-zs-violet drop-shadow-[0_0_30px_rgba(139,92,246,0.3)]">{titleText.split(' ').slice(1).join(' ') || "Logic"}</span>
                         </h1>
                         <p className="text-xl text-zs-text-secondary leading-relaxed max-w-xl whitespace-pre-line">

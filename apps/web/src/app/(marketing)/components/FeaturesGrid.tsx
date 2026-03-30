@@ -91,8 +91,8 @@ export default function FeaturesGrid() {
   return (
     <section className="py-32 relative z-10 px-4 md:px-8">
       <div className="container mx-auto">
-        <div className="text-center mb-20">
-          <h2 className="text-5xl md:text-7xl font-black text-white uppercase italic tracking-tighter leading-none mb-6">
+        <div className="text-center mb-16 md:mb-20">
+          <h2 className="text-[clamp(2.5rem,7vw,5.5rem)] font-black text-white uppercase italic tracking-[-0.03em] leading-[0.92] mb-6">
             Arquitectura{" "}
             <br className="md:hidden" />
             <GlitchText

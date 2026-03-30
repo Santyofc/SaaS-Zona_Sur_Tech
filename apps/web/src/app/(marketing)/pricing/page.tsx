@@ -112,7 +112,7 @@ export default async function PricingPage() {
                         <span className="text-[10px] font-black uppercase tracking-widest italic">Inversión en Infraestructura</span>
                     </div>
 
-                    <h1 className="text-6xl md:text-9xl font-black text-white tracking-tighter uppercase italic leading-[0.8] mb-8">
+                    <h1 className="text-3xl md:text-5xl font-black text-white tracking-tighter uppercase italic leading-[0.8] mb-8">
                         {pageTitle.split(' ')[0]} <br />
                         <GlitchText 
                             text={pageTitle.split(' ').slice(1).join(' ') || "Estratégico"} 

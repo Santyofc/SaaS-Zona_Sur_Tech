@@ -15,16 +15,16 @@ export default function EcosystemBento() {
   return (
     <section className="py-32 px-4 md:px-8 relative overflow-hidden bg-zs-bg-primary">
       <div className="container mx-auto">
-        <div className="max-w-3xl mb-16">
+        <div className="max-w-4xl mb-14 md:mb-16">
           <div className="flex items-center gap-3 text-zs-blue mb-6">
             <Network className="w-5 h-5" />
             <span className="text-[10px] font-black uppercase tracking-[0.3em] italic">Red de Interconexión Global</span>
           </div>
-          <h2 className="text-4xl md:text-6xl font-black text-white uppercase italic tracking-tighter leading-none mb-8">
+          <h2 className="text-[clamp(2.2rem,6.5vw,5rem)] font-black text-white uppercase italic tracking-[-0.03em] leading-[0.92] mb-6 md:mb-7">
             Ecosistema <br />
             <span className="text-zs-blue">Intelectualmente Conectado</span>
           </h2>
-          <p className="text-zs-text-secondary text-lg font-light leading-relaxed">
+          <p className="text-zs-text-secondary text-base md:text-lg font-light leading-relaxed max-w-3xl">
             Nuestra arquitectura no es una isla. Es el núcleo de una red de alta fidelidad que sincroniza datos financieros y operativos con los entes más críticos del país.
           </p>
         </div>

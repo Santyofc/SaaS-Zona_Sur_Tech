@@ -23,7 +23,7 @@ export default function DocsPage() {
                         <span className="text-[10px] font-black uppercase tracking-widest italic">ZST_OS_DOCUMENTATION_v7.0</span>
                     </div>
 
-                    <h1 className="text-6xl md:text-8xl font-black text-white tracking-tighter uppercase italic leading-[0.8] mb-8">
+                    <h1 className="text-3xl md:text-5xl font-black text-white tracking-tighter uppercase italic leading-[0.8] mb-8">
                         Sistema de <br />
                         <GlitchText 
                             text="Documentación" 

@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 export default function SoftwarePymesPage() {
   return (
     <div className="container mx-auto px-4 py-32 relative z-10 max-w-4xl">
-      <h1 className="text-4xl md:text-6xl font-black text-white uppercase italic tracking-tighter mb-8">
+      <h1 className="text-3xl md:text-5xl font-black text-white uppercase italic tracking-tighter mb-8">
         Software para <span className="text-zs-blue">PYMES Costa Rica</span>
       </h1>
       

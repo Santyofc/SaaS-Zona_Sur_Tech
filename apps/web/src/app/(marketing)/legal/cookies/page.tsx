@@ -23,7 +23,7 @@ export default function CookiesPage() {
                         <span className="text-[10px] font-black uppercase tracking-widest italic">Cookie Policy v1.0</span>
                     </div>
 
-                    <h1 className="text-3xl md:text-5xl font-black text-white tracking-tighter uppercase italic leading-[0.8] mb-8">
+                    <h1 className="text-2xl md:text-5xl font-black text-white tracking-tighter uppercase italic leading-[0.8] mb-8">
                         Política de <br />
                         <span className="text-transparent bg-clip-text bg-gradient-to-r from-zs-violet via-zs-purple to-zs-blue drop-shadow-[0_0_30px_rgba(139,92,246,0.3)]">
                             Cookies

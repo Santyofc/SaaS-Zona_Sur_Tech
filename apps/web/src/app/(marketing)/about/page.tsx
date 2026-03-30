@@ -24,7 +24,7 @@ export default function AboutPage() {
           className="text-center max-w-4xl mx-auto mb-24"
         >
           <h2 className="text-zs-blue text-xs font-black uppercase tracking-[0.4em] mb-4">Nuestra Identidad</h2>
-          <h1 className="text-3xl md:text-5xl font-black text-white tracking-tighter uppercase italic mb-8 leading-none">
+          <h1 className="text-2xl md:text-5xl font-black text-white tracking-tighter uppercase italic mb-8 leading-none">
             Más allá del <br /> <span className="text-zs-blue drop-shadow-[0_0_30px_rgba(37,99,235,0.3)]">Software</span>
           </h1>
           <p className="text-2xl text-zs-text-secondary leading-relaxed font-light">
@@ -106,7 +106,7 @@ export default function AboutPage() {
           <div className="absolute top-0 left-0 p-8 opacity-5">
             <Users className="w-64 h-64 text-white" />
           </div>
-          <h2 className="text-3xl md:text-5xl font-black text-white uppercase italic tracking-tighter mb-8 leading-none relative z-10">¿Quieres ser parte de <br /><span className="text-zs-blue">nuestra historia?</span></h2>
+          <h2 className="text-2xl md:text-5xl font-black text-white uppercase italic tracking-tighter mb-8 leading-none relative z-10">¿Quieres ser parte de <br /><span className="text-zs-blue">nuestra historia?</span></h2>
           <p className="text-zs-text-secondary max-w-2xl mx-auto mb-12 relative z-10 leading-relaxed text-lg">
             Buscamos visionarios, rebeldes y expertos técnicos que quieran dejar una marca
             imborrable en la industria tecnológica.

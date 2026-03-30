@@ -63,7 +63,7 @@ export default function BlogIndexClient({ initialPosts }: BlogIndexClientProps) 
             <span className="text-[10px] font-black uppercase tracking-[0.2em]">Intel Core // Knowledge Base</span>
           </motion.div>
 
-          <h1 className="text-3xl md:text-5xl font-black text-white tracking-tighter uppercase italic leading-none mb-8">
+          <h1 className="text-2xl md:text-5xl font-black text-white tracking-tighter uppercase italic leading-none mb-8">
             <GlitchText text="BLOG" className="text-glow-blue" />
           </h1>
 

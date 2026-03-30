@@ -53,7 +53,7 @@ export default async function SystemsPage() {
                         <span className="text-[10px] font-black uppercase tracking-widest italic">Live Network Telemetry</span>
                     </div>
 
-                    <h1 className="text-3xl md:text-5xl font-black text-white tracking-tighter uppercase italic leading-[0.8] mb-8">
+                    <h1 className="text-2xl md:text-5xl font-black text-white tracking-tighter uppercase italic leading-[0.8] mb-8">
                         {pageTitle.split(' ')[0]} <br />
                         <span className="text-transparent bg-clip-text bg-gradient-to-r from-zs-cyan via-zs-blue to-zs-violet drop-shadow-[0_0_30px_rgba(37,99,235,0.3)]">
                             {pageTitle.split(' ').slice(1).join(' ') || "Distribuida"}

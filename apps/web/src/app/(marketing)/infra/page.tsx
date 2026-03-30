@@ -49,7 +49,7 @@ export default function InfrastructurePage() {
                         <div className="h-px w-12 bg-zs-blue" />
                         <span className="text-zs-blue text-[10px] font-black uppercase tracking-[0.5em]">Global Backbone</span>
                     </div>
-                    <h1 className="text-3xl md:text-5xl font-black text-white tracking-tighter uppercase italic mb-8 leading-[0.8]">
+                    <h1 className="text-2xl md:text-5xl font-black text-white tracking-tighter uppercase italic mb-8 leading-[0.8]">
                         Infraestructura <span className="text-zs-blue animate-pulse">Global</span>
                     </h1>
                     <p className="text-2xl text-zs-text-secondary leading-tight max-w-2xl font-light">

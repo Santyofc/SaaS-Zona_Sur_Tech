@@ -160,7 +160,7 @@ await resend.emails.send({
                              <div className="h-px w-32 bg-gradient-to-r from-zs-blue/30 to-transparent" />
                         </div>
 
-                        <h1 className="text-3xl md:text-5xl font-black text-white tracking-tighter uppercase italic leading-[0.7] mb-8">
+                        <h1 className="text-2xl md:text-5xl font-black text-white tracking-tighter uppercase italic leading-[0.7] mb-8">
                             LINK <br />
                             <GlitchText 
                                 text="Status" 

@@ -56,7 +56,7 @@ export default function ContactPage() {
             animate={{ opacity: 1, x: 0 }}
           >
             <h2 className="text-zs-blue text-xs font-black uppercase tracking-[0.4em] mb-4">Canales Abiertos</h2>
-            <h1 className="text-3xl md:text-5xl font-black text-white tracking-tighter uppercase italic mb-8 leading-none">
+            <h1 className="text-2xl md:text-5xl font-black text-white tracking-tighter uppercase italic mb-8 leading-none">
               Inicia la <br /> <span className="text-zs-blue shadow-zs-glow-blue">Conexión</span>
             </h1>
             <p className="text-xl text-zs-text-secondary leading-relaxed mb-12 max-w-md">

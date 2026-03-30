@@ -46,7 +46,7 @@ export default function SecurityPage() {
                     <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-zs-blue/30 bg-zs-blue/5 text-zs-blue text-[10px] font-black uppercase tracking-[0.3em] mb-6">
                         <ShieldCheck className="w-3 h-3" /> Digital Fortress
                     </div>
-                    <h1 className="text-3xl md:text-5xl font-black text-white tracking-tighter uppercase italic mb-8 leading-none">
+                    <h1 className="text-2xl md:text-5xl font-black text-white tracking-tighter uppercase italic mb-8 leading-none">
                         Seguridad <span className="text-zs-blue drop-shadow-[0_0_30px_rgba(37,99,235,0.4)]">Blindada</span>
                     </h1>
                     <p className="text-xl text-zs-text-secondary leading-relaxed">

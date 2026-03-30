@@ -75,7 +75,7 @@ export default function ComingSoonPage() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.3, duration: 0.8 }}
                 >
-                    <h1 className="text-3xl md:text-5xl font-black text-white tracking-tighter uppercase italic mb-6">
+                    <h1 className="text-2xl md:text-5xl font-black text-white tracking-tighter uppercase italic mb-6">
                         Próximamente <br />
                         <span className="text-zs-blue">Online</span>
                     </h1>

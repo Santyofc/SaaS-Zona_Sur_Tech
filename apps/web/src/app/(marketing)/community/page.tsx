@@ -24,7 +24,7 @@ export default function CommunityPage() {
                         <span className="text-[10px] font-black uppercase tracking-widest italic">Hub Social Activo</span>
                     </div>
 
-                    <h1 className="text-3xl md:text-5xl font-black text-white tracking-tighter uppercase italic leading-[0.8] mb-8">
+                    <h1 className="text-2xl md:text-5xl font-black text-white tracking-tighter uppercase italic leading-[0.8] mb-8">
                         Ecosistema <br />
                         <GlitchText 
                             text="Comunidad" 

@@ -20,7 +20,7 @@ export default function PrivacyPage() {
             <Shield className="w-4 h-4" />
             <span className="text-[10px] font-black uppercase tracking-widest italic">Protocolo de Privacidad v2.0</span>
           </div>
-          <h1 className="text-3xl md:text-5xl font-black text-white tracking-tighter uppercase italic leading-none mb-8">
+          <h1 className="text-2xl md:text-5xl font-black text-white tracking-tighter uppercase italic leading-none mb-8">
             Privacidad de <br />
             <span className="text-zs-blue">Datos Industriales</span>
           </h1>

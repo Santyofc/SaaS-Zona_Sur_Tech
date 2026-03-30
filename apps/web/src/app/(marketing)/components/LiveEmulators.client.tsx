@@ -207,7 +207,7 @@ export default function LiveEmulators() {
     <section ref={sectionRef} className="py-32 relative z-10 px-4 md:px-8">
       <div className="container mx-auto">
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-5xl font-black text-white uppercase italic tracking-tighter mb-4">
+          <h2 className="text-2xl md:text-5xl font-black text-white uppercase italic tracking-tighter mb-4">
             Ecosistema{" "}
             <span className="text-zs-blue drop-shadow-[0_0_20px_rgba(37,99,235,0.4)]">
               Full-Stack

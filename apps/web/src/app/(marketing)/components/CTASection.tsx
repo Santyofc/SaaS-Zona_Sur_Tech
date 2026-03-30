@@ -46,7 +46,7 @@ export default function CTASection() {
             <Terminal className="w-10 h-10" />
           </div>
 
-          <h2 className="text-3xl md:text-5xl font-black text-white tracking-tighter uppercase italic leading-[0.8] mb-8 relative z-10">
+          <h2 className="text-2xl md:text-5xl font-black text-white tracking-tighter uppercase italic leading-[0.8] mb-8 relative z-10">
             Deja de{" "}
             <span className="text-zs-text-muted line-through">Configurar</span>
             <br />

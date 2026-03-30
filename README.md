@@ -1,52 +1,82 @@
-<h1 align="center">
-  SaaS Zona Sur Tech
-</h1>
+# SaaS Zona Sur Tech
 
-<p align="center">
-  Plataforma SaaS multi-tenant tipo ERP para PYMEs.
-  <br/>
-  Ventas · Inventario · Facturación · Automatización
-</p>
+Plataforma SaaS multi-tenant tipo ERP para PYMEs.
 
-<p align="center">
-  <img src="https://img.shields.io/badge/Next.js-14-000000?style=for-the-badge&logo=next.js" />
-  <img src="https://img.shields.io/badge/NestJS-API-E0234E?style=for-the-badge&logo=nestjs" />
-  <img src="https://img.shields.io/badge/PostgreSQL-DB-336791?style=for-the-badge&logo=postgresql" />
-  <img src="https://img.shields.io/badge/Supabase-Auth-3ECF8E?style=for-the-badge&logo=supabase" />
-  <img src="https://img.shields.io/badge/AWS-EC2-FF9900?style=for-the-badge&logo=amazonaws" />
-</p>
+[![CI](https://github.com/Santyofc/SaaS-Zona_Sur_Tech/actions/workflows/ci.yml/badge.svg)](https://github.com/Santyofc/SaaS-Zona_Sur_Tech/actions/workflows/ci.yml)
+![Monorepo](https://img.shields.io/badge/monorepo-turborepo-ef4444)
+![Node](https://img.shields.io/badge/node-20%2B-16a34a)
+![pnpm](https://img.shields.io/badge/pnpm-9-f59e0b)
 
-<p align="center">
-  <a href="https://zonasurtech.online">🌐 Website</a> ·
-  <a href="https://github.com/Santyofc">💻 GitHub</a>
-</p>
+## Que resuelve
+- Ventas y operaciones para equipos pequenos y medianos.
+- Inventario, CRM, facturacion electronica y flujos de workspace.
+- Base multi-tenant con enfoque en aislamiento y permisos.
 
----
+## Stack principal
+- Frontend: Next.js 14 (`apps/web`)
+- Backend: NestJS (`apps/api`)
+- Data: PostgreSQL + Drizzle (`packages/db`)
+- Auth: Supabase + utilidades de autorizacion (`packages/auth`)
+- Monorepo tooling: Turborepo + pnpm
 
-## 🚀 Overview
+## Quickstart
+```bash
+pnpm install
+cp .env.example .env
+pnpm dev
+```
 
-SaaS modular diseñado para negocios que necesitan:
+## Produccion
+- Nginx productivo: [infra/nginx/zonasurtech.production.conf](C:/Users/Dev%20Profile/Desktop/SaaS-Zona_Sur_Tech/infra/nginx/zonasurtech.production.conf)
+- Deploy EC2: [infra/scripts/deploy-ec2.sh](C:/Users/Dev%20Profile/Desktop/SaaS-Zona_Sur_Tech/infra/scripts/deploy-ec2.sh)
+- Cloudflare setup: [infra/scripts/cloudflare-setup.sh](C:/Users/Dev%20Profile/Desktop/SaaS-Zona_Sur_Tech/infra/scripts/cloudflare-setup.sh)
+- Checklist: [docs/production-checklist.md](C:/Users/Dev%20Profile/Desktop/SaaS-Zona_Sur_Tech/docs/production-checklist.md)
 
-- Control de ventas
-- Gestión de inventario
-- Facturación electrónica (CR)
-- Automatización de procesos
-- Centralización de operaciones
+## Scripts utiles
+- `pnpm dev`: arranca entorno de desarrollo.
+- `pnpm dev:web`: arranca solo el frontend.
+- `pnpm dev:api`: arranca solo la API.
+- `pnpm lint`: corre linters en el monorepo.
+- `pnpm typecheck`: valida tipos en workspaces.
+- `pnpm build`: build completo con Turbo.
 
-Arquitectura enfocada en **multi-tenancy real + escalabilidad + módulos independientes**.
-
----
-
-## 🧠 Arquitectura
-
+## Estructura
 ```text
-Cliente (Browser)
-      ↓
-Next.js (apps/web)
-      ↓  JWT + OrgID
-NestJS API (apps/api)
-      ↓
-PostgreSQL (Drizzle ORM)
-      ↓
-Servicios externos (Facturación / Bots / IA)
+apps/
+  web/          # Next.js app
+  api/          # NestJS API
+packages/
+  auth/         # authz, membership, roles
+  db/           # schema, migrations, RLS
+  email/        # templates y delivery
+  platform/     # rate-limit, jobs, logging
+infra/          # deploy, nginx, operaciones
+```
+
+## Documentacion
+- [Architecture](docs/ARCHITECTURE.md)
+- [Contributing](CONTRIBUTING.md)
+- [Security](SECURITY.md)
+- [Infra docs](infra/docs/DEPLOY.md)
+- [Operations](infra/docs/OPERATIONS.md)
+
+## Calidad y colaboración
+- CI automatizada en Pull Requests y ramas principales.
+- Templates de Issues/PR para cambios mas claros.
+- `CODEOWNERS` y `Dependabot` para mantenimiento continuo.
+
+## Sitio
+- Produccion: https://zonasurtech.online
+
+## Support
+- GitHub Sponsors: https://github.com/sponsors/Santyofc
+
+Sponsor button:
+```html
+<iframe src="https://github.com/sponsors/Santyofc/button" title="Sponsor Santyofc" height="32" width="114" style="border: 0; border-radius: 6px;"></iframe>
+```
+
+Sponsor card:
+```html
+<iframe src="https://github.com/sponsors/Santyofc/card" title="Sponsor Santyofc" height="225" width="600" style="border: 0;"></iframe>
 ```

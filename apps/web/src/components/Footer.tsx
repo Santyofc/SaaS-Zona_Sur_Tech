@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Github, Twitter, Linkedin, Instagram, Mail, ArrowRight } from "lucide-react";
+import { Github, Twitter, Linkedin, Instagram, ArrowRight } from "lucide-react";
 import { LogoZS } from "@repo/ui/src/components/LogoZS";
 
 const footerLinks = [
@@ -80,6 +80,36 @@ export default function Footer() {
                                     {social.icon}
                                 </motion.a>
                             ))}
+                        </div>
+                        <div className="mt-6">
+                            <p className="mb-3 text-[10px] font-black uppercase tracking-[0.2em] text-zs-text-muted">
+                                Support
+                            </p>
+                            <div className="flex flex-col gap-3">
+                                <a
+                                    href="https://github.com/sponsors/Santyofc"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-sm font-semibold text-zs-blue hover:text-white transition-colors"
+                                >
+                                    github.com/sponsors/Santyofc
+                                </a>
+                                <iframe
+                                    src="https://github.com/sponsors/Santyofc/button"
+                                    title="Sponsor Santyofc"
+                                    height={32}
+                                    width={114}
+                                    style={{ border: 0, borderRadius: 6 }}
+                                />
+                                <iframe
+                                    src="https://github.com/sponsors/Santyofc/card"
+                                    title="Sponsor Santyofc card"
+                                    height={225}
+                                    width={600}
+                                    className="w-full max-w-[600px]"
+                                    style={{ border: 0 }}
+                                />
+                            </div>
                         </div>
                     </div>
 

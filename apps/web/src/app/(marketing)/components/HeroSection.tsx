@@ -54,15 +54,15 @@ export default function HeroSection() {
           <Link
             href="/features"
             aria-label="Ver capacidades del Business OS"
-            className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-zs-emerald/10 border border-zs-emerald/20 text-zs-emerald mb-8 hover:bg-zs-emerald/20 transition-colors"
+            className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-zs-emerald/10 border border-zs-emerald/30 text-zs-emerald mb-8 hover:bg-zs-emerald/20 transition-all hover:scale-105 hover:shadow-zs-glow-emerald/20"
             // CLS FIX: explicit height prevents shift when animation plays
             style={{ height: 36 }}
           >
             <span
-              className="w-2 h-2 rounded-full bg-zs-emerald animate-pulse"
+              className="w-2 h-2 rounded-full bg-zs-emerald animate-pulse shadow-zs-glow-emerald"
               aria-hidden="true"
             />
-            <span className="text-[10px] font-black uppercase tracking-[0.2em]">
+            <span className="text-[10px] font-black uppercase tracking-[0.3em]">
               Business OS en operación
             </span>
           </Link>
@@ -76,17 +76,17 @@ export default function HeroSection() {
           */}
           <h1
             id="hero-heading"
-            className="font-black text-white tracking-tighter uppercase italic leading-[0.95] mb-12 pt-8"
-            style={{ fontSize: "clamp(2.5rem, 7.5vw, 6rem)" }}
+            className="font-black text-white tracking-tighter uppercase italic leading-[0.9] mb-12 pt-8"
+            style={{ fontSize: "clamp(2.5rem, 7vw, 6rem)" }}
           >
             Impulsando su{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-zs-cyan via-zs-blue to-zs-violet">
+            <span className="relative inline-block text-transparent bg-clip-text bg-gradient-to-r from-zs-cyan via-zs-blue to-zs-violet animate-zs-glitch-slow">
               Business OS
             </span>{" "}
             <br />
             <span
-              className="text-white/90"
-              style={{ fontSize: "0.55em" }}
+              className="text-zs-text-muted/80 block mt-2"
+              style={{ fontSize: "0.45em", letterSpacing: "0.1em" }}
             >
               Control, Automatización e IA
             </span>
@@ -135,7 +135,9 @@ export default function HeroSection() {
         </div>
 
         {/* Right — heavy canvas demo, fully deferred */}
-        <HeroDemo />
+        <div className="relative z-20 xl:translate-x-12 translate-y-8 animate-zs-float">
+           <HeroDemo />
+        </div>
       </div>
     </section>
   );

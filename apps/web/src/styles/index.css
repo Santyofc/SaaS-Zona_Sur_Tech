@@ -648,6 +648,64 @@
   animation-delay: 0.36s;
 }
 
+/* ── Premium Hacker Keyframes ── */
+@keyframes zs-glitch-slow {
+  0% { transform: translate(0); text-shadow: none; }
+  92% { transform: translate(0); text-shadow: none; }
+  94% { transform: translate(-2px, 2px); text-shadow: 2px 0 var(--color-zs-cyan), -2px 0 var(--color-zs-violet); }
+  96% { transform: translate(2px, -2px); text-shadow: -2px 0 var(--color-zs-cyan), 2px 0 var(--color-zs-violet); }
+  98% { transform: translate(0); text-shadow: none; }
+  100% { transform: translate(0); text-shadow: none; }
+}
+
+@keyframes zs-float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  33% { transform: translateY(-10px) rotate(0.5deg); }
+  66% { transform: translateY(-5px) rotate(-0.5deg); }
+}
+
+@keyframes zs-scanline {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100%); }
+}
+
+.animate-zs-glitch-slow {
+  animation: zs-glitch-slow 6s linear infinite;
+}
+
+.animate-zs-float {
+  animation: zs-float 8s ease-in-out infinite;
+}
+
+/* ── Utility: CRT Scanline ── */
+.zs-scanline-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    transparent 50%,
+    rgba(0, 0, 0, 0.1) 50%
+  );
+  background-size: 100% 4px;
+  z-index: 10;
+  opacity: 0.2;
+}
+
+.zs-scanline-overlay::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(37, 99, 235, 0.05) 50%,
+    transparent
+  );
+  animation: zs-scanline 8s linear infinite;
+  opacity: 0.5;
+}
+
 /* ════════════════════════════════════════════════════════════
    ACCESIBILIDAD — prefers-reduced-motion
    ════════════════════════════════════════════════════════════ */

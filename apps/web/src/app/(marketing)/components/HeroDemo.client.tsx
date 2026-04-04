@@ -73,33 +73,34 @@ export default function HeroDemo() {
      */
     <div
       ref={ref}
-      className="relative hidden lg:block"
+      className="relative hidden lg:block group"
       style={{ minHeight: 380 }}
     >
-      {/* Glow: CSS animation instead of Framer animate-pulse (no rAF) */}
+      {/* GLOW SYSTEM: Multi-layered for depth */}
       <div
-        className="absolute -inset-10 bg-gradient-to-r from-zs-blue/10 to-zs-violet/10 blur-3xl rounded-full"
-        style={{
-          opacity: 0.25,
-          animation: "zs-pulse-dot 4s ease-in-out infinite",
-          willChange: "opacity",
-        }}
+        className="absolute -inset-20 bg-gradient-to-r from-zs-blue/20 via-zs-violet/10 to-zs-cyan/20 blur-[100px] rounded-full opacity-30 animate-zs-pulse-dot"
         aria-hidden="true"
       />
-
-      {/* Terminal — only renders after IO fires */}
       <div
-        className="relative rounded-2xl overflow-hidden shadow-2xl border border-zs-border/50 bg-zs-bg-secondary/20"
+        className="absolute -inset-10 bg-zs-blue/10 blur-[60px] rounded-full opacity-20 animate-zs-float"
+        aria-hidden="true"
+        style={{ animationDelay: "-2s" }}
+      />
+
+      {/* Terminal — Container with CRT styling */}
+      <div
+        className="relative rounded-2xl overflow-hidden shadow-[0_0_50px_rgba(37,99,235,0.2)] border border-zs-border/50 bg-zs-bg-secondary/40 backdrop-blur-xl"
         style={{
-          // CSS-only 3D tilt — no JS, GPU-composited
-          transition: "transform 0.3s ease",
+          transition: "transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1)",
           transform: "perspective(1000px)",
         }}
       >
+        {/* Scanline Utility */}
+        <div className="zs-scanline-overlay" />
+
         {inView ? (
           <HackerTerminal />
         ) : (
-          // Skeleton while waiting for IO
           <div
             className="w-full bg-zs-bg-secondary/50 rounded-2xl"
             style={{ height: 320 }}

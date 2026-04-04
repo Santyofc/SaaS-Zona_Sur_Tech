@@ -104,8 +104,8 @@ export async function middleware(request: NextRequest) {
 
   if (isFacturas && !pathname.startsWith("/facturas") && !isPublicRoute) {
     // NOTE: Facturas is now a module within the Business OS, not a standalone surface.
-    // Redirect to the unified dashboard/facturas path.
-    return NextResponse.rewrite(new URL(`/dashboard/facturas${pathname === "/" ? "" : pathname}`, request.url));
+    // Redirect to the unified dashboard.
+    return NextResponse.rewrite(new URL(`/dashboard${pathname === "/" ? "" : pathname}`, request.url));
   }
 
   if (isTenantHost) {

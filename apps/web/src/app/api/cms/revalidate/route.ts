@@ -28,6 +28,16 @@ export async function GET(request: NextRequest) {
   }
 
   try {
+    const revalidatePageSlug = (entrySlug: string) => {
+      if (entrySlug === "home") {
+        revalidatePath("/", "page");
+        return;
+      }
+
+      revalidatePath(`/pages/${entrySlug}`, "page");
+      revalidatePath(`/${entrySlug}`, "page");
+    };
+
     // 2. Perform Revalidation based on type and slug
     if (type === "settings") {
       // Revalidate global elements (Root Layout / Cache tags)
@@ -48,8 +58,7 @@ export async function GET(request: NextRequest) {
     }
 
     if (type === "page" && slug) {
-      const path = slug === "home" ? "/" : `/${slug}`;
-      revalidatePath(path, "page");
+      revalidatePageSlug(slug);
       revalidateTag(`cms-entry-${slug}`);
       return NextResponse.json({ revalidated: true, type: "page", slug, now: Date.now() });
     }

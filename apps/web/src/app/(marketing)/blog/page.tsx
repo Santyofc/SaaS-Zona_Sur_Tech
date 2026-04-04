@@ -4,7 +4,7 @@
  * High-end "hacker-tech" edition.
  */
 import { Metadata } from "next";
-import { getLatestPosts } from "@/lib/cms/queries";
+import { getLatestPosts, isCmsDatabaseConfigured } from "@/lib/cms/queries";
 import BlogIndexClient from "./BlogIndexClient";
 
 const BASE_URL = "https://zonasurtech.online";
@@ -13,16 +13,16 @@ export const revalidate = 3600;
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
-    title: "Blog | Facturación Electrónica y ERP Costa Rica | ZonaSur Tech",
+    title: "Blog | Automatización, IA y Operaciones | ZonaSur Tech",
     description:
-      "Explora artículos técnicos sobre facturación electrónica Hacienda v4.3, ERP, inventario y gestión SaaS disruptiva en Costa Rica.",
+      "Ideas, guías y aprendizajes sobre procesos, automatización e IA aplicada a la operación real de empresas en Costa Rica.",
     alternates: {
       canonical: `${BASE_URL}/blog`,
     },
     openGraph: {
-      title: "Blog ZonaSur Tech | ERP y Facturación Costa Rica",
+      title: "Blog ZonaSur Tech | Automatización, IA y Business OS",
       description:
-        "Artículos técnicos sobre facturación electrónica Hacienda, ERP y gestión empresarial para PYMES costarricenses.",
+        "Artículos y notas prácticas sobre Business OS, automatización e IA aplicada al trabajo real.",
       url: `${BASE_URL}/blog`,
       images: [
         {
@@ -39,10 +39,13 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function BlogIndexPage() {
   let posts: any[] = [];
 
+  if (!isCmsDatabaseConfigured()) {
+    return <BlogIndexClient initialPosts={posts} />;
+  }
+
   try {
     posts = await getLatestPosts(50);
-  } catch (error) {
-    console.error("Critical: Error fetching blog posts at build time", error);
+  } catch {
     // Keep posts as empty array, BlogIndexClient handles empty state
   }
 

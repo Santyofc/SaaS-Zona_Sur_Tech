@@ -19,7 +19,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useTransition, useState } from "react";
-import { createEntrySchema, updateEntrySchema, type CreateEntryInput, type UpdateEntryInput } from "@repo/db/cms-schema";
+import { createEntrySchema, type Block, type CreateEntryInput } from "@repo/db/cms-schema";
 import { createEntry, updateEntry } from "@/lib/cms/actions";
 import { Loader2, Save, Globe, FileText } from "lucide-react";
 
@@ -28,6 +28,12 @@ interface EntryFormProps {
   /** Pre-fills the form for edit mode */
   defaultValues?: Partial<CreateEntryInput> & { id?: string };
   entryId?: string;
+}
+
+interface EntryFormValues extends Omit<CreateEntryInput, "content" | "blocks"> {
+  contentRaw?: string;
+  tagsText?: string;
+  blocksJson?: string;
 }
 
 function slugify(str: string): string {
@@ -47,6 +53,13 @@ export function EntryForm({ collectionType, defaultValues, entryId }: EntryFormP
   const [isPending, startTransition] = useTransition();
   const [serverError, setServerError] = useState<string | null>(null);
   const isEdit = !!entryId;
+  const existingContent =
+    defaultValues?.content && typeof defaultValues.content === "object"
+      ? (defaultValues.content as { raw?: string; tags?: string[] })
+      : null;
+  const existingBlocks = Array.isArray(defaultValues?.blocks)
+    ? (defaultValues.blocks as Block[])
+    : [];
 
   const {
     register,
@@ -54,12 +67,15 @@ export function EntryForm({ collectionType, defaultValues, entryId }: EntryFormP
     setValue,
     watch,
     formState: { errors },
-  } = useForm<CreateEntryInput>({
+  } = useForm<EntryFormValues>({
     resolver: zodResolver(createEntrySchema),
     defaultValues: {
       collectionType,
       status: "draft",
       ...defaultValues,
+      contentRaw: existingContent?.raw ?? "",
+      tagsText: existingContent?.tags?.join(", ") ?? "",
+      blocksJson: existingBlocks.length > 0 ? JSON.stringify(existingBlocks, null, 2) : "",
     },
   });
 
@@ -73,14 +89,48 @@ export function EntryForm({ collectionType, defaultValues, entryId }: EntryFormP
     }
   };
 
-  const onSubmit = (data: CreateEntryInput) => {
+  const onSubmit = (data: EntryFormValues) => {
     setServerError(null);
     startTransition(async () => {
       try {
+        let parsedBlocks: Block[] | undefined;
+
+        if (collectionType === "page" && data.blocksJson?.trim()) {
+          const candidate = JSON.parse(data.blocksJson) as Block[];
+          if (!Array.isArray(candidate)) {
+            throw new Error("Los bloques deben ser un arreglo JSON valido");
+          }
+          parsedBlocks = candidate;
+        }
+
+        const tags = (data.tagsText ?? "")
+          .split(",")
+          .map((tag) => tag.trim())
+          .filter(Boolean);
+
+        const payload: CreateEntryInput = {
+          collectionType,
+          title: data.title,
+          slug: data.slug,
+          excerpt: data.excerpt,
+          coverImage: data.coverImage,
+          author: data.author,
+          seoMeta: data.seoMeta,
+          status: data.status,
+          content: data.contentRaw?.trim()
+            ? {
+                format: "markdown",
+                raw: data.contentRaw,
+                ...(tags.length > 0 ? { tags } : {}),
+              }
+            : undefined,
+          blocks: parsedBlocks,
+        };
+
         if (isEdit) {
-          await updateEntry({ ...data, id: entryId! });
+          await updateEntry({ ...payload, id: entryId! });
         } else {
-          await createEntry(data);
+          await createEntry(payload);
         }
         router.push(`/admin/${collectionType}s`);
         router.refresh();
@@ -114,7 +164,7 @@ export function EntryForm({ collectionType, defaultValues, entryId }: EntryFormP
           id="entry-title"
           {...register("title")}
           onBlur={handleTitleBlur}
-          placeholder={collectionType === "post" ? "Facturación Electrónica en Costa Rica 2025" : "Sobre Nosotros"}
+          placeholder={collectionType === "post" ? "Como ordenar procesos antes de automatizar con IA" : "Business OS para equipos en crecimiento"}
           className={inputCls(!!errors.title)}
         />
         {errors.title && (
@@ -129,12 +179,12 @@ export function EntryForm({ collectionType, defaultValues, entryId }: EntryFormP
         </label>
         <div className="flex items-center">
           <span className="px-3 py-3 text-xs text-zs-text-muted bg-zs-bg-secondary border border-r-0 border-zs-border rounded-l-xl">
-            /blog/
+            {collectionType === "post" ? "/blog/" : "/pages/"}
           </span>
           <input
             id="entry-slug"
             {...register("slug")}
-            placeholder="facturacion-electronica-costa-rica"
+            placeholder={collectionType === "post" ? "ordenar-procesos-antes-de-automatizar" : "business-os"}
             className={`${inputCls(!!errors.slug)} rounded-l-none`}
           />
         </div>
@@ -190,6 +240,61 @@ export function EntryForm({ collectionType, defaultValues, entryId }: EntryFormP
         )}
       </div>
 
+      <div>
+        <label className={labelCls} htmlFor="entry-content">
+          {collectionType === "post" ? "Contenido en Markdown" : "Contenido base en Markdown"}
+        </label>
+        <textarea
+          id="entry-content"
+          {...register("contentRaw")}
+          rows={16}
+          placeholder={
+            collectionType === "post"
+              ? "# Idea principal\n\nExplique el problema, la solucion y el siguiente paso."
+              : "# Contexto\n\nUse este campo si quiere una pagina simple basada en markdown."
+          }
+          className={inputCls()}
+        />
+        <p className="mt-2 text-xs text-zs-text-muted">
+          {collectionType === "post"
+            ? "Este contenido se renderiza en el blog publico."
+            : "Si tambien define bloques JSON, los bloques tendran prioridad en la pagina publica."}
+        </p>
+      </div>
+
+      <div>
+        <label className={labelCls} htmlFor="entry-tags">
+          Tags
+        </label>
+        <input
+          id="entry-tags"
+          {...register("tagsText")}
+          placeholder="automatizacion, ia, procesos"
+          className={inputCls()}
+        />
+        <p className="mt-2 text-xs text-zs-text-muted">
+          Separados por comas. Solo se usan en posts.
+        </p>
+      </div>
+
+      {collectionType === "page" && (
+        <div>
+          <label className={labelCls} htmlFor="entry-blocks">
+            Bloques JSON
+          </label>
+          <textarea
+            id="entry-blocks"
+            {...register("blocksJson")}
+            rows={18}
+            placeholder={`[\n  {\n    "type": "hero",\n    "title": "Business OS para su empresa",\n    "subtitle": "Ordene procesos, automatice tareas e implemente IA con criterio",\n    "ctaLabel": "Agendar llamada",\n    "ctaHref": "/contact"\n  }\n]`}
+            className={inputCls()}
+          />
+          <p className="mt-2 text-xs text-zs-text-muted">
+            Opcional. Use bloques para paginas visuales. Si el JSON no es valido, no se guardara.
+          </p>
+        </div>
+      )}
+
       {/* SEO */}
       <fieldset className="border border-zs-border rounded-xl p-6 space-y-4">
         <legend className="text-xs font-black uppercase tracking-[0.15em] text-zs-text-muted px-2">
@@ -200,7 +305,7 @@ export function EntryForm({ collectionType, defaultValues, entryId }: EntryFormP
           <input
             id="seo-title"
             {...register("seoMeta.title")}
-            placeholder="Facturación Electrónica Costa Rica | ZonaSur Tech"
+            placeholder="Business OS para empresas en Costa Rica | ZonaSur Tech"
             className={inputCls()}
           />
         </div>
@@ -210,7 +315,7 @@ export function EntryForm({ collectionType, defaultValues, entryId }: EntryFormP
             id="seo-desc"
             {...register("seoMeta.description")}
             rows={2}
-            placeholder="Guía completa de facturación electrónica..."
+            placeholder="Ayudamos a ordenar procesos, automatizar tareas e implementar IA con criterio."
             className={inputCls()}
           />
         </div>

@@ -1,15 +1,14 @@
-/**
- * FeaturesGrid — Server Component
- *
- * The bento grid of 4 feature cards.
- * Each card uses a thin FeatureCard.client.tsx leaf for the whileInView
- * entrance animation. Static content renders in the Server.
- *
- * Structure:
- *   FeaturesGrid (Server) → FeatureCard (Server) → FeatureCardWrapper.client (Client leaf)
- */
 import Link from "next/link";
-import { Database, Lock, Activity, Globe, Cpu, Code2, Shield, ChevronRight } from "lucide-react";
+import {
+  Bot,
+  Workflow,
+  Eye,
+  ShieldCheck,
+  ChevronRight,
+  Database,
+  Network,
+  Cpu,
+} from "lucide-react";
 import FeatureCardWrapper from "./FeatureCardWrapper.client";
 import { GlitchText } from "@/components/ui/GlitchText.client";
 
@@ -28,61 +27,71 @@ type FeatureCard = {
 
 const CARDS: FeatureCard[] = [
   {
-    id: "nucleus",
+    id: "business-os",
     colSpan: "md:col-span-2",
     icon: <Database className="w-6 h-6" />,
-    title: "Nucleus Engine",
+    title: "Business OS a su medida",
     description:
-      "Motor de datos distribuido con Santi Protocol integrado. Tus datos persistentes, fuertemente garantizados y asegurados a nivel atómico sin cuellos de botella.",
-    cta: { href: "/technology", label: "Ver Arquitectura DB", color: "text-zs-cyan" },
+      "Disenamos la capa operativa que conecta personas, procesos, datos y decisiones. Menos friccion, mas control y una forma clara de operar.",
+    cta: { href: "/systems", label: "Ver enfoque operativo", color: "text-zs-cyan" },
     delay: 0,
   },
   {
-    id: "identity",
+    id: "automation",
     rowSpan: "md:row-span-2",
-    icon: <Lock className="w-6 h-6" />,
+    icon: <Workflow className="w-6 h-6" />,
     title: (
       <>
-        Santi Identity<br />Gateway
+        Automatizacion
+        <br />
+        sin caos
       </>
     ),
     description:
-      "Autenticación propietaria multinivel. Gestión de identidades con cifrado de grado militar y validación instantánea en el punto de acceso.",
-    cta: { href: "/security", label: "Protocolos Sec", color: "text-zs-blue" },
+      "Eliminamos tareas repetitivas, aprobaciones manuales y dobles registros. Automatizamos flujos entre ventas, operaciones, finanzas y servicio.",
+    cta: { href: "/features", label: "Ver automatizaciones", color: "text-zs-blue" },
     preview: (
       <div className="absolute top-10 left-10 right-10 bottom-40 bg-gradient-to-b from-zs-blue/20 to-transparent rounded-2xl border border-zs-blue/20 p-4 font-mono text-xs text-zs-blue flex flex-col gap-2 opacity-50 group-hover:opacity-100 transition-opacity">
-        <div className="flex gap-2"><Lock className="w-3 h-3" /> [AUTH] Token Verified</div>
-        <div className="flex gap-2"><Activity className="w-3 h-3" /> [RLS] Policy Enforced</div>
-        <div className="flex gap-2"><Globe className="w-3 h-3" /> [CDN] Cache HIT</div>
-        <div className="flex gap-2 text-zs-emerald"><Shield className="w-3 h-3" /> Access Granted</div>
+        <div className="flex gap-2">
+          <Workflow className="w-3 h-3" /> [FLOW] Lead capturado
+        </div>
+        <div className="flex gap-2">
+          <Network className="w-3 h-3" /> [SYNC] CRM y operaciones
+        </div>
+        <div className="flex gap-2">
+          <Eye className="w-3 h-3" /> [CHECK] SLA monitoreado
+        </div>
+        <div className="flex gap-2 text-zs-emerald">
+          <ShieldCheck className="w-3 h-3" /> [DONE] Tarea ejecutada
+        </div>
       </div>
     ),
     delay: 0.1,
   },
   {
-    id: "pulse",
-    icon: <Cpu className="w-8 h-8 text-zs-emerald" />,
+    id: "ai",
+    icon: <Bot className="w-8 h-8 text-zs-emerald" />,
     badge: (
       <span className="text-[10px] bg-zs-emerald/10 text-zs-emerald px-2 py-1 rounded font-black tracking-widest uppercase">
-        Pulse Engine
+        IA aplicada
       </span>
     ),
-    title: "Global Pulse Mesh",
+    title: "Asistentes y copilotos internos",
     description:
-      "Lógica de negocio desplegada en una malla global, respondiendo en milisegundos desde cualquier punto del planeta.",
+      "Implementamos IA donde si mueve la aguja: clasificacion, respuesta, priorizacion, busqueda interna y ejecucion asistida.",
     delay: 0.2,
   },
   {
-    id: "runtime",
-    icon: <Code2 className="w-8 h-8 text-zs-violet" />,
+    id: "control",
+    icon: <Cpu className="w-8 h-8 text-zs-violet" />,
     badge: (
       <span className="text-[10px] bg-zs-violet/10 text-zs-violet px-2 py-1 rounded font-black tracking-widest uppercase">
-        Logic Runtime
+        Control operativo
       </span>
     ),
-    title: "Core Runtime",
+    title: "Visibilidad y gobierno",
     description:
-      "Arquitectura híbrida de renderizado ultra-eficiente, diseñada para la máxima capacidad de respuesta y SEO dinámico.",
+      "Creamos tableros, reglas, alertas y metricas para que su equipo opere con criterio, consistencia y prioridades claras.",
     delay: 0.3,
   },
 ];
@@ -96,14 +105,14 @@ export default function FeaturesGrid() {
             Arquitectura{" "}
             <br className="md:hidden" />
             <GlitchText
-              text="Bento-Core"
+              text="Business Core"
               className="text-zs-blue drop-shadow-[0_0_20px_rgba(37,99,235,0.4)]"
               delay={0.2}
             />
           </h2>
           <p className="text-zs-text-secondary text-lg max-w-2xl mx-auto">
-            Componentes atómicos diseñados para operar en perfecta sincronía. El
-            framework definitivo para ingenieros pragmáticos.
+            Cuatro frentes para ordenar su operacion: estructura, automatizacion,
+            inteligencia y control.
           </p>
         </div>
 
@@ -115,21 +124,18 @@ export default function FeaturesGrid() {
               rowSpan={card.rowSpan}
               delay={card.delay}
             >
-              {/* Large icon watermark (nucleus only) */}
-              {card.id === "nucleus" && (
+              {card.id === "business-os" && (
                 <div className="absolute -right-20 -bottom-20 opacity-10 group-hover:opacity-20 transition-opacity">
                   <Database className="w-[300px] h-[300px] text-zs-cyan" />
                 </div>
               )}
 
-              {/* Preview layer (identity only) */}
               {card.preview}
 
               <div
                 className={`relative z-10 h-full flex flex-col ${card.rowSpan ? "justify-end" : "justify-between"}`}
               >
                 <div>
-                  {/* Icon row */}
                   {card.badge ? (
                     <div className="flex items-center justify-between mb-6">
                       {card.icon}

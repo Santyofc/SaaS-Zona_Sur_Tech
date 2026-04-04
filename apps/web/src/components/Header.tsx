@@ -7,10 +7,11 @@ import { Menu, X, Cpu } from "lucide-react";
 import { LogoZS } from "@repo/ui/src/components/LogoZS";
 
 const navItems = [
-    { name: "Sistemas", href: "/systems" },
+    { name: "Soluciones", href: "/features" },
+    { name: "Casos", href: "/use-cases" },
     { name: "Tecnología", href: "/technology" },
     { name: "Precios", href: "/pricing" },
-    { name: "Nosotros", href: "/about" },
+    { name: "Contacto", href: "/contact" },
 ];
 
 export default function Header() {
@@ -77,6 +78,12 @@ export default function Header() {
 
                 {/* Action Buttons */}
                 <div className="hidden lg:flex items-center gap-4">
+                    <Link
+                        href="/signin"
+                        className="text-xs font-black uppercase tracking-widest text-zs-text-secondary hover:text-white transition-colors"
+                    >
+                        Registro de Nodo
+                    </Link>
                     <motion.div
                         whileHover={{
                             scale: 1.05,
@@ -122,11 +129,11 @@ export default function Header() {
                                 </Link>
                             ))}
                             <Link
-                                href="/signin"
+                                href="/contact"
                                 onClick={() => setIsMobileMenuOpen(false)}
                                 className="block w-full text-center zs-btn-brand py-4 rounded-2xl text-sm font-black uppercase tracking-widest"
                             >
-                                Sincronizar Nodo
+                                Agendar llamada
                             </Link>
                         </div>
                     </motion.div>

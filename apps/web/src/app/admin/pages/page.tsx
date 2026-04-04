@@ -3,7 +3,7 @@ import Link from "next/link";
 import { listEntries } from "@/lib/cms/queries";
 import { deleteEntry } from "@/lib/cms/actions";
 import { requireOrganization } from "@repo/auth";
-import { PlusCircle, Pencil, Trash2, LayoutTemplate } from "lucide-react";
+import { PlusCircle, Pencil, Trash2, LayoutTemplate, Eye } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Páginas | CMS ZonaSur Tech" };
@@ -30,6 +30,12 @@ export default async function CmsPagesPage({
       archived: "bg-zinc-500/10 text-zinc-400 border border-zinc-500/20",
     };
     return map[s] ?? map.draft;
+  };
+
+  const resolvePublicHref = (slug: string) => {
+    if (slug === "home") return "/";
+    if (["pricing", "technology", "systems"].includes(slug)) return `/${slug}`;
+    return `/pages/${slug}`;
   };
 
   return (
@@ -82,6 +88,17 @@ export default async function CmsPagesPage({
                   </td>
                   <td className="p-4">
                     <div className="flex items-center gap-2 justify-end">
+                      {p.status === "published" && (
+                        <a
+                          href={resolvePublicHref(p.slug)}
+                          target="_blank"
+                          rel="noopener"
+                          className="p-1.5 text-zs-text-muted hover:text-zs-cyan transition-colors"
+                          title="Ver en sitio"
+                        >
+                          <Eye className="w-4 h-4" />
+                        </a>
+                      )}
                       <Link href={`/admin/pages/${p.id}`} className="p-1.5 text-zs-text-muted hover:text-white transition-colors">
                         <Pencil className="w-4 h-4" />
                       </Link>

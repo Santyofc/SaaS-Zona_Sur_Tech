@@ -1,5 +1,5 @@
 import { MetadataRoute } from 'next'
-import { getAllPublishedSlugs } from '@/lib/cms/queries'
+import { getAllPublishedSlugs, isCmsDatabaseConfigured } from '@/lib/cms/queries'
 
 const BASE_URL = 'https://zonasurtech.online'
 
@@ -43,6 +43,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ];
 
+  if (!isCmsDatabaseConfigured()) {
+    return staticRoutes;
+  }
+
   try {
     // 2. Fetch all published blog posts
     const posts = await getAllPublishedSlugs("post");
@@ -65,8 +69,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       }));
 
     return [...staticRoutes, ...blogRoutes, ...pageRoutes];
-  } catch (error) {
-    console.error("Error generating dynamic sitemap:", error);
+  } catch {
     return staticRoutes;
   }
 }

@@ -66,7 +66,7 @@ export default function AdminLayout({
           <div className="mt-10 text-[10px] font-black uppercase tracking-[0.2em] text-zs-text-muted mb-4 px-4">
             Security & Core
           </div>
-          <AdminNavLink href="/admin/settings" icon={<Settings />} label="Kernel Config" active={pathname === "/admin/settings"} />
+          <AdminNavLink href="/admin/settings/cms" icon={<Settings />} label="CMS Settings" active={pathname.startsWith("/admin/settings")} />
           <AdminNavLink href="/admin/permissions" icon={<ShieldCheck />} label="Root Access" active={pathname === "/admin/permissions"} />
         </nav>
 
@@ -136,4 +136,3 @@ function AdminNavLink({
     </Link>
   );
 }
-

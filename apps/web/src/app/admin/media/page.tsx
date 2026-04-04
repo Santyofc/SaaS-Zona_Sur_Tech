@@ -3,7 +3,8 @@ import { requireOrganization } from "@repo/auth";
 import { listMedia } from "@/lib/cms/queries";
 import { deleteMedia } from "@/lib/cms/actions";
 import { MediaUploader } from "@/components/cms/MediaUploader.client";
-import { Trash2, Copy, Image as ImageIcon } from "lucide-react";
+import { MediaAssetActions } from "@/components/cms/MediaAssetActions.client";
+import { Trash2, Image as ImageIcon } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Media | CMS ZonaSur Tech" };
@@ -83,15 +84,7 @@ export default async function CmsMediaPage({
                   </p>
 
                   <div className="flex gap-2">
-                    {/* Copy URL */}
-                    <button
-                      type="button"
-                      onClick={undefined} // Copy handled client-side — this is RSC so we show the URL as fallback
-                      className="p-2 rounded-lg bg-zs-bg-secondary border border-zs-border text-zs-text-muted hover:text-white transition-colors"
-                      title={item.publicUrl}
-                    >
-                      <Copy className="w-3.5 h-3.5" />
-                    </button>
+                    <MediaAssetActions publicUrl={item.publicUrl} />
 
                     {/* Delete */}
                     <form

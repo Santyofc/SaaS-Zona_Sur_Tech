@@ -13,7 +13,6 @@ import { getPublishedEntryBySlug, getAllPublishedSlugs } from "@/lib/cms/queries
 import { MarkdownRenderer } from "@/components/cms/MarkdownRenderer";
 import { ArrowLeft, Calendar, User } from "lucide-react";
 import Link from "next/link";
-import { AdBanner } from "@/components/ui/AdBanner";
 
 const BASE_URL = "https://zonasurtech.online";
 
@@ -184,11 +183,7 @@ export default async function BlogPostPage({
       {/* Body — safe markdown renderer via remark pipeline */}
       <section className="px-4 pb-24">
         <div className="container mx-auto max-w-3xl">
-          <AdBanner />
           <MarkdownRenderer content={markdownBody} />
-          <div className="mt-12">
-            <AdBanner />
-          </div>
         </div>
       </section>
 

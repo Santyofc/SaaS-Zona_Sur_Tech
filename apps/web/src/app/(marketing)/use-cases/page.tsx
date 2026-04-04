@@ -1,22 +1,24 @@
-/**
- * Task 7: SEO content page — /use-cases
- * Targets "casos de uso ERP Costa Rica" keyword cluster.
- */
 import { Metadata } from "next";
 import Link from "next/link";
-import { Building2, ShoppingCart, Utensils, Truck, Stethoscope, Wrench } from "lucide-react";
+import {
+  Building2,
+  ShoppingCart,
+  Utensils,
+  Truck,
+  Stethoscope,
+  Wrench,
+} from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Casos de Uso | ERP para Industrias en Costa Rica | ZonaSur Tech",
+  title: "Casos de Uso | Business OS para empresas en Costa Rica",
   description:
-    "ZonaSur Tech se adapta a comercios, restaurantes, distribuidoras, clínicas y más. ERP con facturación electrónica Hacienda para cualquier industria en Costa Rica.",
+    "Vea como aplicamos diseno operativo, automatizacion e IA en ventas, servicio, backoffice y operaciones para empresas en Costa Rica.",
   alternates: {
     canonical: "https://zonasurtech.online/use-cases",
   },
   openGraph: {
-    title: "Casos de Uso | ERP Costa Rica | ZonaSur Tech",
-    description:
-      "Software ERP adaptado a cada industria costarricense con facturación electrónica Hacienda.",
+    title: "Casos de Uso | ZonaSur Tech Business OS",
+    description: "Ejemplos reales de Business OS, automatizacion e IA aplicada.",
     url: "https://zonasurtech.online/use-cases",
   },
 };
@@ -25,56 +27,56 @@ const useCases = [
   {
     icon: ShoppingCart,
     color: "text-zs-blue",
-    industry: "Comercio Minorista",
+    industry: "Ventas y pipeline comercial",
     description:
-      "Supermercados, tiendas y puntos de venta. Facturación electrónica en segundos, inventario multi-sucursal y reportes de ventas diarios.",
-    cta: "Ver solución para comercios",
-    href: "/software-para-pymes-costa-rica",
+      "Captura de leads, seguimiento, propuestas, handoff a operaciones y visibilidad de cierres en un solo flujo.",
+    cta: "Ver capacidades comerciales",
+    href: "/features",
   },
   {
     icon: Truck,
     color: "text-zs-cyan",
-    industry: "Distribuidoras y Mayoristas",
+    industry: "Operaciones y cumplimiento interno",
     description:
-      "Control de rutas, pedidos B2B, crédito a clientes y facturación masiva. Integración con catálogo CABYS para Hacienda.",
-    cta: "Ver solución para distribuidoras",
-    href: "/software-para-pymes-costa-rica",
+      "Coordinacion entre equipos, estados de trabajo, aprobaciones y seguimiento sin depender de chats o planillas dispersas.",
+    cta: "Ver diseno operativo",
+    href: "/systems",
   },
   {
     icon: Utensils,
     color: "text-zs-violet",
-    industry: "Restaurantes y Cafeterías",
+    industry: "Atencion al cliente y servicio",
     description:
-      "Tiquetes POS instantáneos, control de insumos, recetas digitales y cierre de caja. Compatible con impresoras fiscales.",
-    cta: "Ver solución para restaurantes",
+      "Mesa de ayuda, clasificacion, priorizacion y respuestas asistidas para atender mas rapido con mejor contexto.",
+    cta: "Ver automatizacion de servicio",
     href: "/features",
   },
   {
     icon: Building2,
     color: "text-zs-emerald",
-    industry: "PYMES y Servicios Profesionales",
+    industry: "Backoffice y tareas repetitivas",
     description:
-      "Facturas de servicios electrónicas, control de proyectos, gestión de clientes y cobros automatizados por correo.",
-    cta: "Ver solución para servicios",
-    href: "/facturacion-electronica-costa-rica",
+      "Reemplazamos tareas manuales y seguimiento informal por flujos claros, alertas y ejecucion automatica.",
+    cta: "Hablar del backoffice",
+    href: "/contact",
   },
   {
     icon: Stethoscope,
     color: "text-zs-blue",
-    industry: "Clínicas y Salud",
+    industry: "IA para decisiones y ejecucion",
     description:
-      "Facturación electrónica a CCSS, gestión de citas, control de insumos médicos y historial de pacientes.",
-    cta: "Ver solución para salud",
+      "Asistentes internos para buscar contexto, resumir casos, redactar borradores y acelerar decisiones del equipo.",
+    cta: "Ver capa de IA",
     href: "/features",
   },
   {
     icon: Wrench,
     color: "text-zs-cyan",
-    industry: "Talleres y Manufactura",
+    industry: "Transformacion por etapas",
     description:
-      "Órdenes de trabajo, control de materiales, facturación de servicios y seguimiento de garantías.",
-    cta: "Ver solución para manufactura",
-    href: "/sistema-inventario-costa-rica",
+      "Empezamos por el cuello de botella mas caro y escalamos con evidencia hasta consolidar el Business OS completo.",
+    cta: "Ver planes",
+    href: "/pricing",
   },
 ];
 
@@ -82,20 +84,19 @@ export default function UseCasesPage() {
   return (
     <main className="relative bg-zs-bg-primary min-h-screen pt-32 pb-24">
       <div className="container mx-auto px-4 md:px-8 max-w-7xl">
-
         <header className="text-center mb-20 max-w-4xl mx-auto">
           <p className="text-zs-blue text-sm font-black uppercase tracking-[0.3em] mb-4">
-            Casos de Uso
+            Casos de uso
           </p>
           <h1 className="text-2xl md:text-5xl font-black text-white tracking-tight uppercase italic leading-tight mb-6">
-            ERP para Cualquier{" "}
+            Business OS para{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-zs-cyan via-zs-blue to-zs-violet">
-              Industria en Costa Rica
+              equipos que quieren operar mejor
             </span>
           </h1>
           <p className="text-xl text-zs-text-secondary font-light leading-relaxed">
-            Desde comercios hasta clínicas. ZonaSur Tech se adapta a su industria
-            con facturación electrónica Hacienda y ERP completo.
+            Adaptamos el sistema a la realidad de su empresa: ventas,
+            operaciones, servicio, backoffice y casos puntuales de IA.
           </p>
         </header>
 
@@ -107,10 +108,7 @@ export default function UseCasesPage() {
                 key={uc.industry}
                 className="p-8 rounded-2xl bg-zs-bg-secondary/40 border border-zs-border hover:border-zs-blue/30 transition-all group flex flex-col"
               >
-                <Icon
-                  className={`w-10 h-10 ${uc.color} mb-6`}
-                  aria-hidden
-                />
+                <Icon className={`w-10 h-10 ${uc.color} mb-6`} aria-hidden />
                 <h2 className="text-xl font-bold text-white mb-3">
                   {uc.industry}
                 </h2>

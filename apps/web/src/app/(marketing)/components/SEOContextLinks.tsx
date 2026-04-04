@@ -8,24 +8,26 @@ export default function SEOContextLinks() {
         <div className="flex flex-col md:flex-row gap-12 justify-between">
           <div className="max-w-md">
             <h2 className="text-3xl font-black text-white italic tracking-tight mb-4 uppercase">
-              El Ecosistema Cloud <span className="text-zs-blue">Comercial</span>
+              Como construimos su <span className="text-zs-blue">Business OS</span>
             </h2>
             <p className="text-zs-text-secondary leading-relaxed font-light">
-              Nuestra arquitectura modula todas las capas de su negocio bajo una única infraestructura técnica consolidada diseñada en Costa Rica.
+              Partimos del trabajo real de su empresa: procesos, tareas,
+              decisiones y fricciones. Desde ahi disenamos una operacion mas
+              simple, automatizada e inteligente.
             </p>
           </div>
 
           <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             <Link 
-              href="/facturacion-electronica-costa-rica" 
+              href="/features" 
               className="group p-6 rounded-2xl bg-zs-bg-primary/50 border border-zs-border hover:border-zs-blue/50 transition-all flex flex-col justify-between h-full hover:-translate-y-1 shadow-[0_10px_30px_-15px_rgba(37,99,235,0.1)]"
             >
               <div>
                 <h3 className="text-lg font-bold text-white mb-2 group-hover:text-zs-blue transition-colors">
-                  Software de facturación electrónica en Costa Rica
+                  Capacidades del sistema
                 </h3>
                 <p className="text-sm text-zs-text-secondary font-light">
-                  Cumplimiento 100% automático con Hacienda (Versión 4.3). Tiquetes y conectividad inmediata.
+                  Procesos, automatizacion, IA y control operativo en una sola arquitectura.
                 </p>
               </div>
               <div className="mt-8 flex justify-end">
@@ -34,15 +36,15 @@ export default function SEOContextLinks() {
             </Link>
 
             <Link 
-              href="/software-para-pymes-costa-rica" 
+              href="/use-cases" 
               className="group p-6 rounded-2xl bg-zs-bg-primary/50 border border-zs-border hover:border-zs-cyan/50 transition-all flex flex-col justify-between h-full hover:-translate-y-1 shadow-[0_10px_30px_-15px_rgba(34,211,238,0.1)]"
             >
               <div>
                 <h3 className="text-lg font-bold text-white mb-2 group-hover:text-zs-cyan transition-colors">
-                  Software cloud para PYMES en Costa Rica
+                  Casos de uso reales
                 </h3>
                 <p className="text-sm text-zs-text-secondary font-light">
-                  Controle ventas B2B, gestione cuentas por cobrar (CXC) y automatice envíos con correos.
+                  Vea como aplicamos este enfoque en operaciones, servicio, backoffice y coordinacion interna.
                 </p>
               </div>
               <div className="mt-8 flex justify-end">
@@ -51,15 +53,15 @@ export default function SEOContextLinks() {
             </Link>
 
             <Link 
-              href="/sistema-inventario-costa-rica" 
+              href="/pricing" 
               className="group p-6 rounded-2xl bg-zs-bg-primary/50 border border-zs-border hover:border-zs-violet/50 transition-all flex flex-col justify-between h-full hover:-translate-y-1 shadow-[0_10px_30px_-15px_rgba(139,92,246,0.1)]"
             >
               <div>
                 <h3 className="text-lg font-bold text-white mb-2 group-hover:text-zs-violet transition-colors">
-                  Sistema de Bodegas e Inventario Costa Rica
+                  Formas de trabajar juntos
                 </h3>
                 <p className="text-sm text-zs-text-secondary font-light">
-                  Control multi-sucursal, lotes de vencimiento, códigos EAN y manejo maestro de costos Cabys.
+                  Desde un diagnostico inicial hasta una implementacion completa de su Business OS.
                 </p>
               </div>
               <div className="mt-8 flex justify-end">

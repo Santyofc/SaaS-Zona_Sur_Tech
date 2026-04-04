@@ -8,10 +8,10 @@
 import { Activity, Globe, Shield, Zap } from "lucide-react";
 
 const STATS = [
-  { icon: Activity, color: "text-zs-blue", label: "Zero Downtime (99.999%)" },
-  { icon: Globe, color: "text-zs-cyan", label: "64 Edge Nodes Globales" },
-  { icon: Shield, color: "text-zs-emerald", label: "E2E Encryption Activa" },
-  { icon: Zap, color: "text-zs-violet", label: "< 15ms Latencia Global" },
+  { icon: Activity, color: "text-zs-blue", label: "Procesos visibles de punta a punta" },
+  { icon: Globe, color: "text-zs-cyan", label: "Automatización conectada entre áreas" },
+  { icon: Shield, color: "text-zs-emerald", label: "Gobernanza y trazabilidad operativa" },
+  { icon: Zap, color: "text-zs-violet", label: "IA aplicada al trabajo real" },
 ] as const;
 
 function StatItem({ icon: Icon, color, label }: (typeof STATS)[number]) {

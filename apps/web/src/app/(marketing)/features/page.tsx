@@ -1,23 +1,18 @@
-/**
- * Task 7: SEO content page — /features
- * Strong H1 targeting "ERP y Facturación Electrónica Costa Rica"
- * keyword cluster, rich semantic structure for indexing.
- */
 import { Metadata } from "next";
 import Link from "next/link";
 import { Check, Zap, Shield, BarChart3, Globe, Cpu } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Funcionalidades | ERP y Facturación Electrónica Costa Rica",
+  title: "Capacidades | Business OS, Automatizacion e IA",
   description:
-    "Descubra todas las funcionalidades del ERP ZonaSur Tech: facturación electrónica Hacienda v4.3, inventario multi-sucursal, CRM, marketplace y reportería avanzada para PYMES costarricenses.",
+    "Conozca como disenamos sistemas operativos de negocio: procesos claros, automatizacion util, visibilidad operativa e IA aplicada.",
   alternates: {
     canonical: "https://zonasurtech.online/features",
   },
   openGraph: {
-    title: "Funcionalidades | ZonaSur Tech ERP Costa Rica",
+    title: "Capacidades | ZonaSur Tech Business OS",
     description:
-      "Facturación electrónica, inventario, CRM y más para PYMES en Costa Rica.",
+      "Procesos, automatizacion, control operativo e IA aplicada para empresas en Costa Rica.",
     url: "https://zonasurtech.online/features",
   },
 };
@@ -27,84 +22,84 @@ const features = [
     icon: Zap,
     color: "text-zs-blue",
     borderColor: "border-zs-blue/30",
-    title: "Facturación Electrónica Hacienda v4.3",
+    title: "Diseno de procesos",
     description:
-      "Emisión y recepción de comprobantes XML cumpliendo 100% con el Ministerio de Hacienda de Costa Rica. Tiquetes electrónicos, facturas de exportación y notas de crédito automatizadas.",
+      "Mapeamos como entra el trabajo, donde se frena, quien decide y que reglas necesita su operacion para funcionar con consistencia.",
     bullets: [
-      "Firma digital certificada",
-      "Envío automático a Hacienda",
-      "Recepción y validación XML",
-      "Tiquetes punto de venta",
+      "Mapa de flujo actual",
+      "Cuellos de botella identificados",
+      "Definicion de responsables",
+      "Reglas operativas claras",
     ],
   },
   {
     icon: BarChart3,
     color: "text-zs-cyan",
     borderColor: "border-zs-cyan/30",
-    title: "ERP Financiero para PYMES",
+    title: "Automatizacion de tareas",
     description:
-      "Control contable completo con cuentas por cobrar, cuentas por pagar, conciliación bancaria y reportes financieros adaptados a la normativa costarricense.",
+      "Reducimos trabajo manual entre equipos conectando formularios, CRM, seguimiento, aprobaciones y notificaciones.",
     bullets: [
-      "Cuentas por cobrar (CXC)",
-      "Cuentas por pagar (CXP)",
-      "Conciliación bancaria",
-      "Estados financieros NIIF",
+      "Handoffs sin doble digitacion",
+      "Alertas y recordatorios automaticos",
+      "Aprobaciones estructuradas",
+      "Integraciones entre herramientas",
     ],
   },
   {
     icon: Globe,
     color: "text-zs-violet",
     borderColor: "border-zs-violet/30",
-    title: "Inventario Multi-Sucursal",
+    title: "Visibilidad operativa",
     description:
-      "Gestión de bodegas, control de lotes y fechas de vencimiento, códigos EAN/UPC, y catálogo CABYS integrado para cumplimiento con Hacienda.",
+      "Construimos tableros y metricas para saber que pasa, que esta detenido y donde intervenir primero.",
     bullets: [
-      "Múltiples bodegas y sucursales",
-      "Lotes y fechas de vencimiento",
-      "Integración catálogo CABYS",
-      "Alertas de stock mínimo",
+      "KPIs accionables",
+      "Seguimiento por etapa",
+      "Alertas por SLA",
+      "Priorizacion de trabajo",
     ],
   },
   {
     icon: Shield,
     color: "text-zs-emerald",
     borderColor: "border-zs-emerald/30",
-    title: "CRM y Gestión de Clientes",
+    title: "Capa de IA aplicada",
     description:
-      "Historial completo de clientes, seguimiento de ventas B2B, envíos automáticos por correo electrónico y gestión de créditos.",
+      "Implementamos IA donde realmente ayuda al equipo: busqueda, clasificacion, copilotos y soporte a la ejecucion.",
     bullets: [
-      "Perfil completo del cliente",
-      "Pipeline de ventas B2B",
-      "Correos automáticos",
-      "Gestión de créditos",
+      "Copilotos internos",
+      "Clasificacion automatica",
+      "Busqueda sobre contexto real",
+      "Borradores y respuestas asistidas",
     ],
   },
   {
     icon: Cpu,
     color: "text-zs-blue",
     borderColor: "border-zs-blue/30",
-    title: "Marketplace B2B en Costa Rica",
+    title: "Integracion de equipos y herramientas",
     description:
-      "Plataforma de ventas B2B donde sus clientes empresariales pueden hacer pedidos directamente, ver catálogos de precios personalizados y gestionar sus compras.",
+      "Unimos la operacion entre areas para que ventas, operaciones, finanzas y servicio trabajen sobre el mismo sistema.",
     bullets: [
-      "Catálogos de precios por cliente",
-      "Pedidos en línea B2B",
-      "Integración con facturación",
-      "Panel del cliente",
+      "Contexto compartido",
+      "Flujos interarea",
+      "Estados visibles",
+      "Menos retrabajo",
     ],
   },
   {
     icon: BarChart3,
     color: "text-zs-cyan",
     borderColor: "border-zs-cyan/30",
-    title: "Reportería y BI",
+    title: "Implementacion y adopcion",
     description:
-      "Dashboards en tiempo real con métricas clave del negocio: ventas, márgenes, rotación de inventario y análisis de clientes.",
+      "No entregamos solo diseno. Dejamos un sistema funcionando, documentado y adoptado por el equipo.",
     bullets: [
-      "Dashboard en tiempo real",
-      "Reportes de ventas",
-      "Análisis de inventario",
-      "Exportación a Excel/PDF",
+      "Acompanamiento de rollout",
+      "Playbooks operativos",
+      "Capacitacion por roles",
+      "Mejora continua",
     ],
   },
 ];
@@ -113,26 +108,22 @@ export default function FeaturesPage() {
   return (
     <main className="relative bg-zs-bg-primary min-h-screen pt-32 pb-24">
       <div className="container mx-auto px-4 md:px-8 max-w-7xl">
-
-        {/* Task 9: Correct heading hierarchy — single H1 */}
         <header className="text-center mb-20 max-w-4xl mx-auto">
           <p className="text-zs-blue text-sm font-black uppercase tracking-[0.3em] mb-4">
-            Plataforma Completa
+            Capacidades clave
           </p>
           <h1 className="text-2xl md:text-5xl font-black text-white tracking-tight uppercase italic leading-tight mb-6">
-            ERP y Facturación Electrónica{" "}
+            Business OS{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-zs-cyan via-zs-blue to-zs-violet">
-              para Costa Rica
+              para empresas en Costa Rica
             </span>
           </h1>
           <p className="text-xl text-zs-text-secondary font-light leading-relaxed">
-            Todo lo que una PYME costarricense necesita en una sola plataforma:
-            facturación electrónica Hacienda, inventario multi-sucursal, CRM y
-            reportería financiera.
+            Disenamos la estructura operativa que su empresa necesita para
+            trabajar con menos friccion y mas criterio.
           </p>
         </header>
 
-        {/* Feature Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-20">
           {features.map((feature) => {
             const Icon = feature.icon;
@@ -171,32 +162,28 @@ export default function FeaturesPage() {
           })}
         </div>
 
-        {/* Internal linking for SEO */}
-        <nav
-          className="text-center"
-          aria-label="Páginas relacionadas"
-        >
+        <nav className="text-center" aria-label="Paginas relacionadas">
           <p className="text-zs-text-secondary mb-6">
-            Explore más sobre nuestras soluciones
+            Explore como aplicamos este enfoque
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <Link
-              href="/facturacion-electronica-costa-rica"
+              href="/use-cases"
               className="px-6 py-3 rounded-xl bg-zs-blue/10 border border-zs-blue/30 text-zs-blue text-sm font-bold hover:bg-zs-blue/20 transition-all"
             >
-              Facturación Electrónica
+              Casos de uso
             </Link>
             <Link
-              href="/software-para-pymes-costa-rica"
+              href="/contact"
               className="px-6 py-3 rounded-xl bg-zs-cyan/10 border border-zs-cyan/30 text-zs-cyan text-sm font-bold hover:bg-zs-cyan/20 transition-all"
             >
-              Software PYMES
+              Hablar con ZST
             </Link>
             <Link
               href="/pricing"
               className="px-6 py-3 rounded-xl bg-zs-violet/10 border border-zs-violet/30 text-zs-violet text-sm font-bold hover:bg-zs-violet/20 transition-all"
             >
-              Ver Precios
+              Ver planes
             </Link>
           </div>
         </nav>

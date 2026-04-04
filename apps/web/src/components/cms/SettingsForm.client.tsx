@@ -74,7 +74,7 @@ export function SettingsForm({ defaultValues }: Props) {
         <textarea
           {...register("siteDescription")}
           rows={2}
-          placeholder="Plataforma SaaS de ERP y facturación electrónica..."
+          placeholder="Ayudamos a empresas a ordenar procesos, automatizar tareas e implementar IA."
           className={inputCls}
         />
       </div>

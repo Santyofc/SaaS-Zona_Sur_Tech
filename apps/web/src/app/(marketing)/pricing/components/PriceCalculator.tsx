@@ -11,9 +11,9 @@ import { Calculator, TrendingDown, Zap, ShieldCheck } from "lucide-react";
  */
 
 export function PriceCalculator() {
-  const [invoices, setInvoices] = useState(500);
-  const avgCostPerInvoce = 0.20; // $0.20 USD traditional market CR
-  const zstFixedCost = 49; // Industrial Core
+  const [invoices, setInvoices] = useState(20);
+  const avgCostPerInvoce = 45;
+  const zstFixedCost = 450;
 
   const totalTraditional = invoices * avgCostPerInvoce;
   const savings = Math.max(0, totalTraditional - zstFixedCost);
@@ -42,14 +42,14 @@ export function PriceCalculator() {
           <div className="space-y-8">
             <div className="space-y-4">
               <div className="flex justify-between text-[10px] font-black uppercase tracking-widest text-zs-text-muted">
-                <span>Volumen de Facturación Mensual</span>
-                <span className="text-zs-blue">{invoices} DOCS</span>
+                <span>Horas perdidas al mes</span>
+                <span className="text-zs-blue">{invoices} HRS</span>
               </div>
               <input
                 type="range"
-                min="100"
-                max="5000"
-                step="100"
+                min="10"
+                max="120"
+                step="5"
                 value={invoices}
                 onChange={(e) => setInvoices(parseInt(e.target.value))}
                 className="w-full h-1 bg-zs-border rounded-lg appearance-none cursor-pointer accent-zs-blue transition-all"
@@ -62,7 +62,7 @@ export function PriceCalculator() {
           <div className="grid grid-cols-1 gap-6">
             {/* Traditional Card */}
             <div className="p-6 rounded-2xl border border-white/5 bg-black/20">
-              <span className="text-[10px] font-bold text-zs-text-muted uppercase">Gasto Promedio Tradicional</span>
+              <span className="text-[10px] font-bold text-zs-text-muted uppercase">Costo mensual de la friccion</span>
               <div className="text-3xl font-black text-white italic mt-1">${totalTraditional.toFixed(2)}</div>
             </div>
 
@@ -70,7 +70,7 @@ export function PriceCalculator() {
             <div className="p-8 rounded-3xl border border-zs-blue/30 bg-zs-blue/10 relative overflow-hidden group">
               <Zap className="absolute -top-4 -right-4 w-24 h-24 text-zs-blue/10 group-hover:scale-125 transition-transform duration-700" />
               <div className="relative z-10">
-                <span className="text-[10px] font-black text-zs-blue uppercase tracking-widest">Plan Industrial Core (ZST)</span>
+                <span className="text-[10px] font-black text-zs-blue uppercase tracking-widest">Diagnostico inicial ZST</span>
                 <div className="text-5xl font-black text-white italic mt-2">${zstFixedCost.toFixed(2)}</div>
                 
                 <div className="mt-8 pt-6 border-t border-zs-blue/20 flex items-center justify-between">
@@ -87,7 +87,7 @@ export function PriceCalculator() {
 
             <div className="flex items-center gap-4 text-zs-text-muted text-[10px] font-bold uppercase tracking-tighter">
               <ShieldCheck className="w-4 h-4" />
-              <span>Cifrado E2E y Nodos Ilimitados incluidos en la comparativa</span>
+              <span>Estimacion simple para visualizar cuanto cuesta seguir operando sin sistema</span>
             </div>
           </div>
         </div>

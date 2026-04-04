@@ -1,22 +1,20 @@
-import React from "react";
-import { Check, Zap, Shield, Globe, Cpu, ZapOff, CheckCircle2 } from "lucide-react";
+import { Zap, Shield, CheckCircle2, Globe } from "lucide-react";
 import Link from "next/link";
 import { GlitchText } from "@/components/ui/GlitchText.client";
 import { PriceCalculator } from "./components/PriceCalculator";
-
 
 import { getPublishedEntryBySlug } from "@/lib/cms/queries";
 import { Metadata } from "next";
 
 const DEFAULT_METADATA = {
-    title: "Precios y Planes | ERP Facturación Electrónica Costa Rica | ZonaSur Tech",
-    description: "Planes accesibles de ERP y facturación electrónica para PYMES costarricenses. Desde ₡15,000/mes con cumplimiento Hacienda v4.3 incluido.",
+    title: "Servicios y Planes | Business OS e IA | ZonaSur Tech",
+    description: "Servicios para diagnosticar, diseñar e implementar su Business OS. Automatización e IA aplicada para empresas en Costa Rica.",
     alternates: {
         canonical: "https://zonasurtech.online/pricing",
     },
     openGraph: {
-        title: "Precios y Planes | ZonaSur Tech ERP Costa Rica",
-        description: "ERP y facturación electrónica Hacienda para PYMES en Costa Rica. Planes desde ₡15,000/mes.",
+        title: "Servicios y Planes | ZonaSur Tech Business OS",
+        description: "Diagnóstico, implementación y evolución continua de su Business OS.",
         url: "https://zonasurtech.online/pricing",
     },
 };
@@ -47,28 +45,28 @@ export async function generateMetadata(): Promise<Metadata> {
 
 const plans = [
     {
-        name: "Developer Node",
-        price: "Gratis",
-        description: "Ideal para prototipado y experimentación técnica en el sandbox de ZST.",
-        features: ["1 Nodo Activo", "Latencia < 100ms", "Santi Auth Basic", "Soporte Comunitario"],
-        cta: "Inicializar Nodo",
+        name: "Diagnostico Operativo",
+        price: "$450",
+        description: "Punto de partida para entender su operación actual y priorizar qué ordenar, automatizar o rediseñar.",
+        features: ["Diagnóstico operativo", "Mapa de procesos", "Lista de fricciones", "Roadmap de quick wins"],
+        cta: "Solicitar diagnóstico",
         color: "zs-blue"
     },
     {
-        name: "Industrial Core",
-        price: "$49",
-        description: "Arquitectura robusta para aplicaciones en producción con tráfico constante.",
-        features: ["8 Nodos Globales", "Latencia < 20ms", "Nucleus DB Sync", "E2E Encryption", "Priority Support"],
-        cta: "Acceso Industrial",
+        name: "Business OS Sprint",
+        price: "$1,500",
+        description: "Implementación guiada para estructurar procesos, automatizar tareas críticas y dejar un sistema operando.",
+        features: ["Diseño del Business OS", "Automatizaciones clave", "Tablero de control", "Acompañamiento del equipo", "Entrega documentada"],
+        cta: "Agendar sprint",
         highlight: true,
         color: "zs-violet"
     },
     {
-        name: "Enterprise Mesh",
+        name: "AI Ops Layer",
         price: "Custom",
-        description: "Infraestructura a medida para corporaciones que demandan escalabilidad infinita.",
-        features: ["Nodos Ilimitados", "Latencia < 5ms", "Military Grade Sec", "Dedicated Engine", "SLA 99.999%"],
-        cta: "Consultar Ingeniería",
+        description: "Para equipos que ya operan con base sólida y quieren sumar asistentes, búsqueda interna o ejecución asistida con IA.",
+        features: ["Casos de uso IA", "Integración con su contexto", "Gobierno y seguridad", "Iteración continua", "Capacitación interna"],
+        cta: "Diseñar capa IA",
         color: "zs-cyan"
     }
 ];
@@ -78,8 +76,8 @@ export default async function PricingPage() {
     const entry = await getPublishedEntryBySlug("pricing", "page").catch(() => null);
     
     // Fallbacks
-    const pageTitle = entry?.title ?? "Escalado Estratégico";
-    const pageSubtitle = entry?.excerpt ?? "Pague solo por la potencia de cómputo y los nodos que necesita. Sin costos ocultos, solo rendimiento industrial puro.";
+    const pageTitle = entry?.title ?? "Formas de trabajar";
+    const pageSubtitle = entry?.excerpt ?? "Desde un diagnóstico inicial hasta la implementación de automatización e IA. Elegimos el nivel de intervención según su momento operativo.";
     
     // We try to parse plans from the 'content' raw JSON block if the admin provided it, 
     // otherwise fallback to hardcoded default plans.
@@ -109,7 +107,7 @@ export default async function PricingPage() {
                 <div className="max-w-3xl mx-auto mb-20">
                     <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-zs-blue/10 border border-zs-blue/20 text-zs-blue mb-8">
                         <Zap className="w-4 h-4 animate-pulse" />
-                        <span className="text-[10px] font-black uppercase tracking-widest italic">Inversión en Infraestructura</span>
+                        <span className="text-[10px] font-black uppercase tracking-widest italic">Servicios de transformacion operativa</span>
                     </div>
 
                     <h1 className="text-2xl md:text-5xl font-black text-white tracking-tighter uppercase italic leading-[0.8] mb-8">
@@ -166,16 +164,16 @@ export default async function PricingPage() {
                     <div className="flex items-center gap-6">
                         <Shield className="w-10 h-10 text-zs-blue opacity-50" />
                         <div className="text-left">
-                            <h4 className="text-white font-black uppercase italic tracking-tight">Garantía ZST</h4>
-                            <p className="text-xs text-zs-text-muted">Todos los planes incluyen seguridad E2E y redundancia automática de nodos.</p>
+                            <h4 className="text-white font-black uppercase italic tracking-tight">Diseño con criterio</h4>
+                            <p className="text-xs text-zs-text-muted">Cada propuesta parte de procesos reales, no de plantillas genéricas.</p>
                         </div>
                     </div>
                     <div className="h-px w-full md:w-px md:h-12 bg-zs-border" />
                     <div className="flex items-center gap-6">
                         <Globe className="w-10 h-10 text-zs-violet opacity-50" />
                         <div className="text-left">
-                            <h4 className="text-white font-black uppercase italic tracking-tight">Malla Global</h4>
-                            <p className="text-xs text-zs-text-muted">Activación instantánea en cualquier región del mundo sin costo adicional.</p>
+                            <h4 className="text-white font-black uppercase italic tracking-tight">Implementación gradual</h4>
+                            <p className="text-xs text-zs-text-muted">Ordenamos primero lo crítico y escalamos con evidencia, no con promesas.</p>
                         </div>
                     </div>
                 </div>

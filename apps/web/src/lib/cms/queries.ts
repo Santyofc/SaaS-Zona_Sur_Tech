@@ -7,7 +7,7 @@
  * Used by both server actions and server components (RSC data fetching).
  * Never call these from the client.
  */
-import { db, cmsEntries, cmsMedia, cmsSettings, eq, and, desc, asc, like, sql } from "@repo/db";
+import { db, cmsEntries, cmsMedia, cmsSettings, organizations, eq, and, desc, asc, like, sql } from "@repo/db";
 import type { PaginationInput } from "@repo/db/cms-schema";
 
 // ---------------------------------------------------------------------------
@@ -23,6 +23,10 @@ export interface PaginatedResult<T> {
   total: number;
   page: number;
   totalPages: number;
+}
+
+export function isCmsDatabaseConfigured(): boolean {
+  return Boolean(process.env.DATABASE_URL);
 }
 
 // ---------------------------------------------------------------------------
@@ -232,6 +236,65 @@ export async function getCmsSettings(
 }
 
 /**
+ * Public-site settings resolver.
+ * Prefers CMS_PUBLIC_ORG_ID when configured, otherwise falls back to the
+ * first organization that actually has CMS settings.
+ */
+export async function getPublicCmsSettings(): Promise<Record<string, string>> {
+  if (!isCmsDatabaseConfigured()) {
+    return {};
+  }
+
+  const fallbackOrgId = await getPublicCmsOrganizationId();
+  if (!fallbackOrgId) {
+    return {};
+  }
+
+  const settings = await getCmsSettings(fallbackOrgId);
+
+  return {
+    ...settings,
+    siteName: settings.site_name ?? "",
+    siteDescription: settings.site_description ?? "",
+    defaultAuthor: settings.default_author ?? "",
+    logoUrl: settings.logo_url ?? "",
+    faviconUrl: settings.favicon_url ?? "",
+    accentColor: settings.accent_color ?? "",
+    ogImageUrl: settings.og_image_url ?? "",
+  };
+}
+
+export async function getPublicCmsOrganizationId(): Promise<string | null> {
+  if (!isCmsDatabaseConfigured()) {
+    return null;
+  }
+
+  const configuredOrgId = process.env.CMS_PUBLIC_ORG_ID;
+  if (configuredOrgId) {
+    return configuredOrgId;
+  }
+
+  const orgWithSettings = await db
+    .select({ organizationId: cmsSettings.organizationId })
+    .from(cmsSettings)
+    .orderBy(desc(cmsSettings.updatedAt))
+    .limit(1);
+
+  const settingsOrgId = orgWithSettings[0]?.organizationId;
+  if (settingsOrgId) {
+    return settingsOrgId;
+  }
+
+  const firstOrganization = await db
+    .select({ id: organizations.id })
+    .from(organizations)
+    .orderBy(desc(organizations.updatedAt))
+    .limit(1);
+
+  return firstOrganization[0]?.id ?? null;
+}
+
+/**
  * Returns a summary list of all entries for an org (Admin only).
  */
 export async function getAdminEntryList(
@@ -259,4 +322,3 @@ export async function getAdminEntryList(
 
   return results as any;
 }
-

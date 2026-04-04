@@ -57,11 +57,12 @@ export default function ContactPage() {
           >
             <h2 className="text-zs-blue text-xs font-black uppercase tracking-[0.4em] mb-4">Canales Abiertos</h2>
             <h1 className="text-2xl md:text-5xl font-black text-white tracking-tighter uppercase italic mb-8 leading-none">
-              Inicia la <br /> <span className="text-zs-blue shadow-zs-glow-blue">Conexión</span>
+              Ordenemos su <br /> <span className="text-zs-blue shadow-zs-glow-blue">Operacion</span>
             </h1>
             <p className="text-xl text-zs-text-secondary leading-relaxed mb-12 max-w-md">
-              Estamos listos para discutir tu próximo gran salto tecnológico.
-              Nuestro equipo responde en tiempo real a las solicitudes de alta prioridad.
+              Cuentenos donde hay friccion, tareas manuales o falta de
+              visibilidad. Le ayudamos a traducir eso en procesos, automatizacion
+              e IA aplicada.
             </p>
 
             <div className="space-y-8">
@@ -163,12 +164,12 @@ export default function ContactPage() {
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <label htmlFor="subject" className="text-[10px] font-black text-zs-text-muted uppercase tracking-widest ml-1">Asunto de Misión</label>
-                  <input id="subject" type="text" name="subject" required placeholder="¿Cómo podemos escalar juntos?" className="zs-input bg-black/20 focus:border-zs-blue/50 focus:ring-zs-blue/10" />
+                  <label htmlFor="subject" className="text-[10px] font-black text-zs-text-muted uppercase tracking-widest ml-1">Objetivo principal</label>
+                  <input id="subject" type="text" name="subject" required placeholder="Que proceso necesitan ordenar o automatizar" className="zs-input bg-black/20 focus:border-zs-blue/50 focus:ring-zs-blue/10" />
                 </div>
                 <div className="space-y-2">
-                  <label htmlFor="body" className="text-[10px] font-black text-zs-text-muted uppercase tracking-widest ml-1">Payload / Mensaje</label>
-                  <textarea id="body" rows={5} name="body" required placeholder="Describe tus requerimientos técnicos..." className="zs-input bg-black/20 resize-none focus:border-zs-blue/50 focus:ring-zs-blue/10" />
+                  <label htmlFor="body" className="text-[10px] font-black text-zs-text-muted uppercase tracking-widest ml-1">Contexto de la operacion</label>
+                  <textarea id="body" rows={5} name="body" required placeholder="Describa donde se pierde tiempo, que tareas son manuales y que equipos estan involucrados" className="zs-input bg-black/20 resize-none focus:border-zs-blue/50 focus:ring-zs-blue/10" />
                 </div>
 
                 <button 
@@ -178,7 +179,7 @@ export default function ContactPage() {
                 >
                   <div className="absolute inset-0 bg-white/10 -translate-x-full group-hover:translate-x-0 transition-transform duration-500" />
                   <span className="relative font-black uppercase tracking-widest">
-                    {isSubmitting ? "Sincronizando..." : "Desplegar Mensaje al Core"}
+                    {isSubmitting ? "Enviando..." : "Solicitar conversacion"}
                   </span>
                   {!isSubmitting && <Send className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform relative" />}
                 </button>

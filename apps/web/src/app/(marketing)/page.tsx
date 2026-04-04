@@ -14,23 +14,23 @@ const LiveEmulators = dynamic(() => import("./components/LiveEmulators.client"),
 import { getPublishedEntryBySlug } from "@/lib/cms/queries";
 
 const DEFAULT_METADATA: Metadata = {
-  title: "ERP y Facturación Electrónica en Costa Rica | ZonaSur Tech",
+  title: "Business OS, Automatización e IA en Costa Rica | ZonaSur Tech",
   description:
-    "Software ERP y Facturación Electrónica para PYMES costarricenses. Cumplimiento con Ministerio de Hacienda versión 4.3. Inventario, CRM y marketplace en una sola plataforma.",
+    "Ayudamos a empresas en Costa Rica a ordenar procesos, automatizar tareas e implementar IA. Diseñamos su Business OS para operar con más control y menos fricción.",
   alternates: {
     canonical: "https://zonasurtech.online",
   },
   openGraph: {
-    title: "ERP y Facturación Electrónica en Costa Rica | ZonaSur Tech",
+    title: "Business OS, Automatización e IA en Costa Rica | ZonaSur Tech",
     description:
-      "Plataforma SaaS completa para PYMES en Costa Rica. Facturación electrónica Hacienda v4.3, inventario multi-sucursal, CRM y más.",
+      "Diseñamos sistemas operativos de negocio para empresas en Costa Rica: procesos claros, automatización útil e IA aplicada al trabajo real.",
     url: "https://zonasurtech.online",
     images: [
       {
         url: "/images/og/og-home.png",
         width: 1200,
         height: 630,
-        alt: "ZonaSur Tech - ERP y Facturación Electrónica para PYMES en Costa Rica",
+        alt: "ZonaSur Tech - Business OS, automatización e IA para empresas en Costa Rica",
       },
     ],
   },
@@ -44,13 +44,13 @@ export async function generateMetadata(): Promise<Metadata> {
     const seo = (entry.seoMeta ?? {}) as { title?: string; description?: string; ogImage?: string; noindex?: boolean };
 
     return {
-      title: seo.title || entry.title || DEFAULT_METADATA.title || undefined,
-      description: seo.description || entry.excerpt || DEFAULT_METADATA.description || undefined,
+      title: DEFAULT_METADATA.title,
+      description: DEFAULT_METADATA.description,
       alternates: DEFAULT_METADATA.alternates,
       openGraph: {
         ...DEFAULT_METADATA.openGraph,
-        title: seo.title || entry.title || DEFAULT_METADATA.openGraph?.title || undefined,
-        description: seo.description || entry.excerpt || DEFAULT_METADATA.openGraph?.description || undefined,
+        title: DEFAULT_METADATA.openGraph?.title,
+        description: DEFAULT_METADATA.openGraph?.description,
         images: seo.ogImage ? [{ url: seo.ogImage }] : DEFAULT_METADATA.openGraph?.images,
       },
       robots: seo.noindex ? { index: false, follow: false } : undefined,
@@ -65,25 +65,17 @@ export default async function Home() {
   // const entry = await getPublishedEntryBySlug("home").catch(() => null);
   return (
     <main className="relative bg-zs-bg-primary overflow-hidden font-mono selection:bg-zs-blue/30 selection:text-white">
-      {/* Schema.org SoftwareApplication */}
+      {/* Schema.org ProfessionalService */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify({
             "@context": "https://schema.org",
-            "@type": "SoftwareApplication",
+            "@type": "ProfessionalService",
             name: "ZonaSur Tech",
-            applicationCategory: "BusinessApplication",
-            operatingSystem: "Web",
             url: "https://zonasurtech.online",
             description:
-              "ERP y Facturación Electrónica para PYMES costarricenses. Cumplimiento con Ministerio de Hacienda versión 4.3.",
-            offers: {
-              "@type": "Offer",
-              price: "0",
-              priceCurrency: "CRC",
-              availability: "https://schema.org/InStock",
-            },
+              "Ayudamos a empresas en Costa Rica a ordenar procesos, automatizar tareas e implementar IA. Diseñamos su Business OS para operar con más control y menos fricción.",
             aggregateRating: {
               "@type": "AggregateRating",
               ratingValue: "4.8",

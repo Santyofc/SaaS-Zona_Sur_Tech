@@ -48,17 +48,17 @@ export default function CTASection() {
 
           <h2 className="text-2xl md:text-5xl font-black text-white tracking-tighter uppercase italic leading-[0.8] mb-8 relative z-10">
             Deja de{" "}
-            <span className="text-zs-text-muted line-through">Configurar</span>
+            <span className="text-zs-text-muted line-through">improvisar</span>
             <br />
             Empieza a{" "}
             <span className="text-zs-blue drop-shadow-[0_0_20px_rgba(37,99,235,0.4)]">
-              Construir
+              operar con sistema
             </span>
           </h2>
 
           <p className="text-xl text-zs-text-secondary font-light max-w-2xl mx-auto mb-12 relative z-10">
-            Únete a la nueva ola de ingenieros que eligen la potencia sobre la
-            simplicidad aparente.
+            Disenamos junto a su equipo la estructura, automatizaciones y capa
+            de IA que necesita para trabajar con menos friccion.
           </p>
 
           <div className="w-full max-w-2xl mx-auto mb-16 relative z-10">
@@ -66,11 +66,11 @@ export default function CTASection() {
           </div>
 
           <Link
-            href="/gateway"
+            href="/contact"
             className="zs-btn-brand px-16 py-6 rounded-2xl flex items-center justify-center gap-4 group relative overflow-hidden backdrop-blur-xl z-10 w-full sm:w-auto shadow-[0_0_40px_rgba(37,99,235,0.3)]"
           >
             <span className="relative text-lg font-black uppercase tracking-widest">
-              Acceso Inmediato
+              Agendar conversacion
             </span>
             <ChevronRight className="w-6 h-6 relative group-hover:translate-x-2 transition-transform" />
           </Link>

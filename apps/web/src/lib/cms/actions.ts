@@ -39,6 +39,33 @@ function createStorageClient() {
 
 const CMS_STORAGE_BUCKET = "cms-media";
 
+function getPublicPagePaths(slug: string) {
+  const uniquePaths = new Set<string>();
+
+  if (slug === "home") {
+    uniquePaths.add("/");
+  } else {
+    uniquePaths.add(`/pages/${slug}`);
+    uniquePaths.add(`/${slug}`);
+  }
+
+  return [...uniquePaths];
+}
+
+function revalidateCmsEntryPaths(collectionType: "post" | "page", slug: string) {
+  revalidateTag(`cms-entry-${slug}`);
+
+  if (collectionType === "post") {
+    revalidatePath("/blog");
+    revalidatePath(`/blog/${slug}`);
+    return;
+  }
+
+  for (const path of getPublicPagePaths(slug)) {
+    revalidatePath(path);
+  }
+}
+
 // ---------------------------------------------------------------------------
 // Entries — CRUD
 // ---------------------------------------------------------------------------
@@ -73,6 +100,9 @@ export async function createEntry(rawInput: CreateEntryInput) {
 
   // Revalidate admin list pages
   revalidatePath(`/admin/${input.collectionType}s`);
+  if (entry.status === "published") {
+    revalidateCmsEntryPaths(entry.collectionType, entry.slug);
+  }
 
   return { success: true, data: entry };
 }
@@ -115,8 +145,7 @@ export async function updateEntry(rawInput: UpdateEntryInput) {
   if (!entry) throw new Error("Entry not found or permission denied");
 
   // Invalidate ISR cache for this slug
-  revalidateTag(`cms-entry-${entry.slug}`);
-  revalidatePath(`/blog/${entry.slug}`);
+  revalidateCmsEntryPaths(entry.collectionType, entry.slug);
   revalidatePath(`/admin/${entry.collectionType}s`);
 
   return { success: true, data: entry };
@@ -147,8 +176,7 @@ export async function publishEntry(entryId: string, status: "draft" | "published
 
   if (!entry) throw new Error("Entry not found or permission denied");
 
-  revalidateTag(`cms-entry-${entry.slug}`);
-  revalidatePath(`/blog/${entry.slug}`);
+  revalidateCmsEntryPaths(entry.collectionType, entry.slug);
 
   return { success: true, data: entry };
 }
@@ -171,8 +199,7 @@ export async function deleteEntry(entryId: string) {
 
   if (!deleted) throw new Error("Entry not found or permission denied");
 
-  revalidateTag(`cms-entry-${deleted.slug}`);
-  revalidatePath(`/blog/${deleted.slug}`);
+  revalidateCmsEntryPaths(deleted.type, deleted.slug);
   revalidatePath(`/admin/${deleted.type}s`);
 
   return { success: true };
@@ -357,8 +384,11 @@ export async function revalidateCmsEntry(tag: string, slug: string) {
     // Revalidation logic
     revalidateTag(tag);
     if (slug) {
-      revalidateTag(`cms-entry-${slug}`);
-      revalidatePath(`/blog/${slug}`);
+      if (tag === "page") {
+        revalidateCmsEntryPaths("page", slug);
+      } else {
+        revalidateCmsEntryPaths("post", slug);
+      }
     }
     revalidatePath("/", "layout"); // Global refresh for safety
 

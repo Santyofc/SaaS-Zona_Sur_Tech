@@ -2,10 +2,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { Calendar, User, ArrowRight, FileText, Zap, Terminal, Search, Clock } from "lucide-react";
-import { GlitchText } from "@/components/ui/GlitchText.client";
-import { AmbientGrid } from "@/components/ui/AmbientGrid.client";
-import { AdBanner } from "@/components/ui/AdBanner";
+import { User, ArrowRight, FileText, Search, Clock, BookOpen } from "lucide-react";
 import type { EntryRow } from "@/lib/cms/queries";
 
 interface BlogIndexClientProps {
@@ -42,10 +39,6 @@ export default function BlogIndexClient({ initialPosts }: BlogIndexClientProps) 
 
   return (
     <div className="min-h-screen bg-zs-bg-primary relative overflow-hidden pt-32 pb-24">
-      {/* Premium Interactive Background */}
-      <AmbientGrid />
-      
-      {/* Decorative Neural Grid (Static fallback) */}
       <div className="absolute inset-0 pointer-events-none opacity-[0.03]"
         style={{ backgroundImage: 'radial-gradient(var(--color-zs-blue) 1px, transparent 1px)', backgroundSize: '40px 40px' }}
       />
@@ -59,17 +52,17 @@ export default function BlogIndexClient({ initialPosts }: BlogIndexClientProps) 
             animate={{ opacity: 1, scale: 1 }}
             className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-zs-blue/10 border border-zs-blue/20 text-zs-blue mb-8"
           >
-            <Terminal className="w-3 h-3" />
-            <span className="text-[10px] font-black uppercase tracking-[0.2em]">Intel Core // Knowledge Base</span>
+            <BookOpen className="w-3 h-3" />
+            <span className="text-[10px] font-black uppercase tracking-[0.2em]">Ideas para ordenar y automatizar operaciones</span>
           </motion.div>
 
-          <h1 className="text-2xl md:text-5xl font-black text-white tracking-tighter uppercase italic leading-none mb-8">
-            <GlitchText text="BLOG" className="text-glow-blue" />
+          <h1 className="text-2xl md:text-5xl font-black text-white tracking-tighter uppercase italic leading-none mb-6">
+            Blog
           </h1>
 
-          <div className="mb-12">
-            <AdBanner />
-          </div>
+          <p className="max-w-2xl mx-auto text-zs-text-secondary text-lg leading-relaxed mb-12">
+            Publicamos guias, criterios y aprendizajes sobre procesos, automatizacion e IA aplicada a empresas en Costa Rica.
+          </p>
 
           {/* Search Bar */}
           <div className="relative max-w-md mx-auto group">
@@ -95,7 +88,9 @@ export default function BlogIndexClient({ initialPosts }: BlogIndexClientProps) 
           >
             <FileText className="w-16 h-16 mx-auto mb-6 text-zs-text-muted opacity-20" />
             <p className="text-zs-text-secondary font-mono text-sm uppercase tracking-widest">
-              No se han encontrado registros encriptados para: <span className="text-zs-blue">"{searchQuery}"</span>
+              {searchQuery
+                ? <>No encontramos articulos para <span className="text-zs-blue">"{searchQuery}"</span></>
+                : "Aun no hay articulos publicados en esta seccion."}
             </p>
           </motion.div>
         ) : (
@@ -115,13 +110,12 @@ export default function BlogIndexClient({ initialPosts }: BlogIndexClientProps) 
                 >
                   <Link href={`/blog/${post.slug}`} className="block h-full group">
                     <article className="zs-card h-full flex flex-col p-6 space-y-4 group-hover:border-zs-blue/40 group-hover:shadow-zs-glow-blue/10 transition-all duration-500">
-                      {/* Hacker Badge */}
                       <div className="flex justify-between items-center mb-2">
                         <div className="flex items-center gap-2">
                           <div className="w-1 h-1 rounded-full bg-zs-blue animate-zs-pulse-dot" />
-                          <span className="text-[9px] font-black text-zs-blue uppercase tracking-tighter italic">Status // Active</span>
+                          <span className="text-[9px] font-black text-zs-blue uppercase tracking-tighter italic">Publicado</span>
                         </div>
-                        <span className="text-[9px] font-mono text-zs-text-muted">ID: {post.id.slice(0, 8)}</span>
+                        <span className="text-[9px] font-mono text-zs-text-muted">Nota</span>
                       </div>
 
                       {post.coverImage ? (
@@ -136,7 +130,7 @@ export default function BlogIndexClient({ initialPosts }: BlogIndexClientProps) 
                         </div>
                       ) : (
                         <div className="aspect-video w-full rounded-xl overflow-hidden bg-zs-bg-primary border border-zs-border flex items-center justify-center group-hover:bg-zs-blue/5 transition-colors">
-                          <Zap className="w-8 h-8 text-zs-blue/20 group-hover:text-zs-blue/40 transition-colors" />
+                          <BookOpen className="w-8 h-8 text-zs-blue/20 group-hover:text-zs-blue/40 transition-colors" />
                         </div>
                       )}
 

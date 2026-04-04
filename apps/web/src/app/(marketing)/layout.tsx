@@ -11,7 +11,7 @@ export default function MarketingLayout({
     <>
       {process.env.NODE_ENV === "production" && (
         <>
-          <Script id="google-tag-manager" strategy="afterInteractive">
+          <Script id="google-tag-manager" strategy="lazyOnload">
             {`
               (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
               new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -27,13 +27,6 @@ export default function MarketingLayout({
           />
         </>
       )}
-      <Script 
-        id="adsense"
-        async 
-        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8338467922774671"
-        crossOrigin="anonymous"
-        strategy="lazyOnload"
-      />
       <Header />
       {children}
       <Footer />

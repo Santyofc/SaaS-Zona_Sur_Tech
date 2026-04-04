@@ -7,11 +7,11 @@ import { LogoZS } from "@repo/ui/src/components/LogoZS";
 
 const footerLinks = [
     {
-        title: "Plataforma",
+        title: "Soluciones",
         links: [
-            { name: "Sistemas", href: "/systems" },
-            { name: "Infraestructura", href: "/infra" },
-            { name: "Seguridad", href: "/security" },
+            { name: "Capacidades", href: "/features" },
+            { name: "Casos de uso", href: "/use-cases" },
+            { name: "Tecnología", href: "/technology" },
             { name: "Precios", href: "/pricing" },
         ],
     },
@@ -28,9 +28,9 @@ const footerLinks = [
         title: "Recursos",
         links: [
             { name: "Documentación", href: "/docs" },
-            { name: "API Reference", href: "/api-reference" },
-            { name: "Comunidad", href: "/community" },
-            { name: "Estado", href: "/status" },
+            { name: "Sistemas", href: "/systems" },
+            { name: "Seguridad", href: "/security" },
+            { name: "Contacto", href: "/contact" },
         ],
     },
 ];
@@ -66,8 +66,9 @@ export default function Footer() {
                             </div>
                         </Link>
                         <p className="text-zs-text-secondary text-sm leading-relaxed max-w-sm mb-8">
-                            Arquitecturas de alto nivel diseñadas para el máximo rendimiento y escalabilidad extrema.
-                            El estándar para la próxima década de software industrial.
+                            Disenamos Business OS para empresas en Costa Rica:
+                            procesos claros, automatizacion util e IA aplicada
+                            para operar con mas control y menos friccion.
                         </p>
                         <div className="flex items-center gap-4">
                             {socialLinks.map((social, idx) => (
@@ -83,32 +84,18 @@ export default function Footer() {
                         </div>
                         <div className="mt-6">
                             <p className="mb-3 text-[10px] font-black uppercase tracking-[0.2em] text-zs-text-muted">
-                                Support
+                                Hablemos
                             </p>
                             <div className="flex flex-col gap-3">
-                                <a
-                                    href="https://github.com/sponsors/Santyofc"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
+                                <Link
+                                    href="/contact"
                                     className="text-sm font-semibold text-zs-blue hover:text-white transition-colors"
                                 >
-                                    github.com/sponsors/Santyofc
-                                </a>
-                                <iframe
-                                    src="https://github.com/sponsors/Santyofc/button"
-                                    title="Sponsor Santyofc"
-                                    height={32}
-                                    width={114}
-                                    style={{ border: 0, borderRadius: 6 }}
-                                />
-                                <iframe
-                                    src="https://github.com/sponsors/Santyofc/card"
-                                    title="Sponsor Santyofc card"
-                                    height={225}
-                                    width={600}
-                                    className="w-full max-w-[600px]"
-                                    style={{ border: 0 }}
-                                />
+                                    Solicitar diagnostico inicial
+                                </Link>
+                                <p className="text-sm text-zs-text-secondary max-w-sm">
+                                    Si quieres ordenar procesos, automatizar tareas o implementar IA con criterio, conversemos.
+                                </p>
                             </div>
                         </div>
                     </div>

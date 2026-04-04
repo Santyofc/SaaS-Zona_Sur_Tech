@@ -208,15 +208,15 @@ export default function LiveEmulators() {
       <div className="container mx-auto">
         <div className="text-center mb-16">
           <h2 className="text-2xl md:text-5xl font-black text-white uppercase italic tracking-tighter mb-4">
-            Ecosistema{" "}
+            Diseno{" "}
             <span className="text-zs-blue drop-shadow-[0_0_20px_rgba(37,99,235,0.4)]">
-              Full-Stack
+              operativo en accion
             </span>
           </h2>
           <p className="text-zs-text-secondary max-w-2xl mx-auto">
-            Desde la escritura de código colaborativa en tiempo real hasta la
-            previsualización instantánea multi-dispositivo. La herramienta
-            definitiva para arquitectos de software.
+            Convertimos procesos difusos en flujos visibles, medibles y
+            automatizados. Asi se ve una operacion cuando empieza a trabajar con
+            sistema.
           </p>
         </div>
 
@@ -231,10 +231,10 @@ export default function LiveEmulators() {
             </div>
             <div className="mt-6 text-center">
               <h3 className="text-xl font-black text-white uppercase tracking-widest mb-2 shrink-0">
-                Entorno Colaborativo
+                Flujo coordinado
               </h3>
               <p className="text-xs text-zs-text-muted shrink-0">
-                Presencia en tiempo real, cursores compartidos y terminal de build sincronizada.
+                Reglas, contexto y pasos compartidos para que el trabajo avance sin friccion.
               </p>
             </div>
           </div>
@@ -249,10 +249,10 @@ export default function LiveEmulators() {
             </div>
             <div className="mt-6 text-center">
               <h3 className="text-xl font-black text-white uppercase tracking-widest mb-2 shrink-0">
-                Previsualización Real
+                Control en tiempo real
               </h3>
               <p className="text-xs text-zs-text-muted shrink-0">
-                Hardware shell interactivo en 4K. De Desktop a Mobile con zero latencia.
+                Visibilidad sobre estado, carga y resultados para tomar decisiones con mas criterio.
               </p>
             </div>
           </div>

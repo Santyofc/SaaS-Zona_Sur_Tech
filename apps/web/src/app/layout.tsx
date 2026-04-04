@@ -49,27 +49,27 @@ const dmSans = DM_Sans({
  * TASK 7: Metadata with preconnect + critical preloads.
  * metadataBase drives all relative canonical URLs throughout the app.
  */
-import { getPublishedEntryBySlug, getCmsSettings } from "@/lib/cms/queries";
+import { getPublishedEntryBySlug, getPublicCmsSettings } from "@/lib/cms/queries";
 
 export async function generateMetadata(): Promise<Metadata> {
-  // Use a hardcoded Org ID for marketing settings or fetch first available
-  // For this implementation, we fallback to defaults if no custom settings exist
-  const DEFAULT_ORG_ID = "00000000-0000-0000-0000-000000000000"; // Placeholder or seed ID
-  
   let settings: Record<string, string> = {};
   try {
-    settings = await getCmsSettings(DEFAULT_ORG_ID);
+    settings = await getPublicCmsSettings();
   } catch {
     // Silent fail — use defaults
   }
 
-  const siteName = settings.siteName || "ZonaSur Tech";
-  const siteDescription = settings.siteDescription || "Software ERP y Facturación Electrónica para PYMES en Costa Rica. Cumplimos con Hacienda (v4.3), marketplace, inventario y CRM en una sola plataforma.";
+  const siteName = settings.siteName || settings.site_name || "ZonaSur Tech";
+  const siteDescription =
+    settings.siteDescription ||
+    settings.site_description ||
+    "ZonaSur Tech | El Business OS para empresas sofisticadas en Costa Rica. Automatización, Inteligencia y Control Operativo.";
+  const ogImageUrl = settings.ogImageUrl || settings.og_image_url || "/images/og/og-default.png";
 
   return {
     metadataBase: new URL(BASE_URL),
     title: {
-      default: `${siteName} | ERP y Facturación Electrónica Costa Rica`,
+      default: `${siteName} | Business OS & SaaS Engine`,
       template: `%s | ${siteName}`,
     },
     description: siteDescription,
@@ -81,22 +81,22 @@ export async function generateMetadata(): Promise<Metadata> {
       locale: "es_CR",
       url: BASE_URL,
       siteName: siteName,
-      title: `${siteName} | ERP y Facturación Electrónica Costa Rica`,
+      title: `${siteName} | Business OS, Automatización e IA`,
       description: siteDescription,
       images: [
         {
-          url: settings.ogImageUrl || "/images/og/og-default.png",
+          url: ogImageUrl,
           width: 1200,
           height: 630,
-          alt: `${siteName} - ERP y Facturación Electrónica Costa Rica`,
+          alt: `${siteName} - Business OS, Automatización e IA`,
         },
       ],
     },
     twitter: {
       card: "summary_large_image",
-      title: `${siteName} | ERP y Facturación Electrónica Costa Rica`,
+      title: `${siteName} | Business OS, Automatización e IA`,
       description: siteDescription,
-      images: [settings.ogImageUrl || "/images/og/og-default.png"],
+      images: [ogImageUrl],
     },
     robots: {
       index: true,
@@ -109,29 +109,12 @@ export async function generateMetadata(): Promise<Metadata> {
       },
     },
     icons: {
-      icon: "/icon.svg",
+      icon: "/favicon.svg",
       shortcut: "/favicon.ico",
       apple: "/apple-touch-icon.png",
     },
   };
 }
-
-/**
- * TASK 7: Preconnect hints.
- * These are injected via the <head> through Next.js metadata links.
- * Preconnect resolves DNS+TCP+TLS for critical third-party origins
- * before the browser needs them, reducing connection latency.
- */
-export const links = [
-  { rel: "preconnect", href: "https://fonts.googleapis.com" },
-  {
-    rel: "preconnect",
-    href: "https://fonts.gstatic.com",
-    crossOrigin: "anonymous",
-  },
-  { rel: "dns-prefetch", href: "https://www.googletagmanager.com" },
-  { rel: "dns-prefetch", href: "https://pagead2.googlesyndication.com" },
-];
 
 export const viewport: Viewport = {
   themeColor: "#06080f",
@@ -142,22 +125,6 @@ export const viewport: Viewport = {
 
 // Deferred client-only components — ssr:false keeps them off the critical path
 // These are UX enhancements, not content — safe to load after LCP
-const HackerCursor = dynamic(
-  () =>
-    import("../components/ui/HackerCursor.client").then((mod) => ({
-      default: mod.HackerCursor,
-    })),
-  { ssr: false }
-);
-
-const ZSCommand = dynamic(
-  () =>
-    import("../components/Common/ZSCommand").then((mod) => ({
-      default: mod.ZSCommand,
-    })),
-  { ssr: false }
-);
-
 const ScrollToTop = dynamic(() => import("../components/ScrollToTop"), {
   ssr: false,
 });
@@ -193,19 +160,10 @@ export default function RootLayout({
           rel="dns-prefetch"
           href="https://www.googletagmanager.com"
         />
-        <script
-          async
-          {...{ "custom-element": "amp-auto-ads" } as any}
-          src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js"
-        ></script>
       </head>
       <body className="bg-zs-bg-primary">
-        {/* @ts-expect-error Custom AMP web component */}
-        <amp-auto-ads type="adsense" data-ad-client="ca-pub-8338467922774671"></amp-auto-ads>
         <Providers>
           <div className="isolate relative min-h-screen">
-            <HackerCursor />
-            <ZSCommand />
             {children}
             <ScrollToTop />
           </div>

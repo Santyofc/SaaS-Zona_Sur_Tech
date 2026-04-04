@@ -63,6 +63,7 @@ export default async function EditPostPage({ params }: Props) {
           excerpt: entry.excerpt ?? undefined,
           coverImage: entry.coverImage ?? undefined,
           author: entry.author ?? undefined,
+          content: (entry.content as any) ?? undefined,
           status: entry.status as "draft" | "published" | "archived",
           seoMeta: entry.seoMeta as any,
         }}

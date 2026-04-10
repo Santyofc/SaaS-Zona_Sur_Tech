@@ -64,7 +64,7 @@ export default async function Home() {
   // Option for passing down CMS dynamic contents into React components
   // const entry = await getPublishedEntryBySlug("home").catch(() => null);
   return (
-    <main className="relative bg-zs-bg-primary overflow-hidden font-mono selection:bg-zs-blue/30 selection:text-white">
+    <main className="relative overflow-hidden bg-zs-bg-primary selection:bg-zs-cyan/30 selection:text-white">
       {/* Schema.org ProfessionalService */}
       <script
         type="application/ld+json"
@@ -97,8 +97,8 @@ export default async function Home() {
 
       {/* Static background effects — pure CSS, no JS */}
       <div className="fixed inset-0 pointer-events-none" aria-hidden="true">
-        <div className="absolute top-[-20%] left-[-10%] w-[70vw] h-[70vw] bg-zs-blue/5 rounded-full blur-[150px]" />
-        <div className="absolute bottom-[-20%] right-[-10%] w-[60vw] h-[60vw] bg-zs-violet/5 rounded-full blur-[150px]" />
+        <div className="absolute left-[-10%] top-[-20%] h-[70vw] w-[70vw] rounded-full bg-zs-cyan/8 blur-[150px]" />
+        <div className="absolute bottom-[-20%] right-[-10%] h-[60vw] w-[60vw] rounded-full bg-zs-violet/8 blur-[150px]" />
       </div>
 
       <HeroSection />

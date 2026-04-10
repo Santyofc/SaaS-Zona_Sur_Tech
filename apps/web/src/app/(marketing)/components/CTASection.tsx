@@ -26,9 +26,9 @@ const TerminalFeedback = dynamic(
 
 export default function CTASection() {
   return (
-    <section className="py-32 relative z-10 px-4">
+    <section className="zs-section">
       <div className="container mx-auto">
-        <div className="relative rounded-[3rem] bg-gradient-to-br from-zs-bg-secondary to-black border border-zs-border overflow-hidden p-12 md:p-24 text-center flex flex-col items-center">
+        <div className="relative flex flex-col items-center overflow-hidden rounded-[2rem] border border-zs-border bg-gradient-to-br from-zs-bg-secondary to-black p-8 text-center md:rounded-[3rem] md:p-16 lg:p-24">
           {/*
            * Replaced the raw external bg-url-github with a CSS gradient.
            * Benefits: no external request, no unoptimized image, no blocked LCP.
@@ -42,11 +42,11 @@ export default function CTASection() {
             }}
           />
 
-          <div className="w-20 h-20 rounded-2xl bg-zs-blue/10 flex items-center justify-center text-zs-blue mb-8 relative z-10">
+          <div className="zs-panel-soft relative z-10 mb-8 flex h-20 w-20 items-center justify-center rounded-2xl border-zs-blue/20 bg-zs-blue/10 text-zs-blue">
             <Terminal className="w-10 h-10" />
           </div>
 
-          <h2 className="text-2xl md:text-5xl font-black text-white tracking-tighter uppercase italic leading-[0.8] mb-8 relative z-10">
+          <h2 className="zs-heading-lg relative z-10 mb-8 italic">
             Deja de{" "}
             <span className="text-zs-text-muted line-through">improvisar</span>
             <br />
@@ -56,20 +56,20 @@ export default function CTASection() {
             </span>
           </h2>
 
-          <p className="text-xl text-zs-text-secondary font-light max-w-2xl mx-auto mb-12 relative z-10">
+          <p className="zs-copy relative z-10 mx-auto mb-12 max-w-2xl">
             Disenamos junto a su equipo la estructura, automatizaciones y capa
             de IA que necesita para trabajar con menos friccion.
           </p>
 
-          <div className="w-full max-w-2xl mx-auto mb-16 relative z-10">
+          <div className="relative z-10 mx-auto mb-12 w-full max-w-2xl md:mb-16">
             <TerminalFeedback />
           </div>
 
           <Link
             href="/contact"
-            className="zs-btn-brand px-16 py-6 rounded-2xl flex items-center justify-center gap-4 group relative overflow-hidden backdrop-blur-xl z-10 w-full sm:w-auto shadow-[0_0_40px_rgba(37,99,235,0.3)]"
+            className="zs-btn-brand group relative z-10 flex min-h-16 w-full items-center justify-center gap-4 overflow-hidden rounded-2xl px-8 py-5 text-center backdrop-blur-xl shadow-[0_0_40px_rgba(37,99,235,0.3)] sm:w-auto sm:px-14 sm:py-6"
           >
-            <span className="relative text-lg font-black uppercase tracking-widest">
+            <span className="relative text-base font-black uppercase tracking-[0.16em] sm:text-lg">
               Agendar conversacion
             </span>
             <ChevronRight className="w-6 h-6 relative group-hover:translate-x-2 transition-transform" />

@@ -204,25 +204,25 @@ export default function LiveEmulators() {
   const metrics = parseMetrics(state.code);
 
   return (
-    <section ref={sectionRef} className="py-32 relative z-10 px-4 md:px-8">
+    <section ref={sectionRef} className="zs-section relative z-10">
       <div className="container mx-auto">
-        <div className="text-center mb-16">
-          <h2 className="text-2xl md:text-5xl font-black text-white uppercase italic tracking-tighter mb-4">
+        <div className="mb-16 text-center">
+          <h2 className="zs-heading-lg mb-4 italic tracking-tight">
             Diseno{" "}
             <span className="text-zs-blue drop-shadow-[0_0_20px_rgba(37,99,235,0.4)]">
               operativo en accion
             </span>
           </h2>
-          <p className="text-zs-text-secondary max-w-2xl mx-auto">
+          <p className="zs-copy mx-auto max-w-2xl">
             Convertimos procesos difusos en flujos visibles, medibles y
             automatizados. Asi se ve una operacion cuando empieza a trabajar con
             sistema.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 max-w-7xl mx-auto items-stretch">
+        <div className="mx-auto grid max-w-7xl grid-cols-1 items-stretch gap-8 xl:grid-cols-2">
           {/* IDE Emulator */}
-          <div className="flex flex-col h-[900px] w-full relative group perspective-[2000px]">
+          <div className="group relative flex h-[520px] w-full flex-col perspective-[2000px] sm:h-[620px] lg:h-[700px] xl:h-[820px]">
             <div className="absolute -inset-4 bg-gradient-to-r from-zs-cyan/20 to-zs-blue/20 blur-xl opacity-0 group-hover:opacity-50 transition-opacity rounded-[2rem]" />
             <div className="flex-1 relative z-10 transition-transform duration-700 ease-out group-hover:rotate-y-[1deg] group-hover:scale-[1.01] rounded-[2rem] overflow-hidden border border-zs-border/50 bg-zs-bg-primary">
               <div className="absolute inset-0">
@@ -230,17 +230,17 @@ export default function LiveEmulators() {
               </div>
             </div>
             <div className="mt-6 text-center">
-              <h3 className="text-xl font-black text-white uppercase tracking-widest mb-2 shrink-0">
+              <h3 className="mb-2 shrink-0 text-xl font-black uppercase tracking-widest text-white">
                 Flujo coordinado
               </h3>
-              <p className="text-xs text-zs-text-muted shrink-0">
+              <p className="shrink-0 text-xs text-zs-text-muted">
                 Reglas, contexto y pasos compartidos para que el trabajo avance sin friccion.
               </p>
             </div>
           </div>
 
           {/* Device Emulator */}
-          <div className="flex flex-col h-[900px] w-full relative group perspective-[2000px]">
+          <div className="group relative flex h-[520px] w-full flex-col perspective-[2000px] sm:h-[620px] lg:h-[700px] xl:h-[820px]">
             <div className="absolute -inset-4 bg-gradient-to-l from-zs-violet/20 to-zs-blue/20 blur-xl opacity-0 group-hover:opacity-50 transition-opacity rounded-[2rem]" />
             <div className="flex-1 relative z-10 transition-transform duration-700 ease-out group-hover:-rotate-y-[1deg] group-hover:scale-[1.01] rounded-[2rem] overflow-hidden border border-zs-border/50 bg-zs-bg-primary">
               <div className="absolute inset-0">
@@ -248,10 +248,10 @@ export default function LiveEmulators() {
               </div>
             </div>
             <div className="mt-6 text-center">
-              <h3 className="text-xl font-black text-white uppercase tracking-widest mb-2 shrink-0">
+              <h3 className="mb-2 shrink-0 text-xl font-black uppercase tracking-widest text-white">
                 Control en tiempo real
               </h3>
-              <p className="text-xs text-zs-text-muted shrink-0">
+              <p className="shrink-0 text-xs text-zs-text-muted">
                 Visibilidad sobre estado, carga y resultados para tomar decisiones con mas criterio.
               </p>
             </div>

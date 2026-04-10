@@ -34,7 +34,7 @@ const HeroDemo = dynamic(() => import("./HeroDemo.client"), {
 export default function HeroSection() {
   return (
     <section
-      className="relative min-h-screen flex items-center pt-44 pb-20 px-4 md:px-8 z-10"
+      className="zs-section relative z-10 flex min-h-[92vh] items-center pt-40 md:pt-44"
       aria-labelledby="hero-heading"
     >
       {/* 
@@ -42,7 +42,7 @@ export default function HeroSection() {
         lg:grid-cols-2 with items-center prevents any layout shift
         when HeroDemo hydrates on the right column.
       */}
-      <div className="container mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+      <div className="container mx-auto grid grid-cols-1 items-center gap-12 lg:grid-cols-2 lg:gap-16">
 
         {/*
           LCP ELEMENT: Left column text.
@@ -54,7 +54,7 @@ export default function HeroSection() {
           <Link
             href="/features"
             aria-label="Ver capacidades del Business OS"
-            className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-zs-emerald/10 border border-zs-emerald/30 text-zs-emerald mb-8 hover:bg-zs-emerald/20 transition-all hover:scale-105 hover:shadow-zs-glow-emerald/20"
+            className="mb-8 inline-flex items-center gap-3 rounded-full border border-zs-emerald/30 bg-zs-emerald/10 px-4 py-2 text-zs-emerald transition-all hover:scale-105 hover:bg-zs-emerald/20 hover:shadow-zs-glow-emerald/20"
             // CLS FIX: explicit height prevents shift when animation plays
             style={{ height: 36 }}
           >
@@ -74,25 +74,21 @@ export default function HeroSection() {
             - clamp() instead of viewport-relative font to prevent reflow
             - Static gradient span keeps the hero server-first for mobile LCP
           */}
-          <h1
-            id="hero-heading"
-            className="font-black text-white tracking-tighter uppercase italic leading-[0.9] mb-12 pt-8"
-            style={{ fontSize: "clamp(2.5rem, 7vw, 6rem)" }}
-          >
+          <h1 id="hero-heading" className="zs-heading-xl mb-10 pt-6 italic md:pt-8">
             Impulsando su{" "}
             <span className="relative inline-block text-transparent bg-clip-text bg-gradient-to-r from-zs-cyan via-zs-blue to-zs-violet animate-zs-glitch-slow">
               Business OS
             </span>{" "}
             <br />
             <span
-              className="text-zs-text-muted/80 block mt-2"
+              className="mt-3 block text-zs-text-muted/80"
               style={{ fontSize: "0.45em", letterSpacing: "0.1em" }}
             >
               Control, Automatización e IA
             </span>
           </h1>
 
-          <p className="text-xl text-zs-text-secondary font-light leading-relaxed mb-12 max-w-xl">
+          <p className="zs-copy mb-10 max-w-xl md:mb-12">
             Ayudamos a empresas en Costa Rica a ordenar procesos, automatizar
             tareas e implementar IA. Diseñamos su Business OS para operar con
             más control y menos fricción.
@@ -103,11 +99,11 @@ export default function HeroSection() {
             shift the layout when the client-side Link hover styles hydrate.
             flex-shrink-0 + explicit padding keeps dimensions stable.
           */}
-          <div className="flex flex-col sm:flex-row gap-6 w-full sm:w-auto">
+          <div className="flex w-full flex-col gap-4 sm:w-auto sm:flex-row sm:gap-6">
             <Link
               href="/contact"
               aria-label="Solicitar diagnóstico operativo"
-              className="inline-flex items-center justify-center gap-4 px-10 py-5 bg-zs-blue text-white font-black uppercase italic tracking-widest rounded-2xl hover:bg-zs-blue/80 transition-colors flex-shrink-0 group"
+              className="zs-btn group min-h-16 rounded-2xl px-8 py-5 text-center italic sm:px-10"
               style={{ minWidth: 200, minHeight: 64 }}
             >
               Diagnóstico inicial{" "}
@@ -120,7 +116,7 @@ export default function HeroSection() {
             <Link
               href="/features"
               aria-label="Ver capacidades del Business OS"
-              className="inline-flex items-center justify-center gap-3 px-10 py-5 rounded-2xl bg-zs-bg-secondary/50 border border-zs-border hover:border-zs-blue/30 text-white transition-colors flex-shrink-0"
+              className="zs-btn-ghost min-h-16 rounded-2xl border-zs-border/80 px-8 py-5 text-center sm:px-10"
               style={{ minWidth: 200, minHeight: 64 }}
             >
               <Terminal
@@ -135,8 +131,8 @@ export default function HeroSection() {
         </div>
 
         {/* Right — heavy canvas demo, fully deferred */}
-        <div className="relative z-20 xl:translate-x-12 translate-y-8 animate-zs-float">
-           <HeroDemo />
+        <div className="relative z-20 mx-auto w-full max-w-[680px] translate-y-4 animate-zs-float lg:translate-y-8 xl:translate-x-12">
+          <HeroDemo />
         </div>
       </div>
     </section>

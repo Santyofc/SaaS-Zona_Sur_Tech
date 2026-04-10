@@ -16,9 +16,11 @@ const STATS = [
 
 function StatItem({ icon: Icon, color, label }: (typeof STATS)[number]) {
   return (
-    <div className="flex items-center gap-4 text-white shrink-0">
-      <Icon className={`${color} w-5 h-5`} aria-hidden="true" />
-      <span className="text-xs font-black uppercase tracking-[0.2em]">{label}</span>
+    <div className="flex shrink-0 items-center gap-3 text-white sm:gap-4">
+      <Icon className={`${color} h-4 w-4 sm:h-5 sm:w-5`} aria-hidden="true" />
+      <span className="text-[10px] font-black uppercase tracking-[0.18em] sm:text-xs sm:tracking-[0.2em]">
+        {label}
+      </span>
     </div>
   );
 }
@@ -27,14 +29,14 @@ export default function StatsTape() {
   return (
     <div
       aria-hidden="true"
-      className="relative z-20 bg-zs-blue/10 border-y border-zs-blue/20 py-4 overflow-hidden flex items-center backdrop-blur-md"
+      className="relative z-20 flex items-center overflow-hidden border-y border-zs-blue/20 bg-zs-blue/10 py-3 backdrop-blur-md sm:py-4"
     >
       {/*
        * Two identical rows animate together so the loop is seamless.
        * Animation defined in globals.css as: @keyframes marquee { to { transform: translateX(-50%) } }
        */}
       <div
-        className="flex whitespace-nowrap items-center gap-16 px-8 animate-marquee"
+        className="animate-marquee flex items-center gap-10 whitespace-nowrap px-6 sm:gap-16 sm:px-8"
         style={{ willChange: "transform" }}
       >
         {/* Row 1 */}

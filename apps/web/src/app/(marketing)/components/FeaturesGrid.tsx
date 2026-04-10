@@ -98,10 +98,10 @@ const CARDS: FeatureCard[] = [
 
 export default function FeaturesGrid() {
   return (
-    <section className="py-32 relative z-10 px-4 md:px-8">
+    <section className="zs-section">
       <div className="container mx-auto">
-        <div className="text-center mb-16 md:mb-20">
-          <h2 className="text-[clamp(2.5rem,7vw,5.5rem)] font-black text-white uppercase italic tracking-[-0.03em] leading-[0.92] mb-6">
+        <div className="mb-16 text-center md:mb-20">
+          <h2 className="zs-heading-xl mb-6 italic leading-[0.95]">
             Arquitectura{" "}
             <br className="md:hidden" />
             <GlitchText
@@ -110,13 +110,13 @@ export default function FeaturesGrid() {
               delay={0.2}
             />
           </h2>
-          <p className="text-zs-text-secondary text-lg max-w-2xl mx-auto">
+          <p className="zs-copy mx-auto max-w-2xl">
             Cuatro frentes para ordenar su operacion: estructura, automatizacion,
             inteligencia y control.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 md:grid-rows-2 gap-6 max-w-6xl mx-auto auto-rows-[300px]">
+        <div className="mx-auto grid max-w-6xl grid-cols-1 gap-6 auto-rows-[260px] md:grid-cols-3 md:grid-rows-2 md:auto-rows-[280px] xl:auto-rows-[300px]">
           {CARDS.map((card) => (
             <FeatureCardWrapper
               key={card.id}
@@ -142,15 +142,15 @@ export default function FeaturesGrid() {
                       {card.badge}
                     </div>
                   ) : (
-                    <div className="w-14 h-14 rounded-2xl bg-zs-cyan/10 border border-zs-cyan/20 flex items-center justify-center text-zs-cyan mb-6">
+                    <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-2xl border border-zs-cyan/20 bg-zs-cyan/10 text-zs-cyan">
                       {card.icon}
                     </div>
                   )}
 
-                  <h3 className="text-2xl md:text-3xl font-black text-white uppercase italic tracking-tighter mb-4">
+                  <h3 className="mb-4 text-[clamp(1.4rem,2.4vw,2.2rem)] font-black uppercase italic tracking-tight text-white">
                     {card.title}
                   </h3>
-                  <p className="text-zs-text-secondary text-sm max-w-md leading-relaxed">
+                  <p className="zs-copy max-w-md text-sm md:text-base">
                     {card.description}
                   </p>
                 </div>
@@ -158,7 +158,7 @@ export default function FeaturesGrid() {
                 {card.cta && (
                   <Link
                     href={card.cta.href}
-                    className={`flex items-center gap-2 text-xs font-black ${card.cta.color} uppercase tracking-widest hover:text-white transition-colors w-max mt-4`}
+                    className={`mt-5 inline-flex w-max items-center gap-2 rounded-full border border-current/20 px-3 py-1.5 text-[11px] font-black uppercase tracking-[0.16em] ${card.cta.color} transition-colors hover:text-white`}
                   >
                     {card.cta.label} <ChevronRight className="w-4 h-4" />
                   </Link>

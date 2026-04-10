@@ -37,64 +37,64 @@ interface ActionConfig {
 
 const ACTION_CONFIG: Record<string, ActionConfig> = {
   "invitation.created": {
-    label: "Invitation sent",
+    label: "Invitacion enviada",
     icon: <Mail className="w-3.5 h-3.5" />,
     color: "text-zs-blue bg-zs-blue/10 border-blue-500/20",
   },
   "invitation.revoked": {
-    label: "Invitation revoked",
+    label: "Invitacion revocada",
     icon: <MailX className="w-3.5 h-3.5" />,
     color: "text-rose-400 bg-rose-500/10 border-rose-500/20",
   },
   "invitation.accepted": {
-    label: "Invitation accepted",
+    label: "Invitacion aceptada",
     icon: <MailCheck className="w-3.5 h-3.5" />,
     color: "text-emerald-400 bg-emerald-500/10 border-emerald-500/20",
   },
   "invitation.resent": {
-    label: "Invitation resent",
+    label: "Invitacion reenviada",
     icon: <RefreshCw className="w-3.5 h-3.5" />,
     color: "text-zs-amber bg-amber-500/10 border-amber-500/20",
   },
   "member.role_updated": {
-    label: "Role updated",
+    label: "Rol actualizado",
     icon: <Shield className="w-3.5 h-3.5" />,
     color: "text-zs-violet bg-violet-500/10 border-violet-500/20",
   },
   "member.suspended": {
-    label: "Member suspended",
+    label: "Miembro suspendido",
     icon: <UserMinus className="w-3.5 h-3.5" />,
     color: "text-rose-400 bg-rose-500/10 border-rose-500/20",
   },
   "member.reactivated": {
-    label: "Member reactivated",
+    label: "Miembro reactivado",
     icon: <UserPlus className="w-3.5 h-3.5" />,
     color: "text-emerald-400 bg-emerald-500/10 border-emerald-500/20",
   },
   "member.removed": {
-    label: "Member removed",
+    label: "Miembro removido",
     icon: <UserMinus className="w-3.5 h-3.5" />,
     color: "text-rose-400 bg-rose-500/10 border-rose-500/20",
   },
   "ownership.transferred": {
-    label: "Ownership transferred",
+    label: "Propiedad transferida",
     icon: <Crown className="w-3.5 h-3.5" />,
     color: "text-zs-violet bg-violet-500/10 border-violet-500/20",
   },
   "organization.switched": {
-    label: "Switched workspace",
+    label: "Workspace cambiado",
     icon: <Building2 className="w-3.5 h-3.5" />,
     color: "text-zs-blue bg-zs-blue/10 border-blue-500/20",
   },
   "organization.created": {
-    label: "Organization created",
+    label: "Organizacion creada",
     icon: <Building2 className="w-3.5 h-3.5" />,
     color: "text-zs-emerald bg-emerald-500/10 border-emerald-500/20",
   },
 };
 
 const DEFAULT_ACTION: ActionConfig = {
-  label: "Activity",
+  label: "Actividad",
   icon: <AlertCircle className="w-3.5 h-3.5" />,
   color: "text-zs-text-secondary bg-white/5 border-white/10",
 };
@@ -107,7 +107,7 @@ function getMetadataDetail(action: string, metadata: Record<string, unknown>): s
   if (action === "invitation.created" || action === "invitation.revoked" || action === "invitation.resent") {
     const email = metadata.email;
     const role = metadata.role;
-    if (email) return role ? `${email} as ${role}` : String(email);
+    if (email) return role ? `${email} como ${role}` : String(email);
   }
   if (action === "member.role_updated") {
     const prev = metadata.previous_role;
@@ -115,7 +115,7 @@ function getMetadataDetail(action: string, metadata: Record<string, unknown>): s
     if (prev && next) return `${prev} → ${next}`;
   }
   if (action === "ownership.transferred") {
-    return "Ownership has been transferred";
+    return "La propiedad fue transferida";
   }
   return null;
 }
@@ -126,10 +126,10 @@ function formatRelativeTime(iso: string) {
   const hours = Math.floor(diff / 3600000);
   const days = Math.floor(diff / 86400000);
 
-  if (minutes < 1) return "Just now";
-  if (minutes < 60) return `${minutes}m ago`;
-  if (hours < 24) return `${hours}h ago`;
-  if (days < 7) return `${days}d ago`;
+  if (minutes < 1) return "Ahora";
+  if (minutes < 60) return `Hace ${minutes}m`;
+  if (hours < 24) return `Hace ${hours}h`;
+  if (days < 7) return `Hace ${days}d`;
   return new Date(iso).toLocaleDateString("en-US", { month: "short", day: "numeric" });
 }
 
@@ -138,8 +138,8 @@ export function ActivityFeed({ logs }: ActivityFeedProps) {
     return (
       <EmptyState
         icon={<Activity className="w-6 h-6" />}
-        title="No activity yet"
-        description="Activity will appear here as your team makes changes."
+        title="Sin actividad"
+        description="La actividad aparecera aqui cuando el equipo haga cambios."
       />
     );
   }
@@ -147,7 +147,10 @@ export function ActivityFeed({ logs }: ActivityFeedProps) {
   return (
     <div className="relative">
       {/* Timeline line */}
-      <div className="absolute left-[1.4rem] top-3 bottom-3 w-px bg-gradient-to-b from-zs-blue/20 via-zs-border to-transparent" aria-hidden="true" />
+      <div
+        className="absolute bottom-3 left-[1.4rem] top-3 hidden w-px bg-gradient-to-b from-zs-blue/20 via-zs-border to-transparent sm:block"
+        aria-hidden="true"
+      />
 
       <div className="space-y-3">
         {logs.map((log, i) => {
@@ -160,32 +163,32 @@ export function ActivityFeed({ logs }: ActivityFeedProps) {
               initial={{ opacity: 0, x: -8 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: Math.min(i * 0.03, 0.3) }}
-              className="flex items-start gap-4 pl-1"
+              className="zs-panel-soft flex items-start gap-3 rounded-xl p-3 sm:gap-4 sm:p-4 sm:pl-5"
             >
               {/* Icon bubble */}
               <div
-                className={`w-7 h-7 rounded-lg border flex items-center justify-center shrink-0 z-10 ${config.color}`}
+                className={`z-10 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border ${config.color}`}
                 aria-hidden="true"
               >
                 {config.icon}
               </div>
 
               {/* Content */}
-              <div className="flex-1 min-w-0 pb-3 border-b border-white/5">
+              <div className="min-w-0 flex-1">
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-white leading-snug">
+                    <p className="text-sm font-semibold leading-snug text-white">
                       {config.label}
                     </p>
                     {detail && (
-                      <p className="text-xs text-zs-text-secondary mt-0.5 truncate">
+                      <p className="mt-0.5 truncate text-xs text-zs-text-secondary">
                         {detail}
                       </p>
                     )}
                   </div>
                   <time
                     dateTime={log.createdAt}
-                    className="text-[10px] text-zs-text-muted whitespace-nowrap shrink-0 mt-0.5"
+                    className="mt-0.5 shrink-0 whitespace-nowrap text-[10px] text-zs-text-muted"
                   >
                     {formatRelativeTime(log.createdAt)}
                   </time>

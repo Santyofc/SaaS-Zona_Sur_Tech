@@ -37,10 +37,10 @@ interface InvitationsPanelProps {
 }
 
 const ROLE_OPTIONS: { value: Role; label: string }[] = [
-  { value: "member", label: "Member" },
+  { value: "member", label: "Miembro" },
   { value: "admin", label: "Admin" },
-  { value: "viewer", label: "Viewer" },
-  { value: "billing", label: "Billing" },
+  { value: "viewer", label: "Visualizador" },
+  { value: "billing", label: "Facturacion" },
 ];
 
 function formatExpiry(iso: string) {
@@ -48,9 +48,9 @@ function formatExpiry(iso: string) {
   const now = new Date();
   const diff = d.getTime() - now.getTime();
   const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-  if (days < 0) return "Expired";
-  if (days === 0) return "Expires today";
-  return `Expires in ${days}d`;
+  if (days < 0) return "Expirada";
+  if (days === 0) return "Expira hoy";
+  return `Expira en ${days}d`;
 }
 
 function formatDate(iso: string) {
@@ -143,11 +143,11 @@ export function InvitationsPanel({
 
       {/* Invite Form */}
       {canInvite && (
-        <div className="zs-panel p-5">
+          <div className="zs-card p-5 md:p-6">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-sm font-bold text-white flex items-center gap-2">
+            <h3 className="flex items-center gap-2 text-sm font-bold text-white">
               <Mail className="w-4 h-4 text-zs-blue" />
-              Invite Member
+              Invitar miembro
             </h3>
             <button
               onClick={() => {
@@ -156,7 +156,7 @@ export function InvitationsPanel({
                 setSuccessUrl(null);
               }}
               className="p-1.5 rounded-lg text-zs-text-muted hover:text-white hover:bg-white/5 transition-colors"
-              aria-label={showForm ? "Collapse invite form" : "Expand invite form"}
+              aria-label={showForm ? "Colapsar formulario de invitacion" : "Expandir formulario de invitacion"}
             >
               {showForm ? <X className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
             </button>
@@ -181,12 +181,8 @@ export function InvitationsPanel({
                       animate={{ opacity: 1 }}
                       className="p-3 rounded-xl bg-zs-emerald/10 border border-emerald-500/20 space-y-1"
                     >
-                      <p className="text-xs font-semibold text-emerald-400">
-                        Invitation created!
-                      </p>
-                      <p className="text-[10px] text-zs-text-muted">
-                        Share this link with the invitee:
-                      </p>
+                      <p className="text-xs font-semibold text-emerald-400">Invitacion creada</p>
+                      <p className="text-[10px] text-zs-text-muted">Comparte este enlace:</p>
                       <code className="block text-[10px] text-zs-blue break-all bg-black/20 p-2 rounded-lg">
                         {successUrl}
                       </code>
@@ -198,12 +194,12 @@ export function InvitationsPanel({
                       id="invite-email"
                       type="email"
                       required
-                      placeholder="colleague@example.com"
+                      placeholder="colega@empresa.com"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       className="zs-input flex-1 text-sm py-2.5"
                       disabled={formLoading}
-                      aria-label="Invite email address"
+                      aria-label="Correo para invitar"
                     />
 
                     <select
@@ -211,7 +207,7 @@ export function InvitationsPanel({
                       onChange={(e) => setRole(e.target.value as Role)}
                       className="zs-input w-36 text-sm py-2.5 cursor-pointer"
                       disabled={formLoading}
-                      aria-label="Invitation role"
+                      aria-label="Rol de invitacion"
                     >
                       {ROLE_OPTIONS.map((r) => (
                         <option key={r.value} value={r.value}>
@@ -231,7 +227,7 @@ export function InvitationsPanel({
                     ) : (
                       <Send className="w-4 h-4" />
                     )}
-                    Send Invitation
+                    Enviar invitacion
                   </button>
                 </div>
               </motion.form>
@@ -243,23 +239,23 @@ export function InvitationsPanel({
       {/* Invitations list */}
       <div>
         <h3 className="text-xs font-black uppercase tracking-widest text-zs-text-muted mb-3">
-          Invitations ({invitations.length})
+          Invitaciones ({invitations.length})
         </h3>
 
         {invitations.length === 0 ? (
           <EmptyState
             icon={<Mail className="w-6 h-6" />}
-            title="No invitations yet"
-            description={canInvite ? "Send an invitation above to get started." : undefined}
+            title="Sin invitaciones"
+            description={canInvite ? "Crea una invitacion para comenzar." : undefined}
           />
         ) : (
-          <div className="space-y-2">
+          <div className="space-y-3">
             {invitations.map((inv) => (
               <motion.div
                 key={inv.id}
                 initial={{ opacity: 0, x: -4 }}
                 animate={{ opacity: 1, x: 0 }}
-                className="flex items-center gap-4 p-4 rounded-xl border border-zs-border bg-zs-bg-surface/40 hover:bg-zs-bg-surface-hover transition-colors"
+                className="zs-panel-soft flex items-center gap-4 rounded-xl p-4 transition-colors hover:bg-zs-bg-surface-hover"
               >
                 <div className="w-8 h-8 rounded-lg bg-white/5 border border-zs-border flex items-center justify-center shrink-0">
                   <Mail className="w-4 h-4 text-zs-text-muted" />
@@ -289,22 +285,22 @@ export function InvitationsPanel({
                       onClick={() => handleResend(inv.id)}
                       disabled={resendLoading === inv.id}
                       className={cn(
-                        "px-2.5 py-1.5 rounded-lg text-xs font-medium border border-zs-border text-zs-text-secondary hover:text-white hover:border-zs-border-hover transition-all disabled:opacity-50",
+                        "rounded-lg border border-zs-border px-2.5 py-1.5 text-xs font-medium text-zs-text-secondary transition-all hover:border-zs-border-hover hover:text-white disabled:opacity-50",
                       )}
-                      aria-label={`Resend invitation to ${inv.email}`}
+                      aria-label={`Reenviar invitacion a ${inv.email}`}
                     >
                       {resendLoading === inv.id ? (
                         <Spinner className="w-3 h-3" />
                       ) : (
-                        "Resend"
+                        "Reenviar"
                       )}
                     </button>
                     <button
                       onClick={() => setRevokeTarget(inv)}
-                      className="px-2.5 py-1.5 rounded-lg text-xs font-medium border border-rose-500/20 text-rose-400 hover:bg-zs-rose/10 transition-all"
-                      aria-label={`Revoke invitation for ${inv.email}`}
+                      className="rounded-lg border border-rose-500/20 px-2.5 py-1.5 text-xs font-medium text-rose-400 transition-all hover:bg-zs-rose/10"
+                      aria-label={`Revocar invitacion de ${inv.email}`}
                     >
-                      Revoke
+                      Revocar
                     </button>
                   </div>
                 )}
@@ -317,9 +313,9 @@ export function InvitationsPanel({
       {/* Revoke confirmation */}
       <ConfirmDialog
         open={!!revokeTarget}
-        title="Revoke invitation?"
-        description={`The invitation for ${revokeTarget?.email ?? ""} will be permanently invalidated.`}
-        confirmLabel="Revoke"
+        title="Revocar invitacion?"
+        description={`La invitacion para ${revokeTarget?.email ?? ""} sera invalidada permanentemente.`}
+        confirmLabel="Revocar"
         variant="danger"
         loading={revokeLoading}
         onConfirm={handleRevoke}

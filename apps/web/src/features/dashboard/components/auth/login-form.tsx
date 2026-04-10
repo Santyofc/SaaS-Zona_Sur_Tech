@@ -73,7 +73,7 @@ export default function LoginForm() {
           </div>
 
           <div>
-            <div className="flex items-center gap-3 mb-12 group cursor-pointer" onClick={() => window.location.href = "http://localhost:3000"}>
+            <div className="flex items-center gap-3 mb-12 group cursor-pointer" onClick={() => window.location.href = "/"}>
               <motion.div whileHover={{ rotate: 180 }} transition={{ duration: 0.6 }}>
                 <div className="w-10 h-10 bg-zs-blue/20 rounded-lg flex items-center justify-center border border-zs-blue/30">
                   <Cpu className="text-zs-blue w-6 h-6" />

@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { LayoutDashboard, Users, Settings, CreditCard, Menu, X, UsersRound } from "lucide-react";
+import { LayoutDashboard, Users, Settings, CreditCard, Menu, X, UsersRound, Workflow } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { WorkspaceSwitcher } from "../WorkspaceSwitcher";
 
@@ -14,11 +14,11 @@ function cn(...inputs: ClassValue[]) {
 }
 
 const NAVIGATION = [
-  { name: "Dashboard", href: "/dashboard", icon: <LayoutDashboard className="w-5 h-5" /> },
-  { name: "Organizations", href: "/dashboard/organizations", icon: <Users className="w-5 h-5" /> },
-  { name: "Team", href: "/dashboard/team", icon: <UsersRound className="w-5 h-5" /> },
-  { name: "Billing", href: "/dashboard/billing", icon: <CreditCard className="w-5 h-5" /> },
-  { name: "Settings", href: "/dashboard/settings", icon: <Settings className="w-5 h-5" /> },
+  { name: "Inicio", href: "/dashboard", icon: <LayoutDashboard className="h-4 w-4" /> },
+  { name: "Organizaciones", href: "/dashboard/organizations", icon: <Users className="h-4 w-4" /> },
+  { name: "Equipo", href: "/dashboard/team", icon: <UsersRound className="h-4 w-4" /> },
+  { name: "Facturacion", href: "/dashboard/billing", icon: <CreditCard className="h-4 w-4" /> },
+  { name: "Configuracion", href: "/dashboard/settings", icon: <Settings className="h-4 w-4" /> },
 ];
 
 export function DashboardSidebar() {
@@ -27,96 +27,72 @@ export function DashboardSidebar() {
 
   return (
     <>
-      {/* Mobile Overlay */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm lg:hidden"
+            className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm lg:hidden"
             onClick={() => setIsOpen(false)}
           />
         )}
       </AnimatePresence>
 
-      {/* Mobile Toggle Button */}
-      <motion.button
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.9 }}
-        className="lg:hidden fixed bottom-6 right-6 z-50 p-4 rounded-full text-white bg-zs-blue shadow-zs-glow-blue"
-        onClick={() => setIsOpen(!isOpen)}
+      <button
+        className="fixed bottom-6 right-6 z-50 inline-flex h-12 w-12 items-center justify-center rounded-2xl border border-zs-border bg-zs-bg-secondary text-zs-text-primary shadow-lg lg:hidden"
+        onClick={() => setIsOpen((current) => !current)}
+        aria-label={isOpen ? "Cerrar menu lateral" : "Abrir menu lateral"}
       >
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={isOpen ? "close" : "open"}
-            initial={{ rotate: -90, opacity: 0 }}
-            animate={{ rotate: 0, opacity: 1 }}
-            exit={{ rotate: 90, opacity: 0 }}
-            transition={{ duration: 0.2 }}
-          >
-            {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </motion.div>
-        </AnimatePresence>
-      </motion.button>
+        {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+      </button>
 
-      {/* Sidebar Container */}
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-50 w-64 max-w-full lg:static lg:block",
-          "bg-zs-bg-secondary/40 backdrop-blur-2xl border-r border-zs-border lg:border-none",
-          "m-0 lg:m-4 lg:rounded-2xl",
-          "lg:translate-x-0",
-          !isOpen && "translate-x-[-100%] lg:translate-x-0 transition-transform duration-300",
-          isOpen && "translate-x-0 transition-transform duration-300"
+          "fixed inset-y-0 left-0 z-50 w-72 border-r border-zs-border bg-zs-bg-overlay backdrop-blur-2xl lg:relative lg:translate-x-0",
+          isOpen ? "translate-x-0" : "-translate-x-full",
+          "transition-transform duration-300",
         )}
       >
-        <div className="flex h-full flex-col p-6">
-          <div className="flex items-center justify-center py-6 border-b border-zs-border">
-            <h1 className="text-xl font-bold tracking-widest text-white uppercase">
-              ZonaSur <span className="text-zs-blue">Tech</span>
-            </h1>
+        <div className="flex h-full flex-col px-5 pb-5 pt-6">
+          <div className="zs-panel-soft rounded-2xl p-4">
+            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-zs-text-muted">Workspace</p>
+            <div className="mt-2 flex items-center gap-2 text-zs-text-primary">
+              <Workflow className="h-4 w-4 text-zs-cyan" />
+              <span className="text-sm font-bold">Consola central</span>
+            </div>
           </div>
 
-          <nav className="flex-1 mt-6 space-y-2 overflow-y-auto no-scrollbar">
+          <nav className="mt-6 flex-1 space-y-1.5 overflow-y-auto no-scrollbar">
             {NAVIGATION.map((item) => {
-              const isActive = pathname === item.href || pathname?.startsWith(item.href + "/");
-
+              const isActive = pathname === item.href || pathname?.startsWith(`${item.href}/`);
               return (
-                <motion.div
+                <Link
                   key={item.name}
-                  initial={{ x: -10, opacity: 0 }}
-                  animate={{ x: 0, opacity: 1 }}
-                  transition={{ delay: 0.1 * NAVIGATION.indexOf(item) }}
+                  href={item.href}
+                  onClick={() => setIsOpen(false)}
+                  className={cn(
+                    "group flex items-center gap-3 rounded-xl border px-3 py-2.5 text-sm font-semibold transition-all",
+                    isActive
+                      ? "border-zs-cyan/40 bg-zs-cyan/10 text-zs-text-primary"
+                      : "border-transparent text-zs-text-secondary hover:border-zs-border hover:bg-zs-bg-surface hover:text-zs-text-primary",
+                  )}
                 >
-                  <Link
-                    href={item.href}
+                  <span
                     className={cn(
-                      "flex items-center gap-4 px-4 py-3 rounded-xl transition-all duration-200 group",
-                      isActive
-                        ? "bg-zs-blue/10 text-white shadow-md border border-zs-blue/20"
-                        : "text-zs-text-secondary hover:bg-white/5 hover:text-white"
+                      "inline-flex h-8 w-8 items-center justify-center rounded-lg border",
+                      isActive ? "border-zs-cyan/30 bg-zs-cyan/10 text-zs-cyan" : "border-zs-border bg-zs-bg-secondary text-zs-text-muted",
                     )}
-                    onClick={() => setIsOpen(false)}
                   >
-                    <motion.div
-                      whileHover={{ scale: 1.1 }}
-                      className={cn(
-                        "flex items-center justify-center w-8 h-8 rounded-lg transition-colors",
-                        isActive ? "text-zs-blue" : "bg-white/10 group-hover:bg-white/20"
-                      )}
-                    >
-                      {item.icon}
-                    </motion.div>
-                    <span className="font-medium">{item.name}</span>
-                  </Link>
-                </motion.div>
+                    {item.icon}
+                  </span>
+                  <span>{item.name}</span>
+                </Link>
               );
             })}
           </nav>
 
-          {/* Workspace Switcher */}
-          <div className="mt-4 pt-4 border-t border-zs-border">
+          <div className="mt-5 border-t border-zs-border pt-5">
             <WorkspaceSwitcher />
           </div>
         </div>

@@ -126,7 +126,7 @@ export function MembersTable({
     } catch (err) {
       // Rollback on failure
       setLocalMembers(originalMembers);
-      const msg = err instanceof ApiFetchError ? err.message : "Action failed. Try again.";
+      const msg = err instanceof ApiFetchError ? err.message : "La accion fallo. Intenta de nuevo.";
       setActionError(msg);
     } finally {
       setLoading(false);
@@ -139,29 +139,29 @@ export function MembersTable({
 
   if (localMembers.length === 0) {
     return (
-      <EmptyState
-        icon={<UserMinus className="w-6 h-6" />}
-        title="No members yet"
-        description="Invite people to collaborate in your organization."
+        <EmptyState
+          icon={<UserMinus className="w-6 h-6" />}
+        title="Sin miembros"
+        description="Invita personas para colaborar en tu organizacion."
       />
     );
   }
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-4">
       {actionError && (
         <ErrorBanner message={actionError} onDismiss={() => setActionError(null)} />
       )}
 
-      <div className="overflow-x-auto rounded-2xl border border-zs-border bg-zs-bg-surface/40 backdrop-blur-xl">
-        <table className="zs-table">
+      <div className="zs-panel-soft overflow-x-auto rounded-2xl">
+        <table className="zs-table min-w-[740px]">
           <thead>
             <tr>
-              <th>Member</th>
-              <th>Role</th>
-              <th>Status</th>
-              <th>Joined</th>
-              <th aria-label="Actions" />
+              <th>Miembro</th>
+              <th>Rol</th>
+              <th>Estado</th>
+              <th>Ingreso</th>
+              <th aria-label="Acciones" />
             </tr>
           </thead>
           <tbody>
@@ -180,7 +180,7 @@ export function MembersTable({
                 ROLE_OPTIONS.forEach((r) => {
                   if (r !== member.role) {
                     actions.push({
-                      label: `Set as ${r}`,
+                      label: `Definir como ${r}`,
                       onClick: () =>
                         setDialog({
                           type: "change-role",
@@ -195,13 +195,13 @@ export function MembersTable({
               if (canUpdate && !isSelf && !(currentUserRole === "admin" && isTargetOwner)) {
                 if (member.status === "active") {
                   actions.push({
-                    label: "Suspend",
+                    label: "Suspender",
                     variant: "danger" as const,
                     onClick: () => setDialog({ type: "suspend", member }),
                   });
                 } else if (member.status === "suspended") {
                   actions.push({
-                    label: "Reactivate",
+                    label: "Reactivar",
                     onClick: () => setDialog({ type: "reactivate", member }),
                   });
                 }
@@ -209,7 +209,7 @@ export function MembersTable({
 
               if (canRemove && !(currentUserRole === "admin" && isTargetOwner)) {
                 actions.push({
-                  label: isSelf ? "Leave organization" : "Remove member",
+                  label: isSelf ? "Salir de organizacion" : "Remover miembro",
                   variant: "danger" as const,
                   onClick: () => setDialog({ type: "remove", member }),
                 });
@@ -217,7 +217,7 @@ export function MembersTable({
 
               if (isOwner && !isSelf && member.status === "active" && !isTargetOwner) {
                 actions.push({
-                  label: "Transfer ownership",
+                  label: "Transferir propiedad",
                   variant: "danger" as const,
                   onClick: () => setDialog({ type: "transfer", member }),
                 });
@@ -251,16 +251,16 @@ export function MembersTable({
                             {displayName}
                           </p>
                           {isTargetOwner && (
-                            <Crown className="w-3.5 h-3.5 text-zs-violet" aria-label="Owner" />
+                            <Crown className="w-3.5 h-3.5 text-zs-violet" aria-label="Propietario" />
                           )}
                           {isSelf && (
                             <span className="text-[9px] font-black uppercase tracking-widest text-zs-text-muted">
-                              (you)
+                              (tu)
                             </span>
                           )}
                         </div>
                         {displayEmail && (
-                          <p className="text-xs text-zs-text-muted">{displayEmail}</p>
+                          <p className="truncate text-xs text-zs-text-muted">{displayEmail}</p>
                         )}
                       </div>
                     </div>
@@ -271,7 +271,7 @@ export function MembersTable({
                   <td>
                     <StatusBadge status={member.status} />
                   </td>
-                  <td className="text-zs-text-secondary text-xs">
+                  <td className="text-xs text-zs-text-secondary">
                     {formatDate(member.joinedAt)}
                   </td>
                   <td className="text-right">
@@ -287,9 +287,9 @@ export function MembersTable({
       {/* Dialogs */}
       <ConfirmDialog
         open={dialog?.type === "change-role"}
-        title={`Change role to ${dialog?.type === "change-role" ? dialog.newRole : ""}?`}
-        description={`This will update the member's permissions immediately.`}
-        confirmLabel="Update role"
+        title={`Cambiar rol a ${dialog?.type === "change-role" ? dialog.newRole : ""}?`}
+        description="Esto actualizara los permisos del miembro de inmediato."
+        confirmLabel="Actualizar rol"
         loading={loading}
         onConfirm={handleConfirm}
         onCancel={() => setDialog(null)}
@@ -297,9 +297,9 @@ export function MembersTable({
 
       <ConfirmDialog
         open={dialog?.type === "suspend"}
-        title="Suspend member?"
-        description="This member will lose access to the organization until reactivated."
-        confirmLabel="Suspend"
+        title="Suspender miembro?"
+        description="Este miembro perdera acceso a la organizacion hasta ser reactivado."
+        confirmLabel="Suspender"
         variant="danger"
         loading={loading}
         onConfirm={handleConfirm}
@@ -308,9 +308,9 @@ export function MembersTable({
 
       <ConfirmDialog
         open={dialog?.type === "reactivate"}
-        title="Reactivate member?"
-        description="This member will regain access to the organization."
-        confirmLabel="Reactivate"
+        title="Reactivar miembro?"
+        description="Este miembro recuperara acceso a la organizacion."
+        confirmLabel="Reactivar"
         loading={loading}
         onConfirm={handleConfirm}
         onCancel={() => setDialog(null)}
@@ -320,18 +320,18 @@ export function MembersTable({
         open={dialog?.type === "remove"}
         title={
           dialog?.type === "remove" && dialog.member.userId === currentUserId
-            ? "Leave organization?"
-            : "Remove member?"
+            ? "Salir de la organizacion?"
+            : "Remover miembro?"
         }
         description={
           dialog?.type === "remove" && dialog.member.userId === currentUserId
-            ? "You will lose access to this organization. This action cannot be undone."
-            : "This member will permanently lose access. This action cannot be undone."
+            ? "Perderas acceso a esta organizacion. Esta accion no se puede deshacer."
+            : "Este miembro perdera acceso de forma permanente. Esta accion no se puede deshacer."
         }
         confirmLabel={
           dialog?.type === "remove" && dialog.member.userId === currentUserId
-            ? "Leave"
-            : "Remove"
+            ? "Salir"
+            : "Remover"
         }
         variant="danger"
         loading={loading}
@@ -341,11 +341,11 @@ export function MembersTable({
 
       <ConfirmDialog
         open={dialog?.type === "transfer"}
-        title="Transfer ownership?"
+        title="Transferir propiedad?"
         description={`${
-          dialog?.type === "transfer" ? (dialog.member.profile?.name ?? "This member") : ""
-        } will become the new owner. You will become an admin. This cannot be undone.`}
-        confirmLabel="Transfer ownership"
+          dialog?.type === "transfer" ? (dialog.member.profile?.name ?? "Este miembro") : ""
+        } sera el nuevo propietario. Tu pasaras a admin. Esto no se puede deshacer.`}
+        confirmLabel="Transferir propiedad"
         variant="danger"
         loading={loading}
         onConfirm={handleConfirm}
@@ -357,7 +357,7 @@ export function MembersTable({
         <div className="fixed inset-0 z-[150] flex items-center justify-center pointer-events-none">
           <div className="bg-zs-bg-secondary/80 rounded-2xl p-4 border border-zs-border flex items-center gap-3">
             <Spinner />
-            <span className="text-sm text-zs-text-secondary">Processing...</span>
+            <span className="text-sm text-zs-text-secondary">Procesando...</span>
           </div>
         </div>
       )}

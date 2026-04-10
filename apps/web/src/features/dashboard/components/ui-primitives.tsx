@@ -13,7 +13,7 @@
  * - ActionMenu (dropdown for row actions)
  */
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useId } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, AlertTriangle, Loader2, ChevronDown } from "lucide-react";
 import type { Role, MemberStatus, InvitationStatus } from "@/lib/api";
@@ -117,7 +117,7 @@ export function ErrorBanner({
         <button
           onClick={onDismiss}
           className="shrink-0 text-rose-400 hover:text-rose-200 transition-colors"
-          aria-label="Dismiss error"
+          aria-label="Cerrar error"
         >
           <X className="w-4 h-4" />
         </button>
@@ -144,17 +144,17 @@ export function EmptyState({
     <motion.div
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
-      className="flex flex-col items-center justify-center py-16 text-center gap-4"
+      className="flex flex-col items-center justify-center gap-4 py-14 text-center"
     >
       {icon && (
-        <div className="w-12 h-12 rounded-2xl bg-zs-bg-surface flex items-center justify-center text-zs-text-muted border border-zs-border">
+        <div className="zs-panel-soft flex h-12 w-12 items-center justify-center rounded-2xl text-zs-text-muted">
           {icon}
         </div>
       )}
       <div>
-        <p className="text-white font-semibold">{title}</p>
+        <p className="text-base font-bold text-white">{title}</p>
         {description && (
-          <p className="text-zs-text-secondary text-sm mt-1">{description}</p>
+          <p className="mt-1 text-sm text-zs-text-secondary">{description}</p>
         )}
       </div>
       {action}
@@ -175,13 +175,11 @@ export function PageHeader({
   action?: React.ReactNode;
 }) {
   return (
-    <div className="flex items-start justify-between gap-4 mb-8">
+    <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
       <div>
-        <h1 className="text-2xl font-black text-white tracking-tight uppercase">
-          {title}
-        </h1>
+        <h1 className="zs-heading-lg">{title}</h1>
         {description && (
-          <p className="text-zs-text-secondary text-sm mt-1">{description}</p>
+          <p className="zs-copy mt-2 max-w-2xl text-sm md:text-base">{description}</p>
         )}
       </div>
       {action && <div className="shrink-0">{action}</div>}
@@ -196,8 +194,8 @@ export function ConfirmDialog({
   open,
   title,
   description,
-  confirmLabel = "Confirm",
-  cancelLabel = "Cancel",
+  confirmLabel = "Confirmar",
+  cancelLabel = "Cancelar",
   variant = "default",
   loading = false,
   onConfirm,
@@ -213,7 +211,10 @@ export function ConfirmDialog({
   onConfirm: () => void;
   onCancel: () => void;
 }) {
+  const dialogId = useId();
   const cancelRef = useRef<HTMLButtonElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const previousFocusRef = useRef<HTMLElement | null>(null);
 
   // Close on Escape
   useEffect(() => {
@@ -227,7 +228,41 @@ export function ConfirmDialog({
 
   // Focus cancel button on open
   useEffect(() => {
-    if (open) cancelRef.current?.focus();
+    if (!open) return;
+    previousFocusRef.current = document.activeElement as HTMLElement;
+    cancelRef.current?.focus();
+    return () => {
+      previousFocusRef.current?.focus();
+    };
+  }, [open]);
+
+  // Basic focus trap while dialog is open
+  useEffect(() => {
+    if (!open) return;
+    const handler = (e: KeyboardEvent) => {
+      if (e.key !== "Tab") return;
+      const container = dialogRef.current;
+      if (!container) return;
+
+      const focusable = container.querySelectorAll<HTMLElement>(
+        'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+      );
+      if (focusable.length === 0) return;
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      const active = document.activeElement as HTMLElement | null;
+
+      if (e.shiftKey && active === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && active === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
   }, [open]);
 
   return (
@@ -241,14 +276,15 @@ export function ConfirmDialog({
           style={{ background: "rgba(6, 8, 15, 0.85)", backdropFilter: "blur(8px)" }}
           aria-modal="true"
           role="dialog"
-          aria-labelledby="confirm-dialog-title"
+          aria-labelledby={`${dialogId}-title`}
         >
           <motion.div
             initial={{ scale: 0.95, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.95, opacity: 0 }}
             transition={{ type: "spring", stiffness: 400, damping: 30 }}
-            className="w-full max-w-md bg-zs-bg-secondary border border-zs-border rounded-2xl p-6 shadow-zs-glass"
+            ref={dialogRef}
+            className="relative w-full max-w-md rounded-2xl border border-zs-border bg-zs-bg-secondary p-6 shadow-zs-glass"
           >
             {/* Top accent line */}
             <div
@@ -261,7 +297,7 @@ export function ConfirmDialog({
             />
 
             <h2
-              id="confirm-dialog-title"
+              id={`${dialogId}-title`}
               className="text-lg font-bold text-white mb-2"
             >
               {title}
@@ -315,6 +351,7 @@ export interface ActionItem {
 export function ActionMenu({ items }: { items: ActionItem[] }) {
   const [open, setOpen] = React.useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const firstItemRef = useRef<HTMLButtonElement>(null);
 
   // Close when clicking outside
   useEffect(() => {
@@ -328,6 +365,16 @@ export function ActionMenu({ items }: { items: ActionItem[] }) {
     return () => document.removeEventListener("mousedown", handler);
   }, [open]);
 
+  useEffect(() => {
+    if (!open) return;
+    const keyHandler = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    window.addEventListener("keydown", keyHandler);
+    firstItemRef.current?.focus();
+    return () => window.removeEventListener("keydown", keyHandler);
+  }, [open]);
+
   if (items.length === 0) return null;
 
   return (
@@ -335,7 +382,7 @@ export function ActionMenu({ items }: { items: ActionItem[] }) {
       <button
         onClick={() => setOpen((p) => !p)}
         className="p-2 rounded-lg text-zs-text-secondary hover:text-white hover:bg-white/5 transition-all"
-        aria-label="More actions"
+        aria-label="Mas acciones"
         aria-haspopup="menu"
         aria-expanded={open}
       >
@@ -355,6 +402,7 @@ export function ActionMenu({ items }: { items: ActionItem[] }) {
             {items.map((item, i) => (
               <button
                 key={i}
+                ref={i === 0 ? firstItemRef : undefined}
                 role="menuitem"
                 disabled={item.disabled}
                 onClick={() => {

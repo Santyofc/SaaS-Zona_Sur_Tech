@@ -48,9 +48,9 @@ import {
 type Tab = "members" | "invitations" | "activity";
 
 const TABS: { id: Tab; label: string; icon: React.ReactNode }[] = [
-  { id: "members", label: "Members", icon: <Users className="w-4 h-4" /> },
-  { id: "invitations", label: "Invitations", icon: <Mail className="w-4 h-4" /> },
-  { id: "activity", label: "Activity", icon: <Activity className="w-4 h-4" /> },
+  { id: "members", label: "Miembros", icon: <Users className="w-4 h-4" /> },
+  { id: "invitations", label: "Invitaciones", icon: <Mail className="w-4 h-4" /> },
+  { id: "activity", label: "Actividad", icon: <Activity className="w-4 h-4" /> },
 ];
 
 export default function TeamPage() {
@@ -115,21 +115,35 @@ export default function TeamPage() {
   }, [loadAll]);
 
   const canInvite = ["owner", "admin"].includes(currentUserRole);
+  const tabOrder: Tab[] = ["members", "invitations", "activity"];
+
+  function handleTabKeyDown(e: React.KeyboardEvent<HTMLButtonElement>, current: Tab) {
+    const index = tabOrder.indexOf(current);
+    if (index < 0) return;
+    if (e.key === "ArrowRight") {
+      e.preventDefault();
+      setTab(tabOrder[(index + 1) % tabOrder.length]);
+    }
+    if (e.key === "ArrowLeft") {
+      e.preventDefault();
+      setTab(tabOrder[(index - 1 + tabOrder.length) % tabOrder.length]);
+    }
+  }
 
   return (
-    <div className="max-w-5xl mx-auto space-y-6 animate-zs-fade-up">
+    <div className="mx-auto max-w-5xl space-y-6 animate-zs-fade-up">
       <PageHeader
-        title="Team"
-        description="Manage members, invitations, and review organization activity."
+        title="Equipo"
+        description="Gestiona miembros, invitaciones y revisa la actividad de la organizacion."
         action={
           <button
             onClick={loadAll}
             disabled={loading}
-            className="zs-btn-ghost flex items-center gap-2 px-3 py-2 text-sm rounded-xl"
-            aria-label="Refresh team data"
+            className="zs-btn-ghost flex items-center gap-2 rounded-xl px-3 py-2 text-sm"
+            aria-label="Actualizar datos del equipo"
           >
             <RefreshCw className={cn("w-4 h-4", loading && "animate-spin")} />
-            Refresh
+            Actualizar
           </button>
         }
       />
@@ -139,24 +153,29 @@ export default function TeamPage() {
       )}
 
       {/* Tabs */}
-      <div className="flex gap-1 p-1 bg-zs-bg-surface/60 backdrop-blur-sm border border-zs-border rounded-xl w-fit">
+      <div className="w-full overflow-x-auto pb-1 no-scrollbar">
+        <div className="inline-flex w-max rounded-xl border border-zs-border bg-zs-bg-surface/60 p-1 backdrop-blur-sm" role="tablist" aria-label="Secciones de equipo">
         {TABS.map((t) => (
           <button
             key={t.id}
             onClick={() => setTab(t.id)}
+            onKeyDown={(e) => handleTabKeyDown(e, t.id)}
             className={cn(
-              "relative flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all",
+              "relative inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition-all",
               tab === t.id
                 ? "text-white"
                 : "text-zs-text-secondary hover:text-white"
             )}
             aria-selected={tab === t.id}
             role="tab"
+            aria-controls={`team-panel-${t.id}`}
+            id={`team-tab-${t.id}`}
+            tabIndex={tab === t.id ? 0 : -1}
           >
             {tab === t.id && (
               <motion.div
                 layoutId="team-tab-bg"
-                className="absolute inset-0 bg-zs-blue/15 border border-zs-blue/25 rounded-lg"
+                className="absolute inset-0 rounded-lg border border-zs-cyan/30 bg-zs-cyan/15"
                 transition={{ type: "spring", bounce: 0.2, duration: 0.35 }}
               />
             )}
@@ -165,26 +184,27 @@ export default function TeamPage() {
               {t.label}
               {/* Count pill */}
               {t.id === "members" && members.length > 0 && (
-                <span className="ml-1 px-1.5 py-0.5 rounded-full bg-white/10 text-[10px] font-bold text-zs-text-muted">
+                <span className="ml-1 rounded-full bg-white/10 px-1.5 py-0.5 text-[10px] font-bold text-zs-text-muted">
                   {members.length}
                 </span>
               )}
               {t.id === "invitations" && invitations.filter(i => i.status === "pending").length > 0 && (
-                <span className="ml-1 px-1.5 py-0.5 rounded-full bg-zs-amber/20 text-[10px] font-bold text-amber-400">
+                <span className="ml-1 rounded-full bg-zs-amber/20 px-1.5 py-0.5 text-[10px] font-bold text-amber-400">
                   {invitations.filter((i) => i.status === "pending").length}
                 </span>
               )}
             </span>
           </button>
         ))}
+        </div>
       </div>
 
       {/* Content */}
-      <div className="zs-card p-6">
+      <div className="zs-card p-6 md:p-7">
         {loading ? (
-          <div className="flex items-center justify-center py-16 gap-3">
+          <div className="flex items-center justify-center gap-3 py-16">
             <Spinner />
-            <span className="text-sm text-zs-text-secondary">Loading team data...</span>
+            <span className="text-sm text-zs-text-secondary">Cargando datos del equipo...</span>
           </div>
         ) : (
           <AnimatePresence mode="wait">
@@ -194,6 +214,9 @@ export default function TeamPage() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.2 }}
+              role="tabpanel"
+              id={`team-panel-${tab}`}
+              aria-labelledby={`team-tab-${tab}`}
             >
               {tab === "members" && (
                 <MembersTable

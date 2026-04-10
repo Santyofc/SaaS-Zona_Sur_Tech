@@ -61,6 +61,15 @@ export function WorkspaceSwitcher() {
     return () => document.removeEventListener("mousedown", handler);
   }, [open]);
 
+  useEffect(() => {
+    if (!open) return;
+    const keyHandler = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    window.addEventListener("keydown", keyHandler);
+    return () => window.removeEventListener("keydown", keyHandler);
+  }, [open]);
+
   async function handleSwitch(orgId: string) {
     if (orgId === currentOrgId || switching) return;
     setSwitching(orgId);
@@ -79,7 +88,7 @@ export function WorkspaceSwitcher() {
       const msg =
         err instanceof ApiFetchError
           ? err.message
-          : "Failed to switch organization.";
+          : "No se pudo cambiar la organizacion.";
       setError(msg);
     } finally {
       setSwitching(null);
@@ -99,7 +108,7 @@ export function WorkspaceSwitcher() {
         className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl border border-zs-border bg-zs-bg-surface hover:bg-zs-bg-surface-hover transition-all group disabled:opacity-60 disabled:cursor-not-allowed"
         aria-haspopup="listbox"
         aria-expanded={open}
-        aria-label="Switch workspace"
+        aria-label="Cambiar workspace"
       >
         {/* Org avatar */}
         <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-zs-blue to-zs-violet flex items-center justify-center text-xs font-black text-white shadow-zs-glow-blue shrink-0">
@@ -113,7 +122,7 @@ export function WorkspaceSwitcher() {
         {/* Name + role */}
         <div className="flex-1 min-w-0 text-left">
           <p className="text-xs font-bold text-white truncate">
-            {loading ? "Loading..." : (currentOrgName ?? "No workspace")}
+            {loading ? "Cargando..." : (currentOrgName ?? "Sin workspace")}
           </p>
           <p className="text-[10px] text-zs-text-muted uppercase tracking-widest">
             Workspace
@@ -155,16 +164,16 @@ export function WorkspaceSwitcher() {
             transition={{ duration: 0.15 }}
             className="absolute left-0 right-0 top-14 z-50 bg-zs-bg-secondary border border-zs-border rounded-xl shadow-zs-glass overflow-hidden"
             role="listbox"
-            aria-label="Available workspaces"
+            aria-label="Workspaces disponibles"
           >
             <div className="p-1.5">
               <p className="text-[10px] font-black uppercase tracking-widest text-zs-text-muted px-3 py-1.5">
-                Your Workspaces
+                Tus workspaces
               </p>
               {memberships.length === 0 ? (
                 <div className="px-3 py-4 text-center">
                   <Building2 className="w-6 h-6 text-zs-text-muted mx-auto mb-1" />
-                  <p className="text-xs text-zs-text-muted">No active workspaces</p>
+                  <p className="text-xs text-zs-text-muted">Sin workspaces activos</p>
                 </div>
               ) : (
                 memberships.map((m) => {

@@ -60,7 +60,7 @@ export default function POSPage() {
       if (match) {
         addToCart(match);
         setSearchQuery(""); // Clear for next scan
-        toast.success(`Scanning: ${match.name}`);
+        toast.success(`Escaneado: ${match.name}`);
       }
     }
   }, [searchQuery, products]);
@@ -71,7 +71,7 @@ export default function POSPage() {
     const currentQty = existing ? existing.quantity : 0;
 
     if (currentQty + 1 > stock) {
-      toast.error(`Out of stock for ${product.name}`);
+      toast.error(`Sin stock para ${product.name}`);
       return;
     }
 
@@ -105,7 +105,7 @@ export default function POSPage() {
 
     const stock = balances[productId] || 0;
     if (newQty > stock) {
-      toast.error("Requested quantity exceeds available stock");
+      toast.error("La cantidad solicitada supera el stock disponible");
       return;
     }
 
@@ -133,9 +133,9 @@ export default function POSPage() {
     });
 
     if (error) {
-      toast.error(`Sale failed: ${error}`);
+      toast.error(`La venta fallo: ${error}`);
     } else {
-      toast.success("Sale completed successfully!");
+      toast.success("Venta completada");
       setCart([]);
       fetchData(); // Refresh stock
     }
@@ -155,11 +155,12 @@ export default function POSPage() {
           <div className="flex items-center gap-2">
             <Search className="w-5 h-5 text-zs-text-tertiary" />
             <Input 
-              placeholder="Search or Scan Barcode..." 
+              placeholder="Buscar o escanear codigo..." 
               className="bg-transparent border-none focus-visible:ring-0 text-zs-text-primary placeholder:text-zs-text-tertiary w-full"
               value={searchQuery}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)}
               autoFocus
+              aria-label="Buscar o escanear codigo de producto"
             />
           </div>
         </div>
@@ -169,7 +170,7 @@ export default function POSPage() {
             {isLoading ? (
               [...Array(6)].map((_, i) => <div key={i} className="h-16 bg-zs-bg-secondary/50 animate-pulse rounded-lg border border-zs-border-primary/30" />)
             ) : filteredProducts.length === 0 ? (
-              <div className="text-center py-20 text-zs-text-tertiary">No active products found.</div>
+              <div className="py-20 text-center text-zs-text-tertiary">No hay productos activos.</div>
             ) : (
               filteredProducts.map((product: Product) => (
                 <div 
@@ -188,11 +189,11 @@ export default function POSPage() {
                   </div>
                   <div className="text-right">
                     <p className="font-bold text-zs-text-primary">₡ {parseFloat(product.salePrice).toLocaleString()}</p>
-                    <p className={`text-[10px] uppercase font-bold ${
-                      (balances[product.id] || 0) <= 5 ? 'text-red-400' : 'text-zs-text-tertiary'
-                    }`}>
-                      Stock: {balances[product.id] || 0}
-                    </p>
+                      <p className={`text-[10px] uppercase font-bold ${
+                        (balances[product.id] || 0) <= 5 ? 'text-red-400' : 'text-zs-text-tertiary'
+                      }`}>
+                        Stock: {balances[product.id] || 0}
+                      </p>
                   </div>
                 </div>
               ))
@@ -206,7 +207,7 @@ export default function POSPage() {
         <div className="p-6 border-b border-zs-border-primary bg-zs-bg-tertiary/50">
           <h2 className="text-xl font-bold text-zs-text-primary flex items-center gap-2">
             <ShoppingCart className="w-6 h-6 text-zs-blue" />
-            Current Cart
+            Carrito actual
           </h2>
         </div>
 
@@ -214,29 +215,38 @@ export default function POSPage() {
           {cart.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full text-zs-text-tertiary opacity-50 space-y-4">
               <ShoppingCart className="w-12 h-12" />
-              <p className="text-sm">Your cart is empty.</p>
+              <p className="text-sm">Tu carrito esta vacio.</p>
             </div>
           ) : (
             cart.map((item: CartItem) => (
               <div key={item.id} className="p-3 bg-zs-bg-tertiary rounded-xl border border-zs-border-primary animate-in slide-in-from-right-2 duration-300">
                 <div className="flex justify-between items-start mb-2">
                   <h4 className="text-xs font-bold text-zs-text-secondary line-clamp-1">{item.name}</h4>
-                  <button onClick={() => removeFromCart(item.id)} className="text-zs-text-tertiary hover:text-red-500 transition-colors">
+                  <button
+                    type="button"
+                    onClick={() => removeFromCart(item.id)}
+                    className="text-zs-text-tertiary hover:text-red-500 transition-colors"
+                    aria-label={`Quitar ${item.name} del carrito`}
+                  >
                     <Trash2 className="w-3.5 h-3.5" />
                   </button>
                 </div>
                 <div className="flex justify-between items-center">
                   <div className="flex items-center gap-2">
                     <button 
+                      type="button"
                       onClick={() => updateQuantity(item.id, -1)}
                       className="w-6 h-6 flex items-center justify-center rounded bg-zs-bg-primary border border-zs-border-primary text-zs-text-tertiary hover:text-zs-blue"
+                      aria-label={`Disminuir cantidad de ${item.name}`}
                     >
                       <Minus className="w-3 h-3" />
                     </button>
                     <span className="font-mono text-sm w-4 text-center">{item.quantity}</span>
                     <button 
+                      type="button"
                       onClick={() => updateQuantity(item.id, 1)}
                       className="w-6 h-6 flex items-center justify-center rounded bg-zs-bg-primary border border-zs-border-primary text-zs-text-tertiary hover:text-zs-blue"
+                      aria-label={`Aumentar cantidad de ${item.name}`}
                     >
                       <Plus className="w-3 h-3" />
                     </button>
@@ -252,11 +262,12 @@ export default function POSPage() {
 
         <div className="p-6 bg-zs-bg-tertiary/80 border-t border-zs-border-primary space-y-4 shadow-inner">
           <div className="space-y-2">
-            <p className="text-[10px] font-bold text-zs-text-tertiary uppercase tracking-widest">Payment Method</p>
+            <p className="text-[10px] font-bold text-zs-text-tertiary uppercase tracking-widest">Metodo de pago</p>
             <div className="grid grid-cols-3 gap-2">
               {(["cash", "card", "sinpe"] as const).map(m => (
                 <button
                   key={m}
+                  type="button"
                   onClick={() => setPaymentMethod(m)}
                   className={`py-2 text-[10px] font-bold uppercase rounded-lg border transition-all ${
                     paymentMethod === m 
@@ -264,7 +275,7 @@ export default function POSPage() {
                       : "bg-zs-bg-primary border-zs-border-primary text-zs-text-tertiary hover:border-zs-text-tertiary/50"
                   }`}
                 >
-                  {m}
+                  {m === "cash" ? "Efectivo" : m === "card" ? "Tarjeta" : "SINPE"}
                 </button>
               ))}
             </div>
@@ -287,7 +298,7 @@ export default function POSPage() {
             ) : (
               <>
                 <CheckCircle className="w-6 h-6" />
-                Finish Sale
+                Finalizar venta
               </>
             )}
           </Button>

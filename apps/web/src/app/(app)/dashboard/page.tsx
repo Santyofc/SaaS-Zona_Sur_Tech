@@ -41,10 +41,10 @@ export default async function DashboardPage() {
             </div>
             
             <h1 className="text-4xl font-black tracking-tighter uppercase italic mb-4">
-              Kernel <span className="text-zs-violet shadow-zs-glow-violet">Detected</span>
+              Kernel <span className="text-zs-violet shadow-zs-glow-violet">Detectado</span>
             </h1>
             <p className="text-zs-text-secondary text-center max-w-md mb-10 font-medium">
-              Tu identidad ha sido verificada como <span className="text-white font-bold">Root Admin</span>. 
+              Tu identidad ha sido verificada como <span className="text-white font-bold">Administrador Raiz</span>. 
               Aunque no perteneces a ninguna organización aún, tienes acceso total al Kernel de Zona Sur Tech.
             </p>
 
@@ -64,10 +64,10 @@ export default async function DashboardPage() {
 
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] bg-zs-bg-primary text-zs-text-primary p-6">
-        <h1 className="text-2xl font-bold mb-4">No active organization found</h1>
-        <p className="text-zs-text-secondary text-center mb-8">Please complete onboarding or join an organization.</p>
+        <h1 className="mb-4 text-2xl font-bold">No se encontro una organizacion activa</h1>
+        <p className="mb-8 text-center text-zs-text-secondary">Completa onboarding o unete a una organizacion.</p>
         <Link href="/onboarding" className="zs-btn-brand px-8 py-3 rounded-xl font-bold uppercase tracking-widest text-xs">
-            Start Onboarding
+            Iniciar onboarding
         </Link>
       </div>
     );

@@ -50,19 +50,19 @@ export default function SalesPage() {
   const handleViewDetails = async (saleId: string) => {
     setIsDetailLoading(true);
     const { data, error } = await clientFetcher<SaleDetail>(`/erp/sales/${saleId}`);
-    if (error) toast.error(`Error loading details: ${error}`);
+    if (error) toast.error(`Error cargando detalle: ${error}`);
     else setSelectedSale(data);
     setIsDetailLoading(false);
   };
 
   const handleCancelSale = async (saleId: string) => {
-    if (!confirm("Are you sure you want to cancel this sale? Stock will be reverted.")) return;
+    if (!confirm("Seguro que deseas cancelar esta venta? El stock sera revertido.")) return;
 
     setIsCancelLoading(true);
     const { error } = await clientFetcher(`/erp/sales/${saleId}/cancel`, { method: "POST" });
     if (error) toast.error(`Error: ${error}`);
     else {
-      toast.success("Sale cancelled and stock reverted");
+      toast.success("Venta cancelada y stock revertido");
       setSelectedSale(null);
       fetchSales();
     }
@@ -79,19 +79,20 @@ export default function SalesPage() {
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-zs-text-primary flex items-center gap-2">
             <Receipt className="w-8 h-8 text-zs-blue" />
-            Sales History
+            Historial de ventas
           </h1>
-          <p className="text-zs-text-secondary mt-1">Review and manage past transactions.</p>
+          <p className="mt-1 text-zs-text-secondary">Revisa y gestiona transacciones realizadas.</p>
         </div>
       </div>
 
       <div className="flex items-center gap-2 bg-zs-bg-secondary p-4 rounded-xl border border-zs-border-primary shadow-zs-glow-soft">
         <Search className="w-5 h-5 text-zs-text-tertiary" />
         <Input 
-          placeholder="Search by sale number..." 
+          placeholder="Buscar por numero de venta..." 
           className="bg-transparent border-none focus-visible:ring-0 text-zs-text-primary placeholder:text-zs-text-tertiary w-full"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
+          aria-label="Buscar por numero de venta"
         />
       </div>
 
@@ -99,18 +100,18 @@ export default function SalesPage() {
         <table className="w-full text-left border-collapse">
           <thead>
             <tr className="bg-zs-bg-tertiary border-b border-zs-border-primary text-zs-text-tertiary uppercase text-xs font-semibold tracking-wider">
-              <th className="px-6 py-4">Sale #</th>
-              <th className="px-6 py-4">Date</th>
+              <th className="px-6 py-4">Venta #</th>
+              <th className="px-6 py-4">Fecha</th>
               <th className="px-6 py-4">Total</th>
-              <th className="px-6 py-4 text-center">Status</th>
-              <th className="px-6 py-4 text-right">Actions</th>
+              <th className="px-6 py-4 text-center">Estado</th>
+              <th className="px-6 py-4 text-right">Acciones</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-zs-border-primary">
             {isLoading ? (
               [...Array(5)].map((_, i) => <tr key={i} className="animate-pulse h-12 bg-zs-bg-tertiary/10" />)
             ) : filteredSales.length === 0 ? (
-              <tr><td colSpan={5} className="px-6 py-12 text-center text-zs-text-tertiary">No sales recorded.</td></tr>
+              <tr><td colSpan={5} className="px-6 py-12 text-center text-zs-text-tertiary">No hay ventas registradas.</td></tr>
             ) : (
               filteredSales.map((sale) => (
                 <tr key={sale.id} className="hover:bg-zs-bg-tertiary/50 transition-colors">
@@ -121,13 +122,16 @@ export default function SalesPage() {
                     <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-widest border ${
                       sale.status === 'completed' ? 'bg-green-500/10 text-green-500 border-green-500/20' : 'bg-red-500/10 text-red-500 border-red-500/20'
                     }`}>
-                      {sale.status}
+                      {sale.status === "completed" ? "Completada" : "Cancelada"}
                     </span>
                   </td>
                   <td className="px-6 py-4 text-right">
                     <button 
+                      type="button"
                       onClick={() => handleViewDetails(sale.id)}
                       className="p-2 rounded-lg border border-zs-border-primary text-zs-text-tertiary hover:text-zs-blue hover:bg-zs-bg-tertiary transition-all"
+                      aria-label={`Ver detalle de venta ${sale.saleNumber}`}
+                      title={`Ver detalle de venta ${sale.saleNumber}`}
                     >
                       <ChevronRight className="w-4 h-4" />
                     </button>
@@ -142,19 +146,19 @@ export default function SalesPage() {
       <Modal 
         isOpen={!!selectedSale} 
         onClose={() => setSelectedSale(null)} 
-        title={`Sale Detail: ${selectedSale?.saleNumber}`}
+        title={`Detalle de venta: ${selectedSale?.saleNumber}`}
       >
         {selectedSale && (
           <div className="space-y-6">
             <div className="grid grid-cols-2 gap-4 text-sm">
               <div className="space-y-1">
-                <p className="text-zs-text-tertiary uppercase text-[10px] font-bold">Status</p>
+                <p className="text-zs-text-tertiary uppercase text-[10px] font-bold">Estado</p>
                 <p className={`font-bold ${selectedSale.status === 'completed' ? 'text-green-500' : 'text-red-500'}`}>
-                  {selectedSale.status.toUpperCase()}
+                  {selectedSale.status === "completed" ? "COMPLETADA" : "CANCELADA"}
                 </p>
               </div>
               <div className="space-y-1 text-right">
-                <p className="text-zs-text-tertiary uppercase text-[10px] font-bold">Total Amount</p>
+                <p className="text-zs-text-tertiary uppercase text-[10px] font-bold">Monto total</p>
                 <p className="text-xl font-bold text-zs-text-primary">₡ {parseFloat(selectedSale.total).toLocaleString()}</p>
               </div>
             </div>
@@ -164,7 +168,7 @@ export default function SalesPage() {
                 <thead className="bg-zs-bg-tertiary text-zs-text-tertiary">
                   <tr>
                     <th className="px-4 py-2">Item</th>
-                    <th className="px-4 py-2 text-center">Qty</th>
+                    <th className="px-4 py-2 text-center">Cant.</th>
                     <th className="px-4 py-2 text-right">Total</th>
                   </tr>
                 </thead>
@@ -188,11 +192,11 @@ export default function SalesPage() {
                   className="bg-red-500/10 hover:bg-red-500/20 text-red-500 border border-red-500/30 flex items-center gap-2"
                 >
                   {isCancelLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Ban className="w-4 h-4" />}
-                  Cancel Sale
+                  Cancelar venta
                 </Button>
               )}
               <Button variant="outline" onClick={() => setSelectedSale(null)} className="ml-auto">
-                Close
+                Cerrar
               </Button>
             </div>
           </div>

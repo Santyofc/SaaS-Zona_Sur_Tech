@@ -41,10 +41,10 @@ export default function InventoryPage() {
       clientFetcher<Movement[]>("/erp/inventory/movements")
     ]);
 
-    if (bRes.error) toast.error(`Error loading balances: ${bRes.error}`);
+    if (bRes.error) toast.error(`Error cargando balances: ${bRes.error}`);
     else setBalances(bRes.data || []);
 
-    if (mRes.error) toast.error(`Error loading history: ${mRes.error}`);
+    if (mRes.error) toast.error(`Error cargando historial: ${mRes.error}`);
     else setMovements(mRes.data || []);
 
     setIsLoading(false);
@@ -65,43 +65,48 @@ export default function InventoryPage() {
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-zs-text-primary flex items-center gap-2">
             <Boxes className="w-8 h-8 text-zs-blue" />
-            Inventory Control
+            Control de inventario
           </h1>
-          <p className="text-zs-text-secondary mt-1">Monitor stock levels and movement history.</p>
+          <p className="mt-1 text-zs-text-secondary">Monitorea stock e historial de movimientos.</p>
         </div>
         <Button onClick={() => setIsAdjOpen(true)} className="bg-zs-blue hover:bg-zs-blue-hover text-white flex items-center gap-2">
           <ArrowUpDown className="w-4 h-4" />
-          Manual Adjustment
+          Ajuste manual
         </Button>
       </div>
 
       <div className="flex flex-col gap-6">
         <div className="flex items-center p-1 bg-zs-bg-secondary w-fit rounded-xl border border-zs-border-primary">
           <button 
+            type="button"
             onClick={() => setActiveTab("balances")}
             className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all flex items-center gap-2 ${
               activeTab === "balances" ? "bg-zs-bg-tertiary text-zs-blue shadow-zs-glow-soft" : "text-zs-text-tertiary hover:text-zs-text-secondary"
             }`}
+            aria-pressed={activeTab === "balances"}
           >
-            <Boxes className="w-4 h-4" /> Current Balances
+            <Boxes className="w-4 h-4" /> Balances actuales
           </button>
           <button 
+            type="button"
             onClick={() => setActiveTab("movements")}
             className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all flex items-center gap-2 ${
               activeTab === "movements" ? "bg-zs-bg-tertiary text-zs-blue shadow-zs-glow-soft" : "text-zs-text-tertiary hover:text-zs-text-secondary"
             }`}
+            aria-pressed={activeTab === "movements"}
           >
-            <History className="w-4 h-4" /> Movement Ledger
+            <History className="w-4 h-4" /> Historial de movimientos
           </button>
         </div>
 
         <div className="flex items-center gap-2 bg-zs-bg-secondary p-4 rounded-xl border border-zs-border-primary shadow-zs-glow-soft">
           <Search className="w-5 h-5 text-zs-text-tertiary" />
-          <Input 
-            placeholder="Search by product name or SKU..." 
+          <Input
+            placeholder="Buscar por producto o SKU..."
             className="bg-transparent border-none focus-visible:ring-0 text-zs-text-primary placeholder:text-zs-text-tertiary w-full"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
+            aria-label="Buscar producto o SKU"
           />
         </div>
 
@@ -110,17 +115,17 @@ export default function InventoryPage() {
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="bg-zs-bg-tertiary border-b border-zs-border-primary text-zs-text-tertiary uppercase text-xs font-semibold tracking-wider">
-                  <th className="px-6 py-4">Product</th>
+                  <th className="px-6 py-4">Producto</th>
                   <th className="px-6 py-4">SKU</th>
-                  <th className="px-6 py-4 text-center">In Stock</th>
-                  <th className="px-6 py-4 text-right">Last Update</th>
+                  <th className="px-6 py-4 text-center">En stock</th>
+                  <th className="px-6 py-4 text-right">Ultima actualizacion</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-zs-border-primary">
                 {isLoading ? (
                   [...Array(5)].map((_, i) => <tr key={i} className="animate-pulse h-12 bg-zs-bg-tertiary/10" />)
                 ) : filteredBalances.length === 0 ? (
-                  <tr><td colSpan={4} className="px-6 py-12 text-center text-zs-text-tertiary">No records found.</td></tr>
+                  <tr><td colSpan={4} className="px-6 py-12 text-center text-zs-text-tertiary">No se encontraron registros.</td></tr>
                 ) : (
                   filteredBalances.map((b) => (
                     <tr key={b.id} className="hover:bg-zs-bg-tertiary/50 transition-colors">
@@ -147,29 +152,35 @@ export default function InventoryPage() {
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="bg-zs-bg-tertiary border-b border-zs-border-primary text-zs-text-tertiary uppercase text-xs font-semibold tracking-wider">
-                  <th className="px-6 py-4">Date</th>
-                  <th className="px-6 py-4">Product</th>
-                  <th className="px-6 py-4">Type</th>
-                  <th className="px-6 py-4 text-center">Quantity</th>
-                  <th className="px-6 py-4">Note</th>
+                  <th className="px-6 py-4">Fecha</th>
+                  <th className="px-6 py-4">Producto</th>
+                  <th className="px-6 py-4">Tipo</th>
+                  <th className="px-6 py-4 text-center">Cantidad</th>
+                  <th className="px-6 py-4">Nota</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-zs-border-primary">
-                {movements.map((m) => (
-                  <tr key={m.id} className="hover:bg-zs-bg-tertiary/50 transition-colors">
-                    <td className="px-6 py-4 text-xs text-zs-text-tertiary whitespace-nowrap">{new Date(m.createdAt).toLocaleString()}</td>
-                    <td className="px-6 py-4 font-medium text-zs-text-secondary">{m.productName}</td>
-                    <td className="px-6 py-4">
-                      <span className="px-2 py-0.5 rounded border border-zs-border-primary text-[10px] uppercase font-bold text-zs-text-tertiary bg-zs-bg-tertiary">
-                        {m.movementType.replace(/_/g, " ")}
-                      </span>
-                    </td>
-                    <td className={`px-6 py-4 text-center font-mono font-bold ${parseFloat(m.quantity) > 0 ? 'text-green-500' : 'text-red-500'}`}>
-                      {parseFloat(m.quantity) > 0 ? `+${m.quantity}` : m.quantity}
-                    </td>
-                    <td className="px-6 py-4 text-xs text-zs-text-tertiary truncate max-w-[200px]">{m.note || "-"}</td>
-                  </tr>
-                ))}
+                {isLoading ? (
+                  [...Array(5)].map((_, i) => <tr key={i} className="animate-pulse h-12 bg-zs-bg-tertiary/10" />)
+                ) : movements.length === 0 ? (
+                  <tr><td colSpan={5} className="px-6 py-12 text-center text-zs-text-tertiary">No hay movimientos registrados.</td></tr>
+                ) : (
+                  movements.map((m) => (
+                    <tr key={m.id} className="hover:bg-zs-bg-tertiary/50 transition-colors">
+                      <td className="px-6 py-4 text-xs text-zs-text-tertiary whitespace-nowrap">{new Date(m.createdAt).toLocaleString()}</td>
+                      <td className="px-6 py-4 font-medium text-zs-text-secondary">{m.productName}</td>
+                      <td className="px-6 py-4">
+                        <span className="px-2 py-0.5 rounded border border-zs-border-primary text-[10px] uppercase font-bold text-zs-text-tertiary bg-zs-bg-tertiary">
+                          {m.movementType.replace(/_/g, " ")}
+                        </span>
+                      </td>
+                      <td className={`px-6 py-4 text-center font-mono font-bold ${parseFloat(m.quantity) > 0 ? 'text-green-500' : 'text-red-500'}`}>
+                        {parseFloat(m.quantity) > 0 ? `+${m.quantity}` : m.quantity}
+                      </td>
+                      <td className="px-6 py-4 text-xs text-zs-text-tertiary truncate max-w-[200px]">{m.note || "-"}</td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>

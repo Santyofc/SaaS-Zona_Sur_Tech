@@ -28,7 +28,7 @@ export default function ProductsPage() {
     setIsLoading(true);
     const { data, error } = await clientFetcher<Product[]>("/erp/products");
     if (error) {
-      toast.error(`Error loading products: ${error}`);
+      toast.error(`Error cargando productos: ${error}`);
     } else {
       setProducts(data || []);
     }
@@ -61,9 +61,9 @@ export default function ProductsPage() {
     });
 
     if (error) {
-      toast.error(`Error updating product: ${error}`);
+      toast.error(`Error actualizando producto: ${error}`);
     } else {
-      toast.success(`Product ${!product.isActive ? 'activated' : 'deactivated'}`);
+      toast.success(`Producto ${!product.isActive ? "activado" : "desactivado"}`);
       fetchProducts();
     }
   };
@@ -74,23 +74,24 @@ export default function ProductsPage() {
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-zs-text-primary flex items-center gap-2">
             <Package className="w-8 h-8 text-zs-blue" />
-            Product Catalog
+            Catalogo de productos
           </h1>
-          <p className="text-zs-text-secondary mt-1">Manage your inventory products and services.</p>
+          <p className="mt-1 text-zs-text-secondary">Administra productos y servicios de inventario.</p>
         </div>
         <Button onClick={handleCreate} className="bg-zs-blue hover:bg-zs-blue-hover text-white flex items-center gap-2">
           <Plus className="w-4 h-4" />
-          New Product
+          Nuevo producto
         </Button>
       </div>
 
       <div className="flex items-center gap-2 bg-zs-bg-secondary p-4 rounded-xl border border-zs-border-primary shadow-zs-glow-soft">
         <Search className="w-5 h-5 text-zs-text-tertiary" />
         <Input 
-          placeholder="Search by name or SKU..." 
+          placeholder="Buscar por nombre o SKU..." 
           className="bg-transparent border-none focus-visible:ring-0 text-zs-text-primary placeholder:text-zs-text-tertiary w-full"
           value={searchQuery}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)}
+          aria-label="Buscar producto por nombre o SKU"
         />
       </div>
 
@@ -98,12 +99,12 @@ export default function ProductsPage() {
         <table className="w-full text-left border-collapse">
           <thead>
             <tr className="bg-zs-bg-tertiary border-b border-zs-border-primary text-zs-text-tertiary uppercase text-xs font-semibold tracking-wider">
-              <th className="px-6 py-4">Product Name</th>
+              <th className="px-6 py-4">Nombre</th>
               <th className="px-6 py-4">SKU</th>
-              <th className="px-6 py-4">Sale Price</th>
-              <th className="px-6 py-4">Cost Price</th>
-              <th className="px-6 py-4 text-center">Status</th>
-              <th className="px-6 py-4 text-right">Actions</th>
+              <th className="px-6 py-4">Precio venta</th>
+              <th className="px-6 py-4">Precio costo</th>
+              <th className="px-6 py-4 text-center">Estado</th>
+              <th className="px-6 py-4 text-right">Acciones</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-zs-border-primary">
@@ -121,7 +122,7 @@ export default function ProductsPage() {
             ) : filteredProducts.length === 0 ? (
               <tr>
                 <td colSpan={6} className="px-6 py-12 text-center text-zs-text-tertiary">
-                  No products found.
+                  No se encontraron productos.
                 </td>
               </tr>
             ) : (
@@ -135,23 +136,27 @@ export default function ProductsPage() {
                     <span className={`px-2 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest ${
                       product.isActive ? 'bg-green-500/10 text-green-500 border border-green-500/20' : 'bg-red-500/10 text-red-500 border border-red-500/20'
                     }`}>
-                      {product.isActive ? 'Active' : 'Inactive'}
+                      {product.isActive ? "Activo" : "Inactivo"}
                     </span>
                   </td>
                   <td className="px-6 py-4 text-right space-x-2">
                     <button 
+                      type="button"
                       onClick={() => handleToggleStatus(product)}
                       className={`p-2 rounded-lg border transition-all ${
                         product.isActive ? 'border-red-500/20 text-red-500 hover:bg-red-500/10' : 'border-green-500/20 text-green-500 hover:bg-green-500/10'
                       }`}
-                      title={product.isActive ? "Deactivate" : "Activate"}
+                      title={product.isActive ? "Desactivar" : "Activar"}
+                      aria-label={`${product.isActive ? "Desactivar" : "Activar"} ${product.name}`}
                     >
                       <Power className="w-4 h-4" />
                     </button>
                     <button 
+                      type="button"
                       onClick={() => handleEdit(product)}
                       className="p-2 rounded-lg border border-zs-border-primary text-zs-text-secondary hover:bg-zs-bg-tertiary transition-all"
-                      title="Edit"
+                      title="Editar"
+                      aria-label={`Editar ${product.name}`}
                     >
                       <Edit2 className="w-4 h-4" />
                     </button>

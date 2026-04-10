@@ -54,7 +54,7 @@ function formatExpiry(iso: string) {
 }
 
 function formatDate(iso: string) {
-  return new Date(iso).toLocaleDateString("en-US", {
+  return new Date(iso).toLocaleDateString("es-CR", {
     month: "short",
     day: "numeric",
     year: "numeric",
@@ -91,7 +91,7 @@ export function InvitationsPanel({
         onRefresh();
       } catch (err) {
         setFormError(
-          err instanceof ApiFetchError ? err.message : "Failed to create invitation."
+          err instanceof ApiFetchError ? err.message : "No se pudo crear la invitacion."
         );
       } finally {
         setFormLoading(false);
@@ -110,7 +110,7 @@ export function InvitationsPanel({
       onRefresh();
     } catch (err) {
       setActionError(
-        err instanceof ApiFetchError ? err.message : "Failed to revoke invitation."
+        err instanceof ApiFetchError ? err.message : "No se pudo revocar la invitacion."
       );
     } finally {
       setRevokeLoading(false);
@@ -126,7 +126,7 @@ export function InvitationsPanel({
         onRefresh();
       } catch (err) {
         setActionError(
-          err instanceof ApiFetchError ? err.message : "Failed to resend invitation."
+          err instanceof ApiFetchError ? err.message : "No se pudo reenviar la invitacion."
         );
       } finally {
         setResendLoading(null);

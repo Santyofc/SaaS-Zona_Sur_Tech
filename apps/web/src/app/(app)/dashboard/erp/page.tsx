@@ -71,7 +71,7 @@ export default function ERPPage() {
       setIsLoading(true);
       const { data, error } = await clientFetcher<DashboardSummary>("/erp/dashboard/summary");
       if (error) {
-        toast.error("Failed to load dashboard metrics");
+        toast.error("No se pudieron cargar metricas del dashboard");
       } else {
         setSummary(data);
       }
@@ -88,26 +88,28 @@ export default function ERPPage() {
             <span className="bg-zs-blue/10 p-2 rounded-xl border border-zs-blue/20">
               <Zap className="w-10 h-10 text-zs-blue animate-pulse" />
             </span>
-            Enterprise <span className="text-zs-blue shadow-zs-glow-blue px-2">Control</span> Center
+            Centro de <span className="px-2 text-zs-blue shadow-zs-glow-blue">Control</span> ERP
           </h1>
-          <p className="text-zs-text-secondary mt-2 max-w-2xl text-lg font-medium">
-            Real-time operational monitoring and strategic ERP command.
+          <p className="mt-2 max-w-2xl text-lg font-medium text-zs-text-secondary">
+            Monitoreo operativo en tiempo real y comando estrategico del ERP.
           </p>
         </div>
         <div className="flex gap-4">
-          <Link href="/dashboard/erp/pos">
-            <button className="px-6 py-3 bg-zs-blue hover:bg-zs-blue-hover text-white font-bold rounded-xl shadow-zs-glow-blue transition-all active:scale-95 flex items-center gap-2">
-              <ShoppingCart className="w-5 h-5" />
-              Open Terminal
-            </button>
+          <Link
+            href="/dashboard/erp/pos"
+            className="px-6 py-3 bg-zs-blue hover:bg-zs-blue-hover text-white font-bold rounded-xl shadow-zs-glow-blue transition-all active:scale-95 flex items-center gap-2"
+            aria-label="Abrir terminal POS"
+          >
+            <ShoppingCart className="w-5 h-5" />
+            Abrir terminal POS
           </Link>
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <StatCard 
-          title="Revenue"
-          description="Total 30-day completed sales."
+          title="Ingresos"
+          description="Ventas completadas en ultimos 30 dias."
           icon={<Receipt className="w-6 h-6" />}
           count={`₡ ${parseFloat(summary?.totalRevenue || "0").toLocaleString()}`}
           href="/dashboard/erp/sales"
@@ -115,8 +117,8 @@ export default function ERPPage() {
           isLoading={isLoading}
         />
         <StatCard 
-          title="Stock Alerts"
-          description="Items requiring replenishment."
+          title="Alertas de stock"
+          description="Items que requieren reposicion."
           icon={<AlertTriangle className="w-6 h-6" />}
           count={summary?.lowStockCount || 0}
           href="/dashboard/erp/inventory"
@@ -124,8 +126,8 @@ export default function ERPPage() {
           isLoading={isLoading}
         />
         <StatCard 
-          title="Catalog"
-          description="Managed SKUs in database."
+          title="Catalogo"
+          description="SKUs gestionados en base de datos."
           icon={<Package className="w-6 h-6" />}
           count={summary?.totalProducts || 0}
           href="/dashboard/erp/products"
@@ -133,8 +135,8 @@ export default function ERPPage() {
           isLoading={isLoading}
         />
         <StatCard 
-          title="Volume"
-          description="Total transaction count."
+          title="Volumen"
+          description="Cantidad total de transacciones."
           icon={<TrendingUp className="w-6 h-6" />}
           count={summary?.totalSales || 0}
           href="/dashboard/erp/sales"
@@ -148,9 +150,9 @@ export default function ERPPage() {
           <div className="flex justify-between items-center mb-8">
             <h3 className="text-xl font-bold text-zs-text-primary flex items-center gap-2">
               <TrendingUp className="w-5 h-5 text-zs-blue" />
-              Revenue Performance
+              Rendimiento de ingresos
             </h3>
-            <span className="text-xs font-mono text-zs-text-tertiary">LAST 7 DAYS</span>
+            <span className="text-xs font-mono text-zs-text-tertiary">ULTIMOS 7 DIAS</span>
           </div>
           <div className="h-64">
             {isLoading ? (
@@ -162,10 +164,10 @@ export default function ERPPage() {
         </div>
 
         <div className="bg-zs-bg-secondary p-8 rounded-2xl border border-zs-border-primary shadow-zs-glow-soft flex flex-col">
-          <h3 className="text-xl font-bold text-zs-text-primary flex items-center gap-2 mb-6">
-            <AlertTriangle className="w-5 h-5 text-red-500" />
-            Critical Stock
-          </h3>
+            <h3 className="text-xl font-bold text-zs-text-primary flex items-center gap-2 mb-6">
+              <AlertTriangle className="w-5 h-5 text-red-500" />
+              Stock critico
+            </h3>
           <div className="space-y-4 flex-1">
             {isLoading ? (
               [...Array(3)].map((_, i) => (
@@ -174,7 +176,7 @@ export default function ERPPage() {
             ) : summary?.lowStockItems.length === 0 ? (
               <div className="h-full flex flex-col items-center justify-center text-center opacity-50">
                 <Boxes className="w-12 h-12 text-zs-text-tertiary mb-2" />
-                <p className="text-xs text-zs-text-tertiary uppercase font-bold tracking-widest">Stock Balanced</p>
+                <p className="text-xs font-bold uppercase tracking-widest text-zs-text-tertiary">Stock balanceado</p>
               </div>
             ) : (
               summary?.lowStockItems.map((item: any) => (
@@ -189,14 +191,14 @@ export default function ERPPage() {
                   </div>
                   <div className="text-right">
                     <span className="text-lg font-black text-red-500">{item.currentQuantity}</span>
-                    <p className="text-[8px] text-zs-text-tertiary uppercase font-bold">UNITS LEFT</p>
+                    <p className="text-[8px] font-bold uppercase text-zs-text-tertiary">UNIDADES</p>
                   </div>
                 </Link>
               ))
             )}
           </div>
           <Link href="/dashboard/erp/inventory" className="mt-6 text-center text-xs font-bold text-zs-blue hover:underline uppercase tracking-widest">
-            Full Inventory Report
+            Ver reporte completo
           </Link>
         </div>
       </div>

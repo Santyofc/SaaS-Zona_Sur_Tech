@@ -8,7 +8,7 @@ import { ErpModule } from './modules/erp/erp.module';
 import { QueuesModule } from './modules/queues/queues.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { TenantInterceptor } from './common/interceptors/tenant.interceptor';
+import { TenantInterceptor } from './shared/interceptors/tenant.interceptor';
 
 @Module({
   controllers: [AppController],

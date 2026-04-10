@@ -80,3 +80,10 @@ Sponsor card:
 ```html
 <iframe src="https://github.com/sponsors/Santyofc/card" title="Sponsor Santyofc" height="225" width="600" style="border: 0;"></iframe>
 ```
+
+## Reestructuracion (2026-04-10)
+- Infra de Nginx centralizada en `infra/nginx/conf.d` y respaldos en `infra/nginx/backups`.
+- Reportes operativos movidos a `docs/reports`.
+- Assets de marketing consolidados en `assets/marketing/ideas`.
+- Web organizada por features en `apps/web/src/features/{auth,cms,dashboard,erp}`.
+- API migra de `common` a `shared` con wrappers de compatibilidad en `apps/api/src/common`.

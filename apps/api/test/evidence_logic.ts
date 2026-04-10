@@ -37,9 +37,10 @@ async function runVerification() {
         `Insufficient stock. Available: ${initialStock}, Requested: ${requestedQty}`,
       );
     }
-  } catch (e) {
+  } catch (e: unknown) {
+    const errorMessage = e instanceof Error ? e.message : 'Unknown error';
     console.log(`Response Status: 400 Bad Request (or 500 mapped by Nest)`);
-    console.log(`Response Body: { "message": "${e.message}", ... }`);
+    console.log(`Response Body: { "message": "${errorMessage}", ... }`);
     console.log(
       "Rollback Evidence: Since it's inside a 'db.transaction', no records are committed to 'sales' or 'inventory_movements'.",
     );

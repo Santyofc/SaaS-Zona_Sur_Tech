@@ -8,8 +8,13 @@ async function bootstrap() {
 
   const configService = app.get(ConfigService);
   const port = configService.get<number>('PORT') || 4000;
-  const corsOrigin =
-    configService.get<string>('CORS_ORIGIN') || 'http://localhost:3000';
+  const corsOriginRaw =
+    configService.get<string>('CORS_ORIGIN') ||
+    'http://localhost:3000,https://zonasurtech.online,https://www.zonasurtech.online';
+  const allowedOrigins = corsOriginRaw
+    .split(',')
+    .map((origin) => origin.trim())
+    .filter(Boolean);
 
   // Global Validation
   app.useGlobalPipes(
@@ -26,7 +31,19 @@ async function bootstrap() {
 
   // CORS
   app.enableCors({
-    origin: corsOrigin,
+    origin: (
+      origin: string | undefined,
+      callback: (err: Error | null, allow?: boolean) => void,
+    ) => {
+      // Allow non-browser clients and same-origin requests without Origin header.
+      if (!origin) {
+        return callback(null, true);
+      }
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+      return callback(new Error(`CORS blocked for origin: ${origin}`), false);
+    },
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
   });

@@ -15,23 +15,22 @@ export default function SignupPage({
   searchParams: { error?: string };
 }) {
   return (
-    <section className="relative min-h-screen pt-[180px] pb-[120px] overflow-hidden">
-      {/* Background Decor */}
-      <div className="zs-orb w-[600px] h-[600px] bg-zs-violet/10 top-[-20%] right-[-10%]" />
-      <div className="zs-orb w-[400px] h-[400px] bg-zs-blue/5 bottom-[10%] left-[-5%]" />
+    <section className="relative min-h-screen overflow-hidden pb-[120px] pt-[180px]">
+      <div className="zs-orb right-[-10%] top-[-20%] h-[620px] w-[620px] bg-zs-violet/10" />
+      <div className="zs-orb bottom-[8%] left-[-5%] h-[420px] w-[420px] bg-zs-cyan/8" />
 
       <div className="container relative z-10">
         <div className="max-w-[480px] mx-auto">
           <div className="animate-zs-fade-up">
             {/* Header */}
-            <div className="text-center mb-10">
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-zs-violet/10 border border-zs-violet/20 text-zs-violet mb-6 shadow-zs-glow-violet">
+            <div className="mb-10 text-center">
+              <div className="mb-6 inline-flex h-16 w-16 items-center justify-center rounded-2xl border border-zs-violet/30 bg-zs-violet/12 text-zs-violet shadow-zs-glow-violet">
                 <UserPlus size={32} />
               </div>
-              <h1 className="text-4xl font-black text-white mb-3 italic tracking-tight uppercase">
+              <h1 className="zs-heading-lg mb-3 text-4xl italic">
                 Zona Sur <span className="text-zs-violet">Tech</span>
               </h1>
-              <p className="text-zs-text-secondary text-sm font-medium uppercase tracking-widest">
+              <p className="text-sm font-medium uppercase tracking-widest text-zs-text-secondary">
                 Inicializa tu Nodo en el Kernel
               </p>
             </div>
@@ -42,9 +41,9 @@ export default function SignupPage({
             </div>
 
             {/* Footer Signup */}
-            <p className="text-center mt-8 text-zs-text-secondary text-sm">
+            <p className="mt-8 text-center text-sm text-zs-text-secondary">
               ¿Ya tienes un nodo activo?{" "}
-              <Link href="/signin" className="text-white font-black hover:text-zs-violet transition-colors underline decoration-zs-violet/30 underline-offset-4">
+              <Link href="/signin" className="font-black text-white underline decoration-zs-violet/30 underline-offset-4 transition-colors hover:text-zs-violet">
                 Sincronizar Ahora
               </Link>
             </p>

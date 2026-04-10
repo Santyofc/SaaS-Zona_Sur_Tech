@@ -15,28 +15,34 @@
   --font-sans: var(--font-body);
   --font-mono: var(--font-geist-mono, monospace);
 
-  /* ── Base Darkness ── */
-  --color-zs-bg-primary: #06080f;
-  --color-zs-bg-secondary: #0a0d18;
-  --color-zs-bg-surface: rgba(255, 255, 255, 0.03);
-  --color-zs-bg-surface-hover: rgba(255, 255, 255, 0.06);
-  --color-zs-bg-overlay: rgba(6, 8, 15, 0.85);
-  --color-zs-border: rgba(255, 255, 255, 0.08);
-  --color-zs-border-hover: rgba(255, 255, 255, 0.15);
+  /* ── Base Atmosphere ── */
+  --color-zs-bg-primary: #070d1a;
+  --color-zs-bg-secondary: #0e172b;
+  --color-zs-bg-surface: rgba(255, 255, 255, 0.045);
+  --color-zs-bg-surface-hover: rgba(255, 255, 255, 0.08);
+  --color-zs-bg-overlay: rgba(7, 13, 26, 0.8);
+  --color-zs-border: rgba(147, 197, 253, 0.16);
+  --color-zs-border-hover: rgba(147, 197, 253, 0.3);
 
   /* ── Accents ── */
-  --color-zs-blue: #2563eb;
-  --color-zs-blue-lt: #3b82f6;
-  --color-zs-cyan: #06b6d4;
-  --color-zs-violet: #8b5cf6;
-  --color-zs-emerald: #10b981;
-  --color-zs-amber: #f59e0b;
-  --color-zs-rose: #f43f5e;
+  --color-zs-blue: #0ea5e9;
+  --color-zs-blue-lt: #38bdf8;
+  --color-zs-cyan: #22d3ee;
+  --color-zs-violet: #f97316;
+  --color-zs-emerald: #34d399;
+  --color-zs-amber: #fbbf24;
+  --color-zs-rose: #fb7185;
+
+  /* ── Typographic Rhythm ── */
+  --zs-lh-tight: 0.94;
+  --zs-lh-normal: 1.55;
+  --zs-track-tight: -0.02em;
+  --zs-track-wide: 0.14em;
 
   /* ── Text ── */
-  --color-zs-text-primary: #f1f5f9;
-  --color-zs-text-secondary: #94a3b8;
-  --color-zs-text-muted: #475569;
+  --color-zs-text-primary: #e2e8f0;
+  --color-zs-text-secondary: #a5b4cf;
+  --color-zs-text-muted: #64748b;
 
   /* ── Glow System ── */
   --shadow-zs-glow-blue: 0 0 20px rgba(37, 99, 235, 0.45);
@@ -116,9 +122,11 @@
      * and painted on the GPU compositing layer once.
      */
     background-image:
-      linear-gradient(rgba(37, 99, 235, 0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(37, 99, 235, 0.03) 1px, transparent 1px);
-    background-size: 52px 52px;
+      radial-gradient(circle at 12% 18%, rgba(34, 211, 238, 0.08), transparent 34%),
+      radial-gradient(circle at 82% 14%, rgba(249, 115, 22, 0.08), transparent 30%),
+      linear-gradient(rgba(14, 165, 233, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(14, 165, 233, 0.03) 1px, transparent 1px);
+    background-size: auto, auto, 40px 40px, 40px 40px;
     /* background-attachment: fixed; ← REMOVED for GPU compositing */
   }
 
@@ -129,6 +137,7 @@
   h5,
   h6 {
     font-family: var(--font-display);
+    letter-spacing: var(--zs-track-tight);
   }
 
   /* Scrollbar personalizada */
@@ -157,7 +166,7 @@
 
   /* ── Glass card ── */
   .zs-card {
-    background: var(--color-zs-bg-surface);
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.02));
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border: 1px solid var(--color-zs-border);
@@ -178,6 +187,53 @@
       box-shadow var(--dur-normal) var(--ease-spring);
   }
 
+  .zs-panel-soft {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--color-zs-border);
+    border-radius: 1rem;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+
+  .zs-section {
+    position: relative;
+    z-index: 10;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    padding-top: 6.5rem;
+    padding-bottom: 6.5rem;
+  }
+
+  .zs-heading-xl {
+    font-size: clamp(2.25rem, 6vw, 5.5rem);
+    line-height: var(--zs-lh-tight);
+    font-weight: 900;
+    text-transform: uppercase;
+    color: var(--color-zs-text-primary);
+  }
+
+  .zs-heading-lg {
+    font-size: clamp(1.7rem, 4.5vw, 3.2rem);
+    line-height: 1.02;
+    font-weight: 850;
+    text-transform: uppercase;
+    color: var(--color-zs-text-primary);
+  }
+
+  .zs-eyebrow {
+    font-size: 10px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: var(--zs-track-wide);
+    color: var(--color-zs-text-muted);
+  }
+
+  .zs-copy {
+    font-size: clamp(0.98rem, 1.3vw, 1.14rem);
+    line-height: var(--zs-lh-normal);
+    color: var(--color-zs-text-secondary);
+  }
+
   /* Top highlight line */
   .zs-card::before {
     content: "";
@@ -192,7 +248,7 @@
   .zs-card:hover {
     border-color: var(--color-zs-border-hover);
     transform: translateY(-2px);
-    box-shadow: var(--shadow-zs-glass), var(--shadow-zs-glow-blue);
+    box-shadow: var(--shadow-zs-glass), 0 0 28px rgba(34, 211, 238, 0.22);
   }
 
   /* ── Panel (card estático sin hover) ── */
@@ -211,10 +267,11 @@
     gap: 0.5rem;
     padding: 0.75rem 1.5rem;
     border-radius: 0.75rem;
-    font-family: var(--font-display);
-    font-weight: 700;
-    font-size: 0.875rem;
-    letter-spacing: 0.02em;
+    font-family: var(--font-body);
+    font-weight: 800;
+    font-size: 0.79rem;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
     color: #fff;
     background: var(--color-zs-blue);
     box-shadow: var(--shadow-zs-glow-blue);
@@ -242,8 +299,10 @@
     gap: 0.5rem;
     padding: 0.75rem 1.5rem;
     border-radius: 0.75rem;
-    font-weight: 600;
-    font-size: 0.875rem;
+    font-weight: 700;
+    font-size: 0.77rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
     color: var(--color-zs-text-primary);
     background: transparent;
     border: 1px solid var(--color-zs-border);
@@ -259,13 +318,13 @@
 
   /* ── Botón brand gradient ── */
   .zs-btn-brand {
-    background: linear-gradient(135deg, var(--color-zs-blue) 0%, var(--color-zs-violet) 100%);
-    box-shadow: 0 10px 20px rgba(37, 99, 235, 0.25);
+    background: linear-gradient(135deg, var(--color-zs-cyan) 0%, var(--color-zs-violet) 100%);
+    box-shadow: 0 12px 28px rgba(34, 211, 238, 0.25);
   }
 
   .zs-btn-brand:hover {
-    opacity: 0.92;
-    box-shadow: 0 16px 32px rgba(37, 99, 235, 0.4);
+    opacity: 0.95;
+    box-shadow: 0 20px 36px rgba(249, 115, 22, 0.25);
   }
 
   /* ── Input ── */
@@ -274,7 +333,7 @@
     border: 1px solid var(--color-zs-border);
     border-radius: 0.75rem;
     padding: 0.875rem 1rem;
-    font-size: 0.875rem;
+    font-size: 0.9rem;
     color: var(--color-zs-text-primary);
     outline: none;
     transition: border-color var(--dur-fast) var(--ease-spring);
@@ -282,7 +341,7 @@
   }
 
   .zs-input::placeholder {
-    color: var(--color-zs-text-muted);
+    color: rgba(148, 163, 184, 0.8);
   }
 
   .zs-input:focus {

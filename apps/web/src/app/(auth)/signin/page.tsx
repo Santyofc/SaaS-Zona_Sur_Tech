@@ -15,23 +15,22 @@ export default function SigninPage({
   searchParams: { error?: string; message?: string };
 }) {
   return (
-    <section className="relative min-h-screen pt-[180px] pb-[120px] overflow-hidden">
-      {/* Background Decor */}
-      <div className="zs-orb w-[600px] h-[600px] bg-zs-blue/10 top-[-20%] left-[-10%]" />
-      <div className="zs-orb w-[400px] h-[400px] bg-zs-violet/5 bottom-[10%] right-[-5%]" />
+    <section className="relative min-h-screen overflow-hidden pb-[120px] pt-[180px]">
+      <div className="zs-orb left-[-10%] top-[-20%] h-[600px] w-[600px] bg-zs-cyan/10" />
+      <div className="zs-orb bottom-[5%] right-[-6%] h-[420px] w-[420px] bg-zs-violet/8" />
 
       <div className="container relative z-10">
         <div className="max-w-[480px] mx-auto">
           <div className="animate-zs-fade-up">
             {/* Header */}
-            <div className="text-center mb-10">
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-zs-blue/10 border border-zs-blue/20 text-zs-blue mb-6 shadow-zs-glow-blue">
+            <div className="mb-10 text-center">
+              <div className="mb-6 inline-flex h-16 w-16 items-center justify-center rounded-2xl border border-zs-cyan/30 bg-zs-cyan/10 text-zs-cyan shadow-zs-glow-cyan">
                 <ShieldCheck size={32} />
               </div>
-              <h1 className="text-4xl font-black text-white mb-3 italic tracking-tight uppercase">
-                Zona Sur <span className="text-zs-blue">Tech</span>
+              <h1 className="zs-heading-lg mb-3 text-4xl italic">
+                Zona Sur <span className="text-zs-cyan">Tech</span>
               </h1>
-              <p className="text-zs-text-secondary text-sm font-medium uppercase tracking-widest">
+              <p className="text-sm font-medium uppercase tracking-widest text-zs-text-secondary">
                 Acceso al Kernel Industrial
               </p>
             </div>
@@ -45,9 +44,9 @@ export default function SigninPage({
             </div>
 
             {/* Footer Signin */}
-            <p className="text-center mt-8 text-zs-text-secondary text-sm">
+            <p className="mt-8 text-center text-sm text-zs-text-secondary">
               ¿No tienes acceso?{" "}
-              <Link href="/signup" className="text-white font-black hover:text-zs-blue transition-colors underline decoration-zs-blue/30 underline-offset-4">
+              <Link href="/signup" className="font-black text-white underline decoration-zs-cyan/30 underline-offset-4 transition-colors hover:text-zs-cyan">
                 Solicita Credenciales
               </Link>
             </p>

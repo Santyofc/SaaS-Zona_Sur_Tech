@@ -6,6 +6,7 @@ import { DatabaseModule } from './modules/database/database.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { ErpModule } from './modules/erp/erp.module';
 import { QueuesModule } from './modules/queues/queues.module';
+import { SpeedInsightsModule } from './modules/speed-insights/speed-insights.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TenantInterceptor } from './common/interceptors/tenant.interceptor';
@@ -41,6 +42,7 @@ import { TenantInterceptor } from './common/interceptors/tenant.interceptor';
     AuthModule,
     ErpModule,
     QueuesModule,
+    SpeedInsightsModule,
   ],
 })
 export class AppModule {}

@@ -1,5 +1,10 @@
 import { Injectable, Inject, NotFoundException } from '@nestjs/common';
-import { products, inventoryMovements, inventoryBalances, withTenantContext } from '@repo/db';
+import {
+  products,
+  inventoryMovements,
+  inventoryBalances,
+  withTenantContext,
+} from '@repo/db';
 import { eq, and, sql } from 'drizzle-orm';
 import { CreateProductDto, UpdateProductDto } from './dto/product.dto';
 

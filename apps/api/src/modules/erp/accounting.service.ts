@@ -1,5 +1,10 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { accounts, journalEntries, journalItems, withTenantContext } from '@repo/db';
+import {
+  accounts,
+  journalEntries,
+  journalItems,
+  withTenantContext,
+} from '@repo/db';
 import { eq, sql } from 'drizzle-orm';
 
 @Injectable()

@@ -30,6 +30,10 @@ export class InventoryController {
     @CurrentUser() user: any,
     @Body() data: InventoryAdjustmentDto,
   ) {
-    return this.inventoryService.adjustInventory(organizationId, user.userId, data);
+    return this.inventoryService.adjustInventory(
+      organizationId,
+      user.userId,
+      data,
+    );
   }
 }

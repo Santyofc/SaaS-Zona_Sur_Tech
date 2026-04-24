@@ -182,7 +182,7 @@ export class SalesService {
           referenceType: 'sales',
           referenceId: saleId,
           createdBy: userId,
-          note: `Reverted from cancelled sale ${sale.saleNumber}`
+          note: `Reverted from cancelled sale ${sale.saleNumber}`,
         });
 
         await tx

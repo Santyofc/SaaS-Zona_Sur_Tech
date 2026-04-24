@@ -1,9 +1,5 @@
 import { Injectable, Inject } from '@nestjs/common';
-import {
-  sales,
-  inventoryBalances,
-  products,
-} from '@repo/db';
+import { sales, inventoryBalances, products } from '@repo/db';
 import { eq, and, sql, count, desc } from 'drizzle-orm';
 
 @Injectable()

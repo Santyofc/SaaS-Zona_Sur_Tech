@@ -23,8 +23,9 @@ export class AllExceptionsFilter implements ExceptionFilter {
         ? exception.getStatus()
         : HttpStatus.INTERNAL_SERVER_ERROR;
 
-    const message = exception instanceof Error ? exception.message : 'Internal server error';
-    
+    const message =
+      exception instanceof Error ? exception.message : 'Internal server error';
+
     this.logger.error(`Exception: ${message}`, (exception as Error).stack);
 
     const responseBody = {
@@ -32,7 +33,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
       timestamp: new Date().toISOString(),
       path: httpAdapter.getRequestUrl(ctx.getRequest()),
       message:
-        (httpStatus as number) === HttpStatus.INTERNAL_SERVER_ERROR
+        httpStatus === HttpStatus.INTERNAL_SERVER_ERROR
           ? 'An unexpected error occurred'
           : message,
     };

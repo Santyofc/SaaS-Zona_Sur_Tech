@@ -37,7 +37,9 @@ describe('SalesService', () => {
     };
 
     // Re-implementation of withTenantContext mock to pass through the mockDb
-    withTenantContext.mockImplementation(async (db: any, orgId: string, cb: any) => cb(mockDb));
+    withTenantContext.mockImplementation(
+      async (db: any, orgId: string, cb: any) => cb(mockDb),
+    );
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -72,9 +74,9 @@ describe('SalesService', () => {
       // Mock stock check to return 5 units
       mockDb.select.mockReturnValueOnce([{ currentQuantity: '5' }]);
 
-      await expect(service.createSale(orgId, userId, saleData as any)).rejects.toThrow(
-        /Insufficient stock/,
-      );
+      await expect(
+        service.createSale(orgId, userId, saleData as any),
+      ).rejects.toThrow(/Insufficient stock/);
     });
 
     it('should succeed and return new sale if stock is sufficient', async () => {
@@ -92,7 +94,11 @@ describe('SalesService', () => {
 
       const result = await service.createSale(orgId, userId, saleData as any);
       expect(result.id).toBe('sale-1');
-      expect(withTenantContext).toHaveBeenCalledWith(mockDb, orgId, expect.any(Function));
+      expect(withTenantContext).toHaveBeenCalledWith(
+        mockDb,
+        orgId,
+        expect.any(Function),
+      );
     });
   });
 });
